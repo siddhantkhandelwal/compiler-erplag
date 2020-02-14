@@ -1,10 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "lexer.h"
 
 #define buffLen 4000
-FILE *getStream(FILE *fp);
-char *getNextToken();
-void removeComments(char *testCaseFile, char *cleanFile);
+
 char buff[buffLen];
 
 FILE *getStream(FILE *fp)
@@ -83,6 +80,7 @@ int main(int argc, char *argv[])
     if (argc != 3)
     {
         printf("Incorrect number of arguments\n");
+        exit(-1);
     }
     removeComments(argv[1], argv[2]);
     return 0;
