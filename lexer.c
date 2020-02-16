@@ -1,6 +1,6 @@
 #include "lexer.h"
 
-#define BUFFLEN 4000
+#define BUFFLEN 4000  
 #define NOOFKEYWORDS 30
 
 static int lineNo = 1;
@@ -8,7 +8,6 @@ char buffer[BUFFLEN];
 
 FILE *getStream(FILE *fp)
 {
-
     for (int i = 0; i < BUFFLEN; i++)
     {
         buffer[i] = '\0';
@@ -88,19 +87,19 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-node *createNode()
-{
-    node *thisNode = (node *)malloc(sizeof(node));
-    thisNode->tk = (tokenInfo *)malloc(sizeof(tokenInfo));
-    return thisNode;
-}
+// node *createNode()
+// {
+//     node *thisNode = (node *)malloc(sizeof(node));
+//     thisNode->tk = (tokenInfo *)malloc(sizeof(tokenInfo));
+//     return thisNode;
+// }
 
-header initializeHead()
-{
-    header newHeader = (header)malloc(sizeof(header));
-    newHeader->headLink = NULL;
-    return newHeader;
-}
+// header initializeHead()
+// {
+//     header newHeader = (header)malloc(sizeof(header));
+//     newHeader->headLink = NULL;
+//     return newHeader;
+// }
 
 char *keywordChecker(char val[])
 {
