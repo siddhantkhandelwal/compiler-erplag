@@ -5,10 +5,12 @@
 #define buffLen 4000
 
 FILE *getStream(FILE *fp);
-node *getNextToken();
+tokenInfo *getNextToken();
 void removeComments(char *testCaseFile, char *cleanFile);
 int removeCommentsSource(char *buffer, int pointer);
 char *keywordChecker(char val[]);
 void flush(char *str, int elementsToFlush);
+/*
 node *createNode();
 header initializeHead();
+*/

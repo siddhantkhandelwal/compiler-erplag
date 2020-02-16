@@ -1,6 +1,6 @@
 #include "lexer.h"
 
-#define BUFFLEN 4000
+#define BUFFLEN 4096
 #define NOOFKEYWORDS 30
 
 static int lineNo = 1;
@@ -24,6 +24,13 @@ FILE *getStream(FILE *fp)
     }
     printf("%s\n", buffer);
     return NULL;
+}
+
+FILE* reloadBuffer(FILE* fp){
+
+
+    fp = getStream(fp);
+    return fp;
 }
 
 void removeComments(char *testCaseFile, char *cleanFile)
@@ -137,4 +144,11 @@ void flush(char *str, int elementsToFlush)
     {
         str[i] = '\0';
     }
+}
+
+tokenInfo* createToken(Token t,char* lexeme,Value val,unsigned int line){
+
+    tokenInfo* token = malloc(sizeof(tokenInfo));
+
+    token
 }

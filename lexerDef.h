@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+/*
 char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
                        "end", "declare", "module", "driver", "program",
                        "record", "tagged", "union", "get_value", "print",
@@ -15,21 +17,30 @@ char *tokenKey[] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
                     "INPUT", "RETURNS", "AND", "OR", "FOR", "IN", "SWITCH",
                     "CASE", "BREAK", "DEFAULT", "WHILE"};
 
-int state;
+*/
+unsigned int state;
+
 
 struct TokenInfo
 {
-    char token[30];
+
+    
+    char lexeme[30];
     char value[30];
-    int line;
+    unsigned int line;
 };
+
+
 
 typedef struct TokenInfo tokenInfo;
 
+
+/*
 struct Node
 {
     tokenInfo *tk;
 };
+
 
 typedef struct Node node;
 
@@ -39,3 +50,5 @@ struct Header
 };
 
 typedef struct Header *header;
+
+*/
