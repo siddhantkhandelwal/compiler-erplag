@@ -1,26 +1,28 @@
 #include "lexer.h"
 
-#define buffLen 4000
+#define BUFFLEN 4000
+#define NOOFKEYWORDS 30
 
-char buff[buffLen];
+static int lineNo = 1;
+char buffer[BUFFLEN];
 
 FILE *getStream(FILE *fp)
 {
 
-    for (int i = 0; i < buffLen; i++)
+    for (int i = 0; i < BUFFLEN; i++)
     {
-        buff[i] = '\0';
+        buffer[i] = '\0';
     }
     if (fp == NULL)
     {
         printf("Unable to open file\n");
         exit(-1);
     }
-    if (fread(buff, (size_t)buffLen, 1, fp))
+    if (fread(buffer, (size_t)BUFFLEN, 1, fp))
     {
         return fp;
     }
-    printf("%s\n", buff);
+    printf("%s\n", buffer);
     return NULL;
 }
 
@@ -84,4 +86,55 @@ int main(int argc, char *argv[])
     }
     removeComments(argv[1], argv[2]);
     return 0;
+}
+
+node *createNode()
+{
+    node *thisNode = (node *)malloc(sizeof(node));
+    thisNode->tk = (tokenInfo *)malloc(sizeof(tokenInfo));
+    return thisNode;
+}
+
+header initializeHead()
+{
+    header newHeader = (header)malloc(sizeof(header));
+    newHeader->headLink = NULL;
+    return newHeader;
+}
+
+char *keywordChecker(char val[])
+{
+    char *keywordTokenKey = (char *)malloc(sizeof(char) * NOOFKEYWORDS);
+    for (int i = 0; i < NOOFKEYWORDS; i++)
+    {
+        if (strcmp(val, keywordDict[i]) == 0)
+        {
+            strcpy(keywordTokenKey, tokenKey[i]);
+            return keywordTokenKey;
+        }
+    }
+    char notAKeyword[] = "NotAKeyword";
+    strcpy(keywordTokenKey, notAKeyword);
+    return keywordTokenKey;
+}
+
+int removeCommentsSource(char *buffer, int pointer)
+{
+    while (!((buffer[pointer] == '*') && (buffer[pointer + 1] == '*')))
+    {
+        pointer++;
+        if (buffer[pointer] == '\n')
+        {
+            lineNo++;
+        }
+    }
+    return pointer;
+}
+
+void flush(char *str, int elementsToFlush)
+{
+    for (int i = 0; i < elementsToFlush; i++)
+    {
+        str[i] = '\0';
+    }
 }
