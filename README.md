@@ -1,7 +1,7 @@
 # compiler-erplag
 ERPLAG Compiler for course CS-F363
 
-## Compeleted Modules
+## Completed Modules
 
   - lexer.c
     + `FILE *getStream(FILE *fp);`
