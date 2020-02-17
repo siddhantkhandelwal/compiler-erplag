@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lexerDef.h"
-#define buffLen 4000
+#define BUFFLEN 4096
 
 FILE *getStream(FILE *fp);
-tokenInfo *getNextToken();
+tokenInfo *getNextToken(FILE** fp);
 void removeComments(char *testCaseFile, char *cleanFile);
 int removeCommentsSource(char *buffer, int pointer);
-char *keywordChecker(char val[]);
+int keywordChecker(char val[]);
 void flush(char *str, int elementsToFlush);
 /*
 node *createNode();
