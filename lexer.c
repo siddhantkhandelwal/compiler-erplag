@@ -88,20 +88,6 @@ void removeComments(char *testCaseFile, char *cleanFile)
     fclose(fo);
 }
 
-// node *createNode()
-// {
-//     node *thisNode = (node *)malloc(sizeof(node));
-//     thisNode->tk = (tokenInfo *)malloc(sizeof(tokenInfo));
-//     return thisNode;
-// }
-
-// header initializeHead()
-// {
-//     header newHeader = (header)malloc(sizeof(header));
-//     newHeader->headLink = NULL;
-//     return newHeader;
-// }
-
 int keywordChecker(char val[])
 {
     for (int i = 0; i < NUM_TOKENS; i++)
@@ -550,7 +536,6 @@ tokenInfo *getNextToken(FILE **fp)
             {
                 lexeme_read[--len] = '\0';
                 // printf("%c", buffer[buffer_ptr]);
-
                 state = 7;
                 break;
             }

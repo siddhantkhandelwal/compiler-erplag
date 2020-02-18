@@ -89,21 +89,3 @@ struct TokenInfo
 };
 
 typedef struct TokenInfo tokenInfo;
-
-/*
-struct Node
-{
-    tokenInfo *tk;
-};
-
-
- typedef struct Node node;
-
- struct Header
- {
-     node *headLink;
- };
-
-typedef struct Header *header;
-
-*/

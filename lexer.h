@@ -9,7 +9,3 @@ tokenInfo *getNextToken(FILE **fp);
 void removeComments(char *testCaseFile, char *cleanFile);
 int keywordChecker(char val[]);
 void flush(char *str, int elementsToFlush);
-/*
-node *createNode();
-header initializeHead();
-*/
