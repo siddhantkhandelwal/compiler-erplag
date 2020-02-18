@@ -115,19 +115,6 @@ int keywordChecker(char val[])
     return -1;
 }
 
-int removeCommentsSource(char *buffer, int pointer)
-{
-    while (!((buffer[pointer] == '*') && (buffer[pointer + 1] == '*')))
-    {
-        pointer++;
-        if (buffer[pointer] == '\n')
-        {
-            line++;
-        }
-    }
-    return pointer;
-}
-
 void flush(char *str, int elementsToFlush)
 {
     for (int i = 0; i < elementsToFlush; i++)

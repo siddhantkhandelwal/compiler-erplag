@@ -7,7 +7,6 @@
 FILE *getStream(FILE *fp);
 tokenInfo *getNextToken(FILE **fp);
 void removeComments(char *testCaseFile, char *cleanFile);
-int removeCommentsSource(char *buffer, int pointer);
 int keywordChecker(char val[]);
 void flush(char *str, int elementsToFlush);
 /*
