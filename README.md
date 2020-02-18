@@ -15,3 +15,5 @@ ERPLAG Compiler for course CS-F363
     gcc -o lexer lexer.c
     ./lexer [testCaseFile] [cleanFile]
     ```
+
+## Bugs

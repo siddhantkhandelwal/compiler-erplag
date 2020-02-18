@@ -1,38 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
 char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
                        "end", "declare", "module", "driver", "program",
-                        "get_value", "print",
+                       "get_value", "print",
                        "use", "with", "parameters", "true", "false", "takes",
                        "input", "returns", "AND", "OR", "for", "in", "switch",
                        "case", "break", "default", "while"};
 
-                       
-
-enum TERM{            INTEGER, REAL, BOOLEAN, OF, ARRAY, START,
-                       END, DECLARE, MODULE, DRIVER, PROGRAM,
-                        GET_VALUE, PRINT,
-                       USE, WITH, PARAMETERS, TRUE, FALSE, TAKES,
-                       INPUT, RETURNS, AND, OR, FOR, IN, SWITCH,
-                       CASE, BREAK, DEFAULT, WHILE,
-                      ASSIGNOP, BC, BO,COLON, COMMA, COMMENT,
-                      DIV, DRIVERDEF, DRIVERENDDEF,  ENDDEF,  EQ,
-                      GE, GT, ID, LE,  LT, MINUS, MUL,
-                      NE, NUM, PLUS, RANGEOP,
-                      SEMICOL, SQBC, SQBO,RNUM
+enum TERM
+{
+    INTEGER,
+    REAL,
+    BOOLEAN,
+    OF,
+    ARRAY,
+    START,
+    END,
+    DECLARE,
+    MODULE,
+    DRIVER,
+    PROGRAM,
+    GET_VALUE,
+    PRINT,
+    USE,
+    WITH,
+    PARAMETERS,
+    TRUE,
+    FALSE,
+    TAKES,
+    INPUT,
+    RETURNS,
+    AND,
+    OR,
+    FOR,
+    IN,
+    SWITCH,
+    CASE,
+    BREAK,
+    DEFAULT,
+    WHILE,
+    ASSIGNOP,
+    BC,
+    BO,
+    COLON,
+    COMMA,
+    COMMENT,
+    DIV,
+    DRIVERDEF,
+    DRIVERENDDEF,
+    ENDDEF,
+    DEF,
+    EQ,
+    GE,
+    GT,
+    ID,
+    LE,
+    LT,
+    MINUS,
+    MUL,
+    NE,
+    NUM,
+    PLUS,
+    RANGEOP,
+    SEMICOL,
+    SQBC,
+    SQBO,
+    RNUM
 };
 
 typedef enum TERM Token;
 
-
 unsigned int state;
 
-
-typedef union 
-{
+typedef union {
     int v1;
     double v2;
 } Value;
@@ -45,13 +86,9 @@ struct TokenInfo
     Value value;
     unsigned int line;
     int tag;
-
 };
 
-
-
 typedef struct TokenInfo tokenInfo;
-
 
 /*
 struct Node
@@ -70,4 +107,3 @@ struct Node
 typedef struct Header *header;
 
 */
-
