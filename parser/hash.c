@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "parserDef.h"
-#define HASHNUM 2
-#define HASHSIZE 200
-
-hash_node* hash_table[HASHSIZE];
+#include "hash.h"
 
 int compute_hash(char* str){
 
@@ -51,9 +44,12 @@ hash_node* create_hash_node(map_node* mnode){
 
 void insert_hash_node(char* str,int tag,Symbol s){
 
+
 	map_node* mnode = create_map_node(s,str,tag);
 	hash_node* hnode = create_hash_node(mnode);
 	int hash_val = compute_hash(str);
+
+	//printf("%d\n",hash_val);
 
 	hash_node* temp = hash_table[hash_val];
 	if(temp==NULL){
@@ -79,7 +75,7 @@ map_node* search_hash(char* str){
 }
 
 
-int main(){
+/*int main(){
 
 	char* str = "AB";
 
@@ -90,4 +86,4 @@ int main(){
 	map_node* temp = search_hash("AB");
 
 	printf("%s\t%d\n",temp->str,(temp->s).T);
-}
+}*/
