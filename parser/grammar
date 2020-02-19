@@ -1,6 +1,7 @@
 program moduledeclarations othermodules drivermodule othermodules
 moduledeclarations moduledeclaration moduledeclarations 
-moduledeclaration E
+moduledeclarations E
+moduledeclaration DECLARE MODULE ID SEMICOL
 othermodules module othermodules 
 othermodules E
 drivermodule DRIVERDEF DRIVER PROGRAM DRIVERENDDEF moduldef
@@ -16,7 +17,7 @@ outputplistnew E
 datatype INTEGER
 datatype REAL
 datatype BOOLEAN
-datatype ARRAY SQBO range SQBC OF type
+datatype ARRAY SQBO rangearrays SQBC OF type
 type INTEGER
 type REAL
 type BOOLEAN
@@ -30,11 +31,13 @@ statement conditionalstmt
 statement iterativestmt
 iostmt GETVALUE BO ID BC SEMICOL
 iostmt PRINT BO var BC SEMICOL
-var ID whichid
-var NUM
-var RNUM
-var TRUE
-var FALSE
+var varidnum
+var boolConstt
+boolConstt TRUE 
+boolConstt FALSE
+varidnum ID whichid
+varidnum NUM
+varidnum RNUM
 whichid SQBO index SQBC
 whichid E
 simplestmt assignmentstmt
@@ -42,8 +45,8 @@ simplestmt modulereusestmt
 assignmentstmt ID whichstmt
 whichstmt lvalueidstmt
 whichstmt lvaluearrstmt
-lvalueidstmt ASSIGNOP expressionnew SEMICOL
-lvaluearrstmt SQBO index SQBC ASSIGNOP expressionnew SEMICOL
+lvalueidstmt ASSIGNOP expression SEMICOL
+lvaluearrstmt SQBO index SQBC ASSIGNOP expression SEMICOL
 index NUM
 index ID
 modulereusestmt optional USE MODULE ID WITH PARAMETERS idlist SEMICOL
@@ -52,44 +55,53 @@ optional E
 idlist ID idlistnew
 idlistnew COMMA ID idlistnew
 idlistnew E
-expression bterm btermrec
-btermrec logicalop bterm btermrec
-btermrec E
-bterm arithmeticexpr aterm
-aterm relationalop arithmeticexpr aterm
-aterm E
-arithmeticexpr term aenew
-aenew pmop term aenew
-aenew E
-term factor termnew
-termnew mdop factor termnew
-termnew E
-factor var
-factor BO expression BC
-unterm var
-unterm BO expression BC
-pmop PLUS
-pmop MINUS
-mdop MUL
-mdop DIV
+expression arithmeticorbooleanexpression
+expression u
+u unaryop newnt
+newnt BO arithmeticexpr BC
+newnt varidnum
+unaryop PLUS
+unaryop MINUS
+arithmeticorbooleanexpression anyterm n7
+n7 logicalop anyterm n7
+n7 E
+anyterm arithmeticexpr n8
+anyterm boolConstt n8
+n8 relationalop arithmeticexpr n8
+n8 E
+arithmeticexpr arithmeticexpr op1 term
+arithmeticexpr term n4
+nr op1 term n4
+n4 e
+term term op2 factor
+term factor n5
+n5 op2 factor n5
+n5 E
+factor BO arithmeticexpr BC
+factor varidnum
+op1 PLUS
+op1 MINUS
+op2 MUL
+op2 DIV 
 logicalop AND
 logicalop OR
-relational LT
-relational LE
-relational GT
-relational GE
-relational EQ
-relational NE
+relationalop LT
+relationalop LE
+relationalop GT
+relationalop GE
+relationalop EQ
+relationalop NE
 declarestmt DECLARE idlist COLON datatype SEMICOL
 conditionalstmt SWITCH BO ID BC START casestmts default END
-casestmts CASE value COLON statements BREAK SEMICOL csnew
-csnew CASE value COLON statements BREAK SEMICOL
-csnew E
+casestmts CASE value COLON statements BREAK SEMICOL n9
+n9 CASE value COLON statements BREAK SEMICOL n9
+n9 E
 value NUM
 value TRUE
 value FALSE
 default DEFAULT COLON statements BREAK SEMICOL
 default E
 iterativestmt FOR BO ID IN range BC START statements END
-iterativestmt WHILE BO expression BC START statements END
+iterativestmt WHILE BO arithmeticorbooleanexpression BC START statements END
 range NUM RANGEOP NUM
+rangearrays index RANGEOP index
