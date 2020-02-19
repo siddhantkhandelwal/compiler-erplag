@@ -1,4 +1,4 @@
-#include "parserDef.h"
+#include "parser.h"
 
 Grammar *populateGrammar(FILE *fp)
 {
