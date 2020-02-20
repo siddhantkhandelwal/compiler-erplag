@@ -270,12 +270,123 @@ void printgrammar(){
         if(temp==NULL)
             return;
         while(temp){
-            printf("%d\t",l++);
+            //printf("%d\t",l++);
             printf("%s\t",nonTerminalDict[i]);
             print_rule(temp);
             temp = temp->next_rule;
         }
     }
+}
+
+void initialize_first(){
+    int i;
+    for(i=0;i<NTERMINALS;i++){
+        First[i] = 0;
+    }
+}
+
+
+long long unsigned calculate_first(int nterm){
+
+    if(First[nterm])
+        return First[nterm];
+
+    rule_header* rule = g[nterm];
+    rhsNode* temp = rule->curr_rule;
+    
+
+    int has_epsilon = 0;
+
+    while(rule){
+
+
+        if(temp==NULL){
+            rule = rule->next_rule;
+            continue;
+        }
+
+
+        if(temp->tag==0){
+            long long unsigned mask = 1;
+            First[nterm] = First[nterm]|(mask<<((temp->S).T));
+            rule = rule->next_rule;
+
+            if(rule)
+                temp = rule->curr_rule;
+
+            if((temp->S).T==EPSILON)
+                has_epsilon = 1;
+
+            continue;
+        }else{
+
+            long long unsigned mask = 1;
+            int index = (temp->S).N;
+
+            long long unsigned flag = 0;
+
+            //printf("first of %s\n",nonTerminalDict[index]);
+
+            long long unsigned t = calculate_first(index);
+
+
+           // printf("First Index = %llu  Mask  = %llu\n",First[index],mask<<EPSILON);
+            flag = First[index]&(mask<<(EPSILON));
+            
+                
+                if(flag){
+
+                    //printf("Inside flag\n");
+                    mask =1;
+                    mask = mask<<EPSILON;
+                    t = t^mask;
+                    First[nterm] = First[nterm]|t;
+                    temp = temp->next;
+
+                    if(temp==NULL){
+                        has_epsilon = 1;
+                        //rule = rule->next_rule;
+                    }
+                    continue;
+                }else{
+                    First[nterm] = First[nterm]|First[index];
+                    rule = rule->next_rule;
+
+                    if(rule)
+                        temp = rule->curr_rule;
+
+                }
+
+        }
+
+
+    }
+
+    if(has_epsilon){
+        long long unsigned mask = 1;
+        mask = mask<<(EPSILON);
+        First[nterm] = First[nterm]|mask;
+    }
+
+
+    return First[nterm];
+
+}
+
+void print_first(long long unsigned num){
+
+    int i;
+    unsigned int temp;
+    unsigned int mask = 1;
+    for(i=0;i<TERMINALS;i++){
+        temp = num&mask;
+        if(temp)
+            printf("%s\t",terminalDict[i]);
+
+        num = num>>1;
+    }
+
+    printf("\n");
 }
 
 
@@ -301,9 +412,18 @@ int main()
     populateGrammar(fp);
 
 
-    printgrammar();
+   // printgrammar();
+    long long unsigned t;
+    int i;
+    for(i=0;i<NTERMINALS;i++){
+        printf("<%s>\t",nonTerminalDict[i]);
+        t = calculate_first(i);
+        print_first(t);
+    }
 
-
+   //long long unsigned t = calculate_first(35);
+    
+    //print_first(t);
 
     return 0;
 }

@@ -69,11 +69,9 @@ anyterm arithmeticexpr n8
 anyterm boolconstt
 n8 relationalop arithmeticexpr
 n8 E
-arithmeticexpr arithmeticexpr op1 term
 arithmeticexpr term n4
 n4 op1 term n4
 n4 E
-term term op2 factor
 term factor n5
 n5 op2 factor n5
 n5 E

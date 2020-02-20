@@ -192,4 +192,8 @@ struct rule_header{
 	rhsNode* curr_rule;
 };	
 
+
+long long unsigned First[NTERMINALS];
+
+
 #endif
