@@ -1,0 +1,57 @@
+program	moduledeclarations  othermodules  drivermodule  othermodules  	----moduledeclarations  othermodules  drivermodule  othermodules  	----
+moduledeclarations	moduledeclaration  moduledeclarations  	----E  	----E  	----
+othermodules	E  	----module  othermodules  	----E  	----
+drivermodule	DRIVERDEF  DRIVER  PROGRAM  DRIVERENDDEF  moduledef  	----
+moduledeclaration	DECLARE  MODULE  ID  SEMICOL  	----
+module	DEF  MODULE  ID  ENDDEF  TAKES  INPUT  SQBO  inputplist  SQBC  SEMICOL  ret  moduledef  	----
+moduledef	START  statements  END  	----
+inputplist	ID  COLON  datatype  inputplistnew  	----
+ret	E  	----RETURNS  SQBO  outputplist  SQBC  SEMICOL  	----
+inputplistnew	COMMA  ID  COLON  datatype  inputplistnew  	----E  	----
+datatype	INTEGER  	----REAL  	----BOOLEAN  	----ARRAY  SQBO  rangearrays  SQBC  OF  type  	----
+outputplist	ID  COLON  type  outputplistnew  	----
+type	INTEGER  	----REAL  	----BOOLEAN  	----
+outputplistnew	COMMA  ID  COLON  type  outputplistnew  	----E  	----
+statements	E  	----statement  statements  	----statement  statements  	----statement  statements  	----statement  statements  	----statement  statements  	----statement  statements  	----E  	----statement  statements  	----statement  statements  	----statement  statements  	----
+statement	declarestmt  	----iostmt  	----iostmt  	----simplestmt  	----iterativestmt  	----conditionalstmt  	----iterativestmt  	----simplestmt  	----simplestmt  	----
+iostmt	GET_VALUE  BO  ID  BC  SEMICOL  	----PRINT  BO  var  BC  SEMICOL  	----
+simplestmt	modulereusestmt  	----assignmentstmt  	----modulereusestmt  	----
+declarestmt	DECLARE  idlist  COLON  datatype  SEMICOL  	----
+conditionalstmt	SWITCH  BO  ID  BC  START  casestmts  default  END  	----
+iterativestmt	FOR  BO  ID  IN  range  BC  START  statements  END  	----WHILE  BO  arithmeticorbooleanexpression  BC  START  statements  END  	----
+var	boolconstt  	----boolconstt  	----varidnum  	----varidnum  	----varidnum  	----
+varidnum	ID  whichid  	----NUM  	----RNUM  	----
+boolconstt	TRUE  	----FALSE  	----
+whichid	E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----SQBO  index  SQBC  	----
+index	ID  	----NUM  	----
+assignmentstmt	ID  whichstmt  	----
+modulereusestmt	optional  USE  MODULE  ID  WITH  PARAMETERS  idlist  SEMICOL  	----optional  USE  MODULE  ID  WITH  PARAMETERS  idlist  SEMICOL  	----
+whichstmt	lvalueidstmt  	----lvaluearrstmt  	----
+lvalueidstmt	ASSIGNOP  expression  SEMICOL  	----
+lvaluearrstmt	SQBO  index  SQBC  ASSIGNOP  expression  SEMICOL  	----
+expression	arithmeticorbooleanexpression  	----arithmeticorbooleanexpression  	----arithmeticorbooleanexpression  	----arithmeticorbooleanexpression  	----u  	----arithmeticorbooleanexpression  	----u  	----arithmeticorbooleanexpression  	----
+optional	E  	----SQBO  idlist  SQBO  ASSIGNOP  	----
+idlist	ID  idlistnew  	----
+idlistnew	E  	----COMMA  ID  idlistnew  	----E  	----E  	----
+arithmeticorbooleanexpression	anyterm  n7  	----anyterm  n7  	----anyterm  n7  	----anyterm  n7  	----anyterm  n7  	----anyterm  n7  	----
+u	unaryop  newnt  	----unaryop  newnt  	----
+unaryop	MINUS  	----PLUS  	----
+newnt	BO  arithmeticexpr  BC  	----varidnum  	----varidnum  	----varidnum  	----
+arithmeticexpr	term  n4  	----term  n4  	----term  n4  	----term  n4  	----
+anyterm	boolconstt  	----boolconstt  	----arithmeticexpr  n8  	----arithmeticexpr  n8  	----arithmeticexpr  n8  	----arithmeticexpr  n8  	----
+n7	logicalop  anyterm  n7  	----logicalop  anyterm  n7  	----E  	----E  	----
+logicalop	AND  	----OR  	----
+n8	E  	----E  	----E  	----relationalop  arithmeticexpr  	----relationalop  arithmeticexpr  	----relationalop  arithmeticexpr  	----relationalop  arithmeticexpr  	----relationalop  arithmeticexpr  	----relationalop  arithmeticexpr  	----E  	----
+relationalop	EQ  	----GE  	----GT  	----LE  	----LT  	----NE  	----
+op1	MINUS  	----PLUS  	----
+term	factor  n5  	----factor  n5  	----factor  n5  	----factor  n5  	----
+n4	E  	----E  	----E  	----E  	----E  	----E  	----E  	----E  	----op1  term  n4  	----E  	----op1  term  n4  	----E  	----
+op2	DIV  	----MUL  	----
+factor	BO  arithmeticexpr  BC  	----varidnum  	----varidnum  	----varidnum  	----
+n5	E  	----E  	----E  	----op2  factor  n5  	----E  	----E  	----E  	----E  	----E  	----E  	----op2  factor  n5  	----E  	----E  	----E  	----
+casestmts	CASE  value  COLON  statements  BREAK  SEMICOL  n9  	----
+default	E  	----DEFAULT  COLON  statements  BREAK  SEMICOL  	----
+value	TRUE  	----FALSE  	----NUM  	----
+n9	E  	----CASE  value  COLON  statements  BREAK  SEMICOL  n9  	----E  	----
+range	NUM  RANGEOP  NUM  	----
+rangearrays	index  RANGEOP  index  	----index  RANGEOP  index  	----

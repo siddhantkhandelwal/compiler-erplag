@@ -58,8 +58,8 @@ char *terminalDict[] = {
     "SQBC",
     "SQBO",
     "RNUM",
-    "E",
-    "$"
+    "$",
+    "E"
 };
 
 
@@ -483,9 +483,7 @@ long long unsigned calculate_follow(int nterm){
             rule = rule->next_rule;
         }
     }
-
-        return Follow[nterm];
-
+    return Follow[nterm];
 }
 
 void ComputeFirstAndFollowSets () {
@@ -504,16 +502,126 @@ void ComputeFirstAndFollowSets () {
         calculate_follow(i);
     }
 
-    for(int i=0;i<NTERMINALS;i++){
-        printf("%d <%s>\t",i,nonTerminalDict[i]);
-        long long unsigned t = Follow[i];
-        print_terminal(t);
-    }
-
-    
-    
+    // for(int i=0;i<NTERMINALS;i++){
+    //     printf("%d <%s>\t",i,nonTerminalDict[i]);
+    //     long long unsigned t = Follow[i];
+    //     print_terminal(t);
+    // }
 }
 
+void initiliazeParseTable(){
+    for(int i = 0;i<NTERMINALS;i++){
+        for(int j =0;j<TERMINALS;j++){
+            parseTable[i][j] = NULL;
+        }
+    }
+}
+
+void populateParseTable(){
+    initiliazeParseTable();
+    for(int i=0;i<NTERMINALS;i++){
+        rule_header *rh = g[i]; //rule header of a rule
+        rhsNode *rule = NULL; // a node of a particular rule
+        while(rh){
+            int has_epsilon=0;
+            rule = rh->curr_rule; 
+            long long unsigned tempFirst;
+            if(rule->tag == 1){
+                tempFirst = First[(rule->S).N];
+                long long unsigned mask = 1;
+                mask = mask << EPSILON;
+                has_epsilon = tempFirst & mask;
+                mask = 1;
+                for(int j = 0;j<TERMINALS;j++){
+                    long long unsigned temp = mask & tempFirst;
+                    if(temp){
+                        parseTable[i][j] = rh;
+                    }
+                    tempFirst = tempFirst >> 1;
+                }
+                while(rule && rule->next && has_epsilon){
+                    rule = rule->next;
+                    if(rule->tag == 1){
+                        tempFirst = First[(rule->S).N];
+                        mask = 1;
+                        mask = mask << EPSILON;
+                        has_epsilon = tempFirst & mask;
+                        mask = 1;
+                        for(int j = 0;j<TERMINALS;j++){
+                            long long unsigned temp = mask & tempFirst;
+                            if(temp){
+                                parseTable[i][j] = rh;
+                            }
+                            tempFirst = tempFirst >> 1;
+                        }
+                    }
+                    else{
+                        int index = (rule->S).T;
+                        parseTable[i][index] = rh;
+                        has_epsilon = 0;
+                        break;
+                    }    
+                }
+                if(has_epsilon){
+                    long long unsigned tempFollow = Follow[i];
+                    mask = 1;
+                    for(int j = 0;j<TERMINALS;j++){
+                        long long unsigned temp = mask & tempFollow;
+                        if(temp){
+                            parseTable[i][j] = rh;
+                        }
+                        tempFollow = tempFollow >> 1;
+                    }
+                }
+            }
+            else{
+                if((rule->S).T != EPSILON){
+                    int index = (rule->S).T;
+                    parseTable[i][index] = rh;
+                }
+                else{
+                    long long unsigned tempFollow = Follow[i];
+                    long long unsigned mask = 1;
+                    for(int j = 0;j<TERMINALS;j++){
+                        long long unsigned temp = mask & tempFollow;
+                        if(temp){
+                            parseTable[i][j] = rh;
+                        }
+                        tempFollow = tempFollow >> 1;
+                    }
+                }
+            }
+            rh=rh->next_rule;
+        }
+    }
+}
+
+void printRule(rule_header *rh){
+    if(!rh){
+        return;
+    }
+    rhsNode *rn = rh->curr_rule;
+    while(rn){
+        if(rn->tag == 0){
+           printf("%s  ", terminalDict[(rn->S).T]);
+        }
+        else{
+            printf("%s  ", nonTerminalDict[(rn->S).N]);
+        }
+        rn = rn->next;
+    }
+    printf("\t----");
+}
+
+void printParseTable(){
+    for(int i = 0;i<NTERMINALS;i++){
+        printf("%s\t",nonTerminalDict[i]);
+        for(int j = 0;j<TERMINALS;j++){
+            printRule(parseTable[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 int main()
 {
@@ -541,9 +649,7 @@ int main()
     /*long long unsigned t;*/
 
     ComputeFirstAndFollowSets();
-
-   
-
-
+    populateParseTable();
+    printParseTable();
     return 0;
 }

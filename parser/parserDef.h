@@ -70,8 +70,8 @@ enum TERM
     SQBC,
     SQBO,
     RNUM,
-    EPSILON,
-    DOLLAR
+    DOLLAR,
+    EPSILON
 };
 
 enum NTERM {
@@ -186,7 +186,7 @@ struct hash_node{
 	hash_node* next;
 };
 
-
+rule_header *parseTable[NTERMINALS][TERMINALS];
 
 struct rule_header{
 	rule_header* next_rule;
