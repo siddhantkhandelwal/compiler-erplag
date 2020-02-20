@@ -509,13 +509,15 @@ tokenInfo *getNextToken(FILE **fp)
         case 5:
             if (curr_char < '0' || curr_char > '9')
             {
-                lexeme_read[len - 2] = '\0';
-                //lexeme_read[len-1] = '\0';
-                len -= 2;
-                token = createToken(RNUM, lexeme_read, line);
-                //printf("%u\n", token->t);
-                buffer_ptr -= 3;
-                return token;
+                // lexeme_read[len - 2] = '\0';
+                // //lexeme_read[len-1] = '\0';
+                // len -= 2;
+                // token = createToken(RNUM, lexeme_read, line);
+                // //printf("%u\n", token->t);
+                // buffer_ptr -= 3;
+                buffer_ptr--;
+                printf("Lexical error at line %d\n", line);
+                return NULL;
             }
             while (curr_char >= '0' && curr_char <= '9')
             {
@@ -765,8 +767,9 @@ int main(int argc, char *argv[])
         tokenInfo *ti = getNextToken(fp);
         if (ti == NULL)
         {
-            break;
-        }
-        printf("%u\t%s\t%d\n", ti->t, ti->lexeme, ti->line);
+        
+        }else{
+        printf("%u\t%s\t%d\n", ti->t, ti->lexeme, ti->line);}
     }
 }
+    
