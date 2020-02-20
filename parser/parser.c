@@ -58,7 +58,8 @@ char *terminalDict[] = {
     "SQBC",
     "SQBO",
     "RNUM",
-    "E"
+    "E",
+    "$"
 };
 
 
@@ -278,13 +279,6 @@ void printgrammar(){
     }
 }
 
-void initialize_first(){
-    int i;
-    for(i=0;i<NTERMINALS;i++){
-        First[i] = 0;
-    }
-}
-
 
 long long unsigned calculate_first(int nterm){
 
@@ -373,7 +367,7 @@ long long unsigned calculate_first(int nterm){
 
 }
 
-void print_first(long long unsigned num){
+void print_terminal(long long unsigned num){
 
     int i;
     unsigned int temp;
@@ -387,6 +381,137 @@ void print_first(long long unsigned num){
     }
 
     printf("\n");
+}
+
+long long unsigned calculate_follow(int nterm){
+
+    if(Follow[nterm]!=0)
+        return Follow[nterm];
+
+    rule_header* rule = NULL;
+    rhsNode* temp = NULL;
+    int i;
+
+    for(i=0;i<NTERMINALS;i++){
+
+        rule = g[i];
+
+        while(rule){
+            temp = rule->curr_rule;
+
+            while(temp){
+
+                rhsNode* find_first = NULL;
+
+                if(temp->tag==1 && (temp->S).N == nterm){
+                    
+                        //printf("Found at %d \n",i);
+
+                        find_first = temp->next;
+
+                        if(find_first==NULL){
+
+                            if((temp->S).N != i){
+                                long long unsigned curr_follow = calculate_follow(i);
+                                Follow[nterm] = Follow[nterm]|curr_follow;
+                            }
+                        }else{
+                            int index;
+                            long long unsigned mask = 1;
+                            if((find_first->tag)==0){
+
+                                index = (find_first->S).T;
+                                //printf("Fount terminal %s\n",terminalDict[index]);
+                                Follow[nterm] = (Follow[nterm]|(mask<<index));
+                                //printf("%llu\n",Follow[nterm]);
+
+                            }else{
+
+                                index = (find_first->S).N;
+                            
+
+                                long long unsigned flag = 0;
+                                long long unsigned next_first = First[index];
+                                flag = First[index]&(mask<<(EPSILON));
+
+                                mask = mask<<EPSILON;
+
+                                while(find_first && flag){
+
+                                    
+                                    next_first = next_first^mask;
+                                    Follow[nterm] = Follow[nterm]|next_first;
+
+                                    find_first = find_first->next;
+
+                                    if(find_first){
+
+                                        if(find_first->tag==1){
+                                            index = (find_first->S).N;
+                                            flag = First[index]&(mask<<(EPSILON));
+                                            next_first = First[index];
+                                        }else{
+
+                                            index = (find_first->S).T;
+                                            mask = 1;
+                                            Follow[nterm] = Follow[nterm]|(mask<<index);
+                                            break;
+                                        }
+
+                                    }
+
+                                }
+
+                                if(find_first==NULL){
+                                    if((temp->S).N != i)
+                                        Follow[nterm] = Follow[nterm]|calculate_follow(i);
+                                }
+
+
+                                if(!flag && find_first && find_first->tag==1){
+                                    Follow[nterm] = Follow[nterm]|next_first;
+                                }
+
+                                
+                            }
+                        }
+                }
+                    //printf("%llu\n",Follow[nterm]);
+                    temp = temp->next;
+            }
+
+            rule = rule->next_rule;
+        }
+    }
+
+        return Follow[nterm];
+
+}
+
+void ComputeFirstAndFollowSets () {
+
+    for(int i = 0;i<NTERMINALS;i++){
+        First[i] = 0;
+        Follow[i] = 0;
+    }
+    for(int i = 0;i<NTERMINALS;i++){
+        calculate_first(i);
+    }
+    long long unsigned mask = 1;
+    mask = mask << DOLLAR;
+    Follow[0] = Follow[0] | mask;
+    for(int i = 0;i<NTERMINALS;i++){
+        calculate_follow(i);
+    }
+
+    for(int i=0;i<NTERMINALS;i++){
+        printf("%d <%s>\t",i,nonTerminalDict[i]);
+        long long unsigned t = Follow[i];
+        print_terminal(t);
+    }
+
+    
+    
 }
 
 
@@ -413,17 +538,12 @@ int main()
 
 
    // printgrammar();
-    long long unsigned t;
-    int i;
-    for(i=0;i<NTERMINALS;i++){
-        printf("<%s>\t",nonTerminalDict[i]);
-        t = calculate_first(i);
-        print_first(t);
-    }
+    /*long long unsigned t;*/
 
-   //long long unsigned t = calculate_first(35);
-    
-    //print_first(t);
+    ComputeFirstAndFollowSets();
+
+   
+
 
     return 0;
 }

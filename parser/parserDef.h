@@ -7,7 +7,7 @@
 
 #define NOOFRULES 95
 #define MAXLENGTHTNT 100
-#define TERMINALS 58
+#define TERMINALS 59
 #define NTERMINALS 57
 			
 
@@ -70,7 +70,8 @@ enum TERM
     SQBC,
     SQBO,
     RNUM,
-    EPSILON
+    EPSILON,
+    DOLLAR
 };
 
 enum NTERM {
@@ -194,6 +195,8 @@ struct rule_header{
 
 
 long long unsigned First[NTERMINALS];
+
+long long unsigned Follow[NTERMINALS];
 
 
 #endif
