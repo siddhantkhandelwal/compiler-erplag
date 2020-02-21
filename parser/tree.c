@@ -41,29 +41,46 @@ void inserttNode(tNode *ptn, tNode *tn)
         }
         else
         {
-            nlNode *tempnln = (ptn->node).n;
-            tNode *temptNode = tempnln->child;
+            treeNode *tempnln;
+            tempnln->n = (ptn->node).n;
+            tNode *temptNode = tempnln->n->child;
             if (temptNode == NULL)
             {
-                tempnln->child = tn;
+                tempnln->n->child = tn;
             }
             else
             {
-                tempnln = (temptNode->node).n;
-                while (tempnln->sibling)
+                tempnln->n = (temptNode->node).n;
+                while (tempnln->n->sibling)
                 {
-                    temptNode = tempnln->sibling;
+                    temptNode = tempnln->n->sibling;
                     if (temptNode->leafTag == 0)
                     {
-                        tempnln = (temptNode->node).l;
+                        tempnln->l = (temptNode->node).l;
                     }
                     else
                     {
-                        tempnln = (temptNode->node).n;
+                        tempnln->n = (temptNode->node).n;
                     }
                 }
-                tempnln->sibling = tn;
+                tempnln->n->sibling = tn;
             }
         }
     }
+}
+
+int main()
+{
+    Symbol s;
+    s.N = PROGRAM;
+    int tag = 1;
+    rhsNode *rh = malloc(sizeof(rh));
+    rh->S = s;
+    rh->tag = tag;
+    rh->next = NULL;
+    tokenInfo *ti = createToken(PROGRAM, "program", 0);
+    tNode *tn = createtNode(rh, ti);
+    inserttNode(NULL, tn);
+    printf("%d\n", head->leafTag);
+    return 0;
 }

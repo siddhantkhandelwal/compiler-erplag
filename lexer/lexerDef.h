@@ -1,12 +1,15 @@
+#ifndef lexerHeader
+#define lexerHeader
+
 #include <stdio.h>
 #include <stdlib.h>
 
-char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
-                       "end", "declare", "module", "driver", "program",
-                       "get_value", "print",
-                       "use", "with", "parameters", "true", "false", "takes",
-                       "input", "returns", "AND", "OR", "for", "in", "switch",
-                       "case", "break", "default", "while"};
+// char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
+//                        "end", "declare", "module", "driver", "program",
+//                        "get_value", "print",
+//                        "use", "with", "parameters", "true", "false", "takes",
+//                        "input", "returns", "AND", "OR", "for", "in", "switch",
+//                        "case", "break", "default", "while"};
 
 enum TERM
 {
@@ -66,7 +69,9 @@ enum TERM
     SEMICOL,
     SQBC,
     SQBO,
-    RNUM
+    RNUM,
+    DOLLAR,
+    EPSILON
 };
 
 typedef enum TERM Token;
@@ -89,3 +94,4 @@ struct TokenInfo
 };
 
 typedef struct TokenInfo tokenInfo;
+#endif

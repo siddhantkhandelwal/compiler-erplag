@@ -10,6 +10,13 @@ char buffer[BUFFLEN];
 
 unsigned int ended = 0;
 
+char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
+                       "end", "declare", "module", "driver", "program",
+                       "get_value", "print",
+                       "use", "with", "parameters", "true", "false", "takes",
+                       "input", "returns", "AND", "OR", "for", "in", "switch",
+                       "case", "break", "default", "while"};
+
 FILE *getStream(FILE *fp)
 {
     for (int i = 0; i < BUFFLEN; i++)
@@ -752,24 +759,24 @@ tokenInfo *getNextToken(FILE **fp)
     }
 }
 
-int main(int argc, char *argv[])
-{
+// int main(int argc, char *argv[])
+// {
 
-    FILE *fp1 = fopen("test", "r");
-    fp1 = getStream(fp1);
-    FILE **fp = &fp1;
+//     FILE *fp1 = fopen("test", "r");
+//     fp1 = getStream(fp1);
+//     FILE **fp = &fp1;
 
-    //tokenI getNextToken(fp);
-    //printf("%s\n",buffer);
+//     //tokenI getNextToken(fp);
+//     //printf("%s\n",buffer);
 
-    while (ended == 0)
-    {
-        tokenInfo *ti = getNextToken(fp);
-        if (ti == NULL)
-        {
+//     while (ended == 0)
+//     {
+//         tokenInfo *ti = getNextToken(fp);
+//         if (ti == NULL)
+//         {
         
-        }else{
-        printf("%u\t%s\t%d\n", ti->t, ti->lexeme, ti->line);}
-    }
-}
+//         }else{
+//         printf("%u\t%s\t%d\n", ti->t, ti->lexeme, ti->line);}
+//     }
+// }
     

@@ -1,3 +1,6 @@
+#ifndef lexHeader
+#define lexHeader
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,3 +12,5 @@ tokenInfo *getNextToken(FILE **fp);
 void removeComments(char *testCaseFile, char *cleanFile);
 int keywordChecker(char val[]);
 void flush(char *str, int elementsToFlush);
+tokenInfo *createToken(Token t, char *lexeme, unsigned int line);
+#endif

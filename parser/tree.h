@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../lexer/lexerDef.h"
 #include "parserDef.h"
+#include "../lexer/lexer.h"
 
 typedef struct tNode tNode;
 

@@ -44,3 +44,8 @@ stackNode *pop()
     st.size--;
     return sn;
 }
+
+int main()
+{
+    return 0;
+}

@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "parserDef.h"
 #include "tree.h"
 
 struct stacknode
