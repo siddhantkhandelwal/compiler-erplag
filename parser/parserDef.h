@@ -118,7 +118,6 @@ typedef struct hash_node hash_node;
 
 struct hash_node
 {
-
     map_node *m;
     hash_node *next;
 };

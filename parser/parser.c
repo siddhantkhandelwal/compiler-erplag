@@ -1,4 +1,6 @@
 #include "hash.h"
+#include "tree.h"
+#include "stack.h"
 char *terminalDict[] = {
 
     "INTEGER",
@@ -621,6 +623,83 @@ void printParseTable(){
         }
         printf("\n");
     }
+}
+
+
+void insertRule(rhsNode* rh)
+{
+    if(!rh)
+    {
+        return;
+    }
+
+    insertRule(rh->next);
+    tNode* tn = createtNode(rh, NULL);
+    push(tn);
+    return;
+}
+
+void parseInput(FILE** fp)
+{
+    rhsNode* rh = malloc(sizeof(rhsNode));
+    rh->S.T = DOLLAR;
+    rh->next = NULL;
+    rh->tag = 0;
+
+    tNode* dollar = createtNode(rh, NULL);
+    push(dollar);
+
+    rh = malloc(sizeof(rhsNode));
+    rh->S.N = PROGRAM;
+    rh->next = NULL;
+    rh->tag = 1;
+    tNode* prog = createtNode(rh, NULL);
+    push(prog);
+
+    tokenInfo* curr_token;
+    stackNode* last_popped = NULL;
+    tNode* parent = NULL;
+    int flag = 1;
+    int error = 0;
+    while (1)
+    {
+        if(flag){
+        curr_token = getNextToken(fp);}
+        last_popped = pop();
+        inserttNode(parent, last_popped->tn);
+        if(last_popped->tn == dollar && ended)
+        {   
+            printf("PArse success\n");
+            break;
+        }
+        // if(last_popped->tn->leafTag == 1){
+        //     parent = last_popped->tn;
+        // }
+        if(last_popped->tn->leafTag == 1) //Non terminal
+        {
+            parent = last_popped->tn;   
+            rule_header* curr = parseTable[(((last_popped->tn)->node).n)->s.N][curr_token->t];
+            if(curr == NULL)
+            {
+                printf("PArse error\n");
+                error = 1;
+                //error recovery code.
+            }
+            else
+            {                
+                insertRule(curr->curr_rule);
+                flag = 0;
+            }
+            
+        }
+        else
+        {
+            last_popped->tn->node.l->ti = curr_token;
+            flag = 1;
+        }
+        
+    }
+    
 }
 
 int main()

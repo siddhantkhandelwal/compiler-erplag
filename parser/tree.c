@@ -69,6 +69,8 @@ void inserttNode(tNode *ptn, tNode *tn)
     }
 }
 
+
+
 int main()
 {
     Symbol s;
@@ -81,6 +83,9 @@ int main()
     tokenInfo *ti = createToken(PROGRAM, "program", 0);
     tNode *tn = createtNode(rh, ti);
     inserttNode(NULL, tn);
-    printf("%d\n", head->leafTag);
+    rh->tag = 0;
+    tNode *tn1 = createtNode(rh, ti);
+    inserttNode(head, tn1);
+    printf("%d\n", head->node.n->child->leafTag);
     return 0;
 }

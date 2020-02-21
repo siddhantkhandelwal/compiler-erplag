@@ -8,7 +8,6 @@ int buffer_ptr = -1;
 
 char buffer[BUFFLEN];
 
-unsigned int ended = 0;
 
 char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
                        "end", "declare", "module", "driver", "program",

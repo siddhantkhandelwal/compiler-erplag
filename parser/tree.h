@@ -36,3 +36,4 @@ struct tNode
 };
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti);
+void inserttNode(tNode *ptn, tNode *tn);
