@@ -682,7 +682,7 @@ void insertRule(tNode* tn)
     stackNode *sn1 = st_temp.top;
     st_temp.top = sn1->next;
     st_temp.size--;
-push(sn1->tn);}
+    push(sn1->tn);}
     //tNode* tn = createtNode(rh, NULL);
    // printf("pushimg..%s\n",nonTerminalDict[tn->node.n->s.N]);
     //push(tn);
@@ -710,7 +710,7 @@ void parseInput(FILE** fp)
     push(prog);
 
 
-    tokenInfo* curr_token;
+    tokenInfo* curr_token = NULL;
     stackNode* last_popped = NULL;
     tNode* parent = NULL;
     int flag = 1;
@@ -724,17 +724,19 @@ void parseInput(FILE** fp)
         }
 
 
-
-        //printf("%s\n",curr_token->lexeme);
         last_popped = pop();
 
-        printf("%s\n",nonTerminalDict[last_popped->tn->node.n->s.N]);
-
        // inserttNode(parent, last_popped->tn);
+       /* if(curr_token==NULL)
+            printf("%d\n",ended);
+        else
+            printf("%s\n",curr_token->lexeme);
+
+        */
         if(ended && last_popped->tn == dollar)
         {   
                 printf("Parsed SUccessfully\n");
-                
+                return;
         }
         // if(last_popped->tn->leafTag == 1){
         //     parent = last_popped->tn;
@@ -749,24 +751,23 @@ void parseInput(FILE** fp)
                 curr = parseTable[(((last_popped->tn)->node).n)->s.N][DOLLAR];
             }else{
                 curr = parseTable[(((last_popped->tn)->node).n)->s.N][curr_token->t];
-                printf("%s\n",terminalDict[curr_token->t]);
             } 
+
+            printf("<%s>\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
+            print_rule(curr);
 
             if(curr == NULL)
             {
+                //printf("%s\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
+                //printf("%s\t",terminalDict[curr_token->t]);
                 printf("Parse error\n");
                 error = 1;
                 //error recovery code.
-                exit(1);
+                return;
             }else{
 
-
-                printf("parent = %s\n",nonTerminalDict[parent->node.n->s.N]);
                 rhsNode* to_insert = curr->curr_rule;
-                printf("before\n");
-                print_rule(curr);
                 tNode* fst = createtNode(to_insert,NULL);
-                printf("after\n");
                 inserttNode(parent,fst);
                 
                 if(to_insert->S.T==EPSILON){
@@ -779,13 +780,11 @@ void parseInput(FILE** fp)
                 tNode* tmp = NULL;
                 while(to_insert){
                     tmp = createtNode(to_insert,NULL);
-                    printf("%s\n",nonTerminalDict[tmp->node.n->s.N]);
-                   inserttNode(parent,tmp);
+                    inserttNode(parent,tmp);
                     to_insert = to_insert->next;
                 }
 
                     insertRule(fst);
-                    print_stack();
                     flag = 0;
 
             }
@@ -808,9 +807,9 @@ void parseInput(FILE** fp)
     
 }
 
+
 int main()
 {
-
    // FILE *fp = fopen("grammar", "r");
    // Grammar *grammar = populateGrammar(fp);
 
@@ -837,7 +836,7 @@ int main()
     ComputeFirstAndFollowSets();
     populateParseTable();
 
-    FILE *fp1 = fopen("../lexer/test", "r");
+    FILE *fp1 = fopen("t5.txt", "r");
     fp1 = getStream(fp1);
     FILE **fp2 = &fp1;
 
@@ -854,5 +853,57 @@ int main()
     
     //print_terminal(First[0]);
 
+/* ---------------------------------------------------------------------------------------------- */
+
+/*
+
+    tNode* fst = createtNode(to_insert,NULL);
+
+    rhsNode* tmp;
+    tmp = malloc(sizeof(rhsNode));
+    tmp->S.N = PROGRAM_NT;
+    tmp->next = NULL;
+    tmp->tag = 1;
+    tNode* prog = createtNode(tmp, NULL);
+    inserttNode(NULL,prog);
+    push(prog);
+    //printf("pushed\n");
+
+    inserttNode(prog,fst);
+
+    to_insert = to_insert->next;
+
+    while(to_insert){
+        tNode* t;
+        t = createtNode(to_insert,NULL);
+        inserttNode(prog,t);
+        to_insert = to_insert->next;
+    }
+
+
+    insertRule(fst);
+    print_stack();
+
+    stackNode* popped = pop();
+
+    while(popped->tn->node.n->s.N!=PROGRAM_NT){
+        popped = pop();
+        printf("%s\n",nonTerminalDict[popped->tn->node.n->s.N]);
+    }
+
+    push(fst);
+
+    */
+
+   /* rule_header* rh;
+    for(int i=0;i<TERMINALS;i++){
+        rh = parseTable[34][i];
+        if(rh){
+            printf("%s ",terminalDict[i]);
+            print_rule(rh);};
+    }*/
+
     return 0;
+
+
 }

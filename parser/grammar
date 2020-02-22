@@ -50,7 +50,7 @@ lvaluearrstmt SQBO index SQBC ASSIGNOP expression SEMICOL
 index NUM
 index ID
 modulereusestmt optional USE MODULE ID WITH PARAMETERS idlist SEMICOL
-optional SQBO idlist SQBO ASSIGNOP
+optional SQBO idlist SQBC ASSIGNOP
 optional E
 idlist ID idlistnew
 idlistnew COMMA ID idlistnew
@@ -75,7 +75,7 @@ n4 E
 term factor n5
 n5 op2 factor n5
 n5 E
-factor BO arithmeticexpr BC
+factor BO arithmeticorbooleanexpression BC
 factor varidnum
 op1 PLUS
 op1 MINUS

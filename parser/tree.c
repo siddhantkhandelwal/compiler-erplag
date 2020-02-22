@@ -1,9 +1,11 @@
 #include "tree.h"
+#include <stdlib.h>
 
 tNode *head = NULL;
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti)
 {
+
     tNode *tn = malloc(sizeof(tNode));
     if (rh->tag == 0)
     {
@@ -37,40 +39,57 @@ void inserttNode(tNode *ptn, tNode *tn)
     }
     else
     {
-        tNode *temptn;
+        tNode *temptn = NULL;
         if (ptn->leafTag == 0)
         {
             return;
         }
         else
         {
-            treeNode *tempnln;
-            tempnln->n = (ptn->node).n;
-            tNode *temptNode = tempnln->n->child;
-            if (temptNode == NULL)
-            {
-                tempnln->n->child = tn;
+
+            tNode* prev = NULL;
+
+
+            if(ptn->leafTag == 0){
+
+                return;
+            }else{
+                temptn = ptn->node.n->child;
+
+                if(temptn==NULL){
+                    ptn->node.n->child = tn;
+                    return;
+                }
             }
-            else
-            {
-                if(temptNode->leafTag)
-                    tempnln->n = (temptNode->node).n;
-                else{
-                    tempnln->l = (temptNode->node).l;
-                }
-                while (tempnln->n->sibling)
-                {
-                    temptNode = tempnln->n->sibling;
-                    if (temptNode->leafTag == 0)
-                    {
-                        tempnln->l = (temptNode->node).l;
+
+            prev = temptn;
+
+            int tg = temptn->leafTag;
+
+            while(1){
+
+                if(tg==0){
+                    if(temptn->node.l->sibling==NULL){
+                        temptn->node.l->sibling = tn;
+                        return;
                     }
-                    else
-                    {
-                        tempnln->n = (temptNode->node).n;
+
+                    temptn = temptn->node.l->sibling;
+                    tg = temptn->leafTag;
+                    continue;
+
+                }else{
+
+                     if(temptn->node.n->sibling==NULL){
+                        temptn->node.n->sibling = tn;
+                        return;
                     }
+
+                    temptn = temptn->node.n->sibling;
+                    tg = temptn->leafTag;
+                    continue;                   
                 }
-                tempnln->n->sibling = tn;
+                
             }
         }
     }

@@ -34,14 +34,14 @@ void push(tNode *tn)
     stackNode *sn = createStackNode(tn);
     sn->next = st.top;
     st.top = sn;
-    st.size++;
+    (st.size)++;
 }
 
 stackNode *pop()
 {
     stackNode *sn = st.top;
     st.top = sn->next;
-    st.size--;
+    (st.size)--;
     return sn;
 }
 
