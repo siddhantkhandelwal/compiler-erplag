@@ -4,6 +4,8 @@
 #define NUM_TOKENS 30
 static int line = 1;
 
+unsigned int ended = 0;
+
 int buffer_ptr = -1;
 
 char buffer[BUFFLEN];
@@ -477,7 +479,7 @@ tokenInfo *getNextToken(FILE **fp)
             buffer_ptr--;
             token = createToken(RNUM, lexeme_read, line);
             //printf("%s\n", token->lexeme);
-            printf("%u\n", token->t);
+           // printf("%u\n", token->t);
             return token;
 
         case 4:

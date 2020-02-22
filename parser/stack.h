@@ -23,3 +23,4 @@ stackNode *createStackNode(tNode *tn);
 int initializeStack(tNode *tn);
 void push(tNode *tn);
 stackNode *pop();
+void print_stack();

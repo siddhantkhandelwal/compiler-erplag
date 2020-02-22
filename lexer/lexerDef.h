@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned int ended = 0;
+
 
 
 // char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",

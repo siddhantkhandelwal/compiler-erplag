@@ -1,5 +1,5 @@
 #include "hash.h"
-#include "tree.h"
+//#include "tree.h"
 #include "stack.h"
 char *terminalDict[] = {
 
@@ -520,19 +520,28 @@ void initiliazeParseTable(){
 }
 
 void populateParseTable(){
+
     initiliazeParseTable();
     for(int i=0;i<NTERMINALS;i++){
         rule_header *rh = g[i]; //rule header of a rule
         rhsNode *rule = NULL; // a node of a particular rule
         while(rh){
-            int has_epsilon=0;
+            long long unsigned has_epsilon=0;
             rule = rh->curr_rule; 
             long long unsigned tempFirst;
             if(rule->tag == 1){
                 tempFirst = First[(rule->S).N];
+               // printf("<%s> ",nonTerminalDict[i]);
+                //print_terminal(tempFirst);
                 long long unsigned mask = 1;
                 mask = mask << EPSILON;
                 has_epsilon = tempFirst & mask;
+                //printf("%llu\n",has_epsilon);
+
+                if(has_epsilon){
+                    tempFirst = tempFirst^mask;
+                }
+
                 mask = 1;
                 for(int j = 0;j<TERMINALS;j++){
                     long long unsigned temp = mask & tempFirst;
@@ -548,6 +557,12 @@ void populateParseTable(){
                         mask = 1;
                         mask = mask << EPSILON;
                         has_epsilon = tempFirst & mask;
+
+                        if(has_epsilon){
+                            tempFirst = tempFirst^mask;
+                        }
+
+
                         mask = 1;
                         for(int j = 0;j<TERMINALS;j++){
                             long long unsigned temp = mask & tempFirst;
@@ -626,18 +641,55 @@ void printParseTable(){
 }
 
 
-void insertRule(rhsNode* rh)
+void insertRule(tNode* tn)
 {
-    if(!rh)
+    if(tn==NULL)
     {
         return;
     }
 
-    insertRule(rh->next);
-    tNode* tn = createtNode(rh, NULL);
-    push(tn);
+
+    // tNode* next = NULL;
+    // if(tn->leafTag==0){
+    //     next = tn->node.l->sibling;
+    // }else{
+    //     next = tn->node.n->sibling;
+    // }
+
+    //insertRule(next);
+    stack st_temp;
+    st_temp.top = NULL;
+    st_temp.size = 0;
+    tNode* temp = tn;
+    stackNode *sn;
+    while(temp)
+    {
+        sn = createStackNode(temp);
+        sn->next = st_temp.top;
+        st_temp.top = sn;
+        st_temp.size++;
+        if(temp->leafTag == 0)
+        {
+            temp = temp->node.l->sibling;
+        }
+        else
+        {
+            temp = temp->node.n->sibling;
+        }
+    }
+
+    while(st_temp.size){
+    stackNode *sn1 = st_temp.top;
+    st_temp.top = sn1->next;
+    st_temp.size--;
+push(sn1->tn);}
+    //tNode* tn = createtNode(rh, NULL);
+   // printf("pushimg..%s\n",nonTerminalDict[tn->node.n->s.N]);
+    //push(tn);
     return;
 }
+
+
 
 void parseInput(FILE** fp)
 {
@@ -647,14 +699,16 @@ void parseInput(FILE** fp)
     rh->tag = 0;
 
     tNode* dollar = createtNode(rh, NULL);
-    push(dollar);
+    initializeStack(dollar);
 
     rh = malloc(sizeof(rhsNode));
-    rh->S.N = PROGRAM;
+    rh->S.N = PROGRAM_NT;
     rh->next = NULL;
     rh->tag = 1;
     tNode* prog = createtNode(rh, NULL);
+    inserttNode(NULL,prog);
     push(prog);
+
 
     tokenInfo* curr_token;
     stackNode* last_popped = NULL;
@@ -663,37 +717,89 @@ void parseInput(FILE** fp)
     int error = 0;
     while (1)
     {
+
+        
         if(flag){
-        curr_token = getNextToken(fp);}
+            curr_token = getNextToken(fp);
+        }
+
+
+
+        //printf("%s\n",curr_token->lexeme);
         last_popped = pop();
-        inserttNode(parent, last_popped->tn);
-        if(last_popped->tn == dollar && ended)
+
+        printf("%s\n",nonTerminalDict[last_popped->tn->node.n->s.N]);
+
+       // inserttNode(parent, last_popped->tn);
+        if(ended && last_popped->tn == dollar)
         {   
-            printf("PArse success\n");
-            break;
+                printf("Parsed SUccessfully\n");
+                
         }
         // if(last_popped->tn->leafTag == 1){
         //     parent = last_popped->tn;
         // }
         if(last_popped->tn->leafTag == 1) //Non terminal
         {
-            parent = last_popped->tn;   
-            rule_header* curr = parseTable[(((last_popped->tn)->node).n)->s.N][curr_token->t];
+            parent = last_popped->tn;  
+
+            rule_header* curr = NULL;
+
+            if(ended){
+                curr = parseTable[(((last_popped->tn)->node).n)->s.N][DOLLAR];
+            }else{
+                curr = parseTable[(((last_popped->tn)->node).n)->s.N][curr_token->t];
+                printf("%s\n",terminalDict[curr_token->t]);
+            } 
+
             if(curr == NULL)
             {
-                printf("PArse error\n");
+                printf("Parse error\n");
                 error = 1;
                 //error recovery code.
+                exit(1);
+            }else{
+
+
+                printf("parent = %s\n",nonTerminalDict[parent->node.n->s.N]);
+                rhsNode* to_insert = curr->curr_rule;
+                printf("before\n");
+                print_rule(curr);
+                tNode* fst = createtNode(to_insert,NULL);
+                printf("after\n");
+                inserttNode(parent,fst);
+                
+                if(to_insert->S.T==EPSILON){
+                    flag = 0;
+                   // insertRule(fst);
+                    continue;
+                }
+
+                to_insert = to_insert->next;
+                tNode* tmp = NULL;
+                while(to_insert){
+                    tmp = createtNode(to_insert,NULL);
+                    printf("%s\n",nonTerminalDict[tmp->node.n->s.N]);
+                   inserttNode(parent,tmp);
+                    to_insert = to_insert->next;
+                }
+
+                    insertRule(fst);
+                    print_stack();
+                    flag = 0;
+
             }
-            else
-            {                
-                insertRule(curr->curr_rule);
-                flag = 0;
-            }
+
             
         }
         else
-        {
+        {   
+
+            if(ended || last_popped->tn == dollar){
+                printf("Syntax Error\n");
+                exit(0);
+            }
+
             last_popped->tn->node.l->ti = curr_token;
             flag = 1;
         }
@@ -704,10 +810,11 @@ void parseInput(FILE** fp)
 
 int main()
 {
+
    // FILE *fp = fopen("grammar", "r");
    // Grammar *grammar = populateGrammar(fp);
 
-    populateHashTable();
+   populateHashTable();
     /*int i;
     map_node* temp;
     for(i=0;i<(TERMINALS);i++){
@@ -729,6 +836,23 @@ int main()
 
     ComputeFirstAndFollowSets();
     populateParseTable();
-    printParseTable();
+
+    FILE *fp1 = fopen("../lexer/test", "r");
+    fp1 = getStream(fp1);
+    FILE **fp2 = &fp1;
+
+    parseInput(fp2);
+
+    //printParseTable();
+    /*rule_header* rh;
+    for(int i=0;i<TERMINALS;i++){
+        rh = parseTable[0][i];
+        if(rh){
+            printf("%s ",terminalDict[i]);
+            print_rule(rh);};
+    }*/
+    
+    //print_terminal(First[0]);
+
     return 0;
 }

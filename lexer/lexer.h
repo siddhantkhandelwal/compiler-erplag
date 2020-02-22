@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lexerDef.h"
+extern unsigned int ended;
 #define BUFFLEN 4096
 
 FILE *getStream(FILE *fp);

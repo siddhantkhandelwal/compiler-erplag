@@ -45,7 +45,17 @@ stackNode *pop()
     return sn;
 }
 
-int main()
+void print_stack(){
+
+    stackNode* temp = st.top;
+    while(temp){
+
+        printf("%d\n",temp->tn->node.n->s.N);
+        temp = temp->next;
+    }
+}
+
+/*int main()
 {
     return 0;
-}
+}*/
