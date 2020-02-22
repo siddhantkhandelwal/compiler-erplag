@@ -281,6 +281,27 @@ void printgrammar(){
     }
 }
 
+void printParseTree(tNode* temp)
+{
+    if(!temp)
+    {
+        return;
+    }
+    if(temp->leafTag == 0)
+    {
+            printf("%s\t", terminalDict[temp->node.l->s.T]);
+            return;
+    }
+    printParseTree(temp->node.n->child);
+    printf("%s\n", nonTerminalDict[temp->node.n->s.N]);
+    tNode* temp2 = temp->node.n->child->node.n->sibling;
+    while(temp2)
+    {
+        printParseTree(temp2);
+        temp2 = temp2->node.n->sibling;
+    }
+}
+
 
 long long unsigned calculate_first(int nterm){
 
@@ -519,6 +540,8 @@ void initiliazeParseTable(){
     }
 }
 
+
+
 void populateParseTable(){
 
     initiliazeParseTable();
@@ -718,13 +741,24 @@ void parseInput(FILE** fp)
     while (1)
     {
 
+        if(error==1){
+            printf("Error Recovered...\n");
+            error = 0;
+        }
         
         if(flag){
             curr_token = getNextToken(fp);
         }
 
+        while(curr_token==NULL){
+            
+            curr_token = getNextToken(fp);
+            if(ended)
+               break;
+        }
 
         last_popped = pop();
+
 
        // inserttNode(parent, last_popped->tn);
        /* if(curr_token==NULL)
@@ -736,6 +770,8 @@ void parseInput(FILE** fp)
         if(ended && last_popped->tn == dollar)
         {   
                 printf("Parsed SUccessfully\n");
+                tNode* temp = head;
+                printParseTree(temp);
                 return;
         }
         // if(last_popped->tn->leafTag == 1){
@@ -753,17 +789,45 @@ void parseInput(FILE** fp)
                 curr = parseTable[(((last_popped->tn)->node).n)->s.N][curr_token->t];
             } 
 
-            printf("<%s>\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
-            print_rule(curr);
+           // printf("<%s>\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
+            //print_rule(curr);
 
             if(curr == NULL)
             {
                 //printf("%s\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
                 //printf("%s\t",terminalDict[curr_token->t]);
-                printf("Parse error\n");
+                printf("Parse error at %d.Trying to recover....\n",curr_token->line);
+                long long unsigned mask = 1;
+
+               
+                    while(curr_token==NULL){
+                        curr_token = getNextToken(fp);
+                        if(ended)
+                            exit(0);
+                    }
+                
+
+                if(ended==1){
+                    flag = 0;
+                    continue;
+
+                }
+
+                while((First[last_popped->tn->node.n->s.N]&(mask<<curr_token->t)) == 0){
+                    
+                    curr_token = getNextToken(fp);
+                    while(curr_token==NULL){
+                        curr_token = getNextToken(fp);
+                        if(ended)
+                            exit(0);
+                    }
+                    mask = 1;
+                }
+                
                 error = 1;
                 //error recovery code.
-                return;
+                flag = 0;
+                continue;
             }else{
 
                 rhsNode* to_insert = curr->curr_rule;
@@ -772,7 +836,6 @@ void parseInput(FILE** fp)
                 
                 if(to_insert->S.T==EPSILON){
                     flag = 0;
-                   // insertRule(fst);
                     continue;
                 }
 
@@ -795,8 +858,12 @@ void parseInput(FILE** fp)
         {   
 
             if(ended || last_popped->tn == dollar){
-                printf("Syntax Error\n");
+                printf("Syntax Error.Could'nt Recover\n");
                 exit(0);
+            }
+
+            if(last_popped->tn->node.l->s.T!=curr_token->t){
+                printf("Syntax Error at %d\n",curr_token->line);
             }
 
             last_popped->tn->node.l->ti = curr_token;
@@ -836,7 +903,7 @@ int main()
     ComputeFirstAndFollowSets();
     populateParseTable();
 
-    FILE *fp1 = fopen("t5.txt", "r");
+    FILE *fp1 = fopen("t2.txt", "r");
     fp1 = getStream(fp1);
     FILE **fp2 = &fp1;
 

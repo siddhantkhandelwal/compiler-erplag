@@ -1,7 +1,7 @@
 #include "tree.h"
 #include <stdlib.h>
 
-tNode *head = NULL;
+tNode* head = NULL;
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti)
 {
@@ -13,6 +13,7 @@ tNode *createtNode(rhsNode *rh, tokenInfo *ti)
         lNode *ln = malloc(sizeof(lNode));
         ln->ti = ti;
         ln->sibling = NULL;
+        ln->s = rh->S;
         (tn->node).l = ln;
         tn->leafTag = 0;
     }

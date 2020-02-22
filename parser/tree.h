@@ -16,6 +16,7 @@ typedef struct nlNode nlNode;
 
 struct lNode
 {
+	Symbol s;
     tokenInfo *ti;
     tNode *sibling;
 };
@@ -37,3 +38,4 @@ struct tNode
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti);
 void inserttNode(tNode *ptn, tNode *tn);
+extern tNode *head;

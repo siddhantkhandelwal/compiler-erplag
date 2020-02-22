@@ -1,19 +1,19 @@
 declare module readArr;
 **the following function computes the sum of first n elements of the array**
 <<module arraySum>>
-takes input[list:array[1..15] of    real, n integer];                       	**ERROR 1**
+takes input[list:array[1..15] of    real, n :integer];                       	**ERROR 1**
 returns  [sum:real];
 start
 	declare index:integer;
 	declare t:boolean;
-	sum =0.0;								**ERROR 2**
+	sum :=0.0;								**ERROR 2**
 	for(index in2  1..15)							**ERROR 3**
 	start
 		t:= index<=n;
 		switch(t)
 		start
 			case true: print(list[index]);
-				   sum:=sum list[index];			**ERROR 4**
+				   sum:=sum+list[index];			**ERROR 4**
 				   break;
 			case false: print(sum);
 				    print(index);
@@ -26,13 +26,13 @@ start
 end
 <<<driver program>>>
 start
-	declare A:array[1...15] of real;					**ERROR 6**
+	declare A:array[1..15] of real;					**ERROR 6**
 	declare k:integer;
 	declare s:real;
 	get_value(k);
 	use module readArr while parameters A,k;				**ERROR 7**
 	[s]:= use module arraySum with parameters A,k;
-	s:= s <= n >= k;							**ERROR 8**
+	**s:= s <= n >= k;**							**ERROR 8**
 	print(s)								**ERROR 9**
 end
 
