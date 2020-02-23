@@ -1,3 +1,10 @@
+/* LAVANYA SONI - 2017A7PS0151P
+    KUSHAGRA AGRAWAL - 2017A7PS0107P
+    SIDDHANT KHANDELWAL - 2017A7PS0127P
+    GROUP - 11
+*/
+
+
 #include "tree.h"
 #include <stdlib.h>
 
@@ -9,7 +16,6 @@ tNode *createtNode(rhsNode *rh, tokenInfo *ti)
     tNode *tn = malloc(sizeof(tNode));
     if (rh->tag == 0)
     {
-        //printf("Terminal\n");
         lNode *ln = malloc(sizeof(lNode));
         ln->ti = ti;
         ln->sibling = NULL;
@@ -19,14 +25,12 @@ tNode *createtNode(rhsNode *rh, tokenInfo *ti)
     }
     else
     {
-        //printf("Before Non Term\n");
         nlNode *nln = malloc(sizeof(nlNode));
         nln->s = rh->S;
         nln->child = NULL;
         nln->sibling = NULL;
         (tn->node).n = nln;
         tn->leafTag = 1;
-        //printf("After Non Term\n");
     }
     return tn;
 }
@@ -99,22 +103,3 @@ void inserttNode(tNode *ptn, tNode *tn)
 }
 
 
-
-/*int main()
-{
-    Symbol s;
-    s.N = PROGRAM;
-    int tag = 1;
-    rhsNode *rh = malloc(sizeof(rh));
-    rh->S = s;
-    rh->tag = tag;
-    rh->next = NULL;
-    tokenInfo *ti = createToken(PROGRAM, "program", 0);
-    tNode *tn = createtNode(rh, ti);
-    inserttNode(NULL, tn);
-    rh->tag = 0;
-    tNode *tn1 = createtNode(rh, ti);
-    inserttNode(head, tn1);
-    printf("%d\n", head->node.n->child->leafTag);
-    return 0;
-}*/

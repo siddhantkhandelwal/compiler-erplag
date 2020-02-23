@@ -1,3 +1,10 @@
+/* LAVANYA SONI - 2017A7PS0151P
+    KUSHAGRA AGRAWAL - 2017A7PS0107P
+    SIDDHANT KHANDELWAL - 2017A7PS0127P
+    GROUP - 11
+*/
+
+
 #ifndef parserHeader
 #define parserHeader
 
@@ -5,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../lexer/lexerDef.h"
+#include "lexerDef.h"
 
 #define NOOFRULES 95
 #define MAXLENGTHTNT 100
