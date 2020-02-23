@@ -771,11 +771,17 @@ void parseInput(FILE** fp)
             curr_token = getNextToken(fp);
         }
 
-        while(curr_token==NULL){
+        if(curr_token==NULL){
+
+            if(ended==0)
+                has_error = 1;
+
+            while(curr_token==NULL){
             
-            curr_token = getNextToken(fp);
-            if(ended)
-               break;
+                curr_token = getNextToken(fp);
+                if(ended)
+                   break;
+            }   
         }
 
         //last_popped = pop();
@@ -814,6 +820,7 @@ void parseInput(FILE** fp)
             {
                 //printf("%s\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
                 //printf("%s\t",terminalDict[curr_token->t]);
+
 
                 if(ended==1){
                     printf("Syntax Error. Reached End of File\n");
@@ -969,7 +976,7 @@ int main()
     ComputeFirstAndFollowSets();
     populateParseTable();
 
-    FILE *fp1 = fopen("t1.txt", "r");
+    FILE *fp1 = fopen("t6.txt", "r");
     fp1 = getStream(fp1);
     FILE **fp2 = &fp1;
 
