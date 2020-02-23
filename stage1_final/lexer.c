@@ -79,7 +79,7 @@ void check_buffer(FILE **fp)
 
     if (buffer_ptr >= BUFFLEN)
     {
-        printf("%d\n", buffer_ptr);
+        //printf("%d\n", buffer_ptr);
         *fp = reloadBuffer(*fp);
         buffer_ptr = 0;
     }
@@ -513,12 +513,16 @@ tokenInfo *getNextToken(FILE **fp)
             return token;
 
         case 7:
-            while ((curr_char != '*') && (curr_char != '\n'))
+            while (curr_char && (curr_char != '*') && (curr_char != '\n'))
             {
                 
                 buffer_ptr++;
                 check_buffer(fp);
                 curr_char = buffer[buffer_ptr];
+            }
+            if(!curr_char)
+            {
+                return NULL;
             }
             if (curr_char == '*')
             {

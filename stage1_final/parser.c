@@ -669,14 +669,7 @@ void insertRule(tNode* tn)
     {
         return;
     }
-
-
-    
-    
-    
-    
-    
-    
+  
 
     
     stack st_temp;
@@ -800,8 +793,6 @@ void parseInput(FILE** fp)
             if(curr == NULL)
             {
                 
-                
-
 
                 if(ended==1){
                     printf("Syntax Error. Reached End of File\n");
@@ -869,8 +860,6 @@ void parseInput(FILE** fp)
                 continue;
             }else{
 
-
-  
 
                 rhsNode* to_insert = curr->curr_rule;
                 tNode* fst = createtNode(to_insert,NULL);
