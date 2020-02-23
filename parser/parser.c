@@ -541,6 +541,17 @@ void initiliazeParseTable(){
 }
 
 
+void print_error(nonTerminal n){
+
+    int i;
+    for(i=0;i<TERMINALS;i++){
+        if(parseTable[n][i])
+            printf("%s\t",terminalDict[i]);
+    }
+
+    printf("\n");
+}
+
 
 void populateParseTable(){
 
@@ -549,9 +560,11 @@ void populateParseTable(){
         rule_header *rh = g[i]; //rule header of a rule
         rhsNode *rule = NULL; // a node of a particular rule
         while(rh){
+
             long long unsigned has_epsilon=0;
             rule = rh->curr_rule; 
             long long unsigned tempFirst;
+
             if(rule->tag == 1){
                 tempFirst = First[(rule->S).N];
                // printf("<%s> ",nonTerminalDict[i]);
@@ -738,11 +751,19 @@ void parseInput(FILE** fp)
     tNode* parent = NULL;
     int flag = 1;
     int error = 0;
+    int pop_after_error = 0;
+
+    int has_error = 0;
+
     while (1)
     {
 
-        if(error==1){
-            printf("Error Recovered...\n");
+        if(error!=1 || (error&&pop_after_error)){
+            last_popped = pop();
+            pop_after_error = 0;
+            error = 0;
+        }else{
+        //    printf("Error Recovered\n");
             error = 0;
         }
         
@@ -757,7 +778,7 @@ void parseInput(FILE** fp)
                break;
         }
 
-        last_popped = pop();
+        //last_popped = pop();
 
 
        // inserttNode(parent, last_popped->tn);
@@ -767,11 +788,11 @@ void parseInput(FILE** fp)
             printf("%s\n",curr_token->lexeme);
 
         */
-        if(ended && last_popped->tn == dollar)
+        if(ended && last_popped->tn == dollar && has_error==0)
         {   
-                printf("Parsed SUccessfully\n");
+                printf("Parsed Successfully\n");
                 tNode* temp = head;
-                printParseTree(temp);
+                //printParseTree(temp);
                 return;
         }
         // if(last_popped->tn->leafTag == 1){
@@ -789,14 +810,13 @@ void parseInput(FILE** fp)
                 curr = parseTable[(((last_popped->tn)->node).n)->s.N][curr_token->t];
             } 
 
-           // printf("<%s>\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
-            //print_rule(curr);
-
             if(curr == NULL)
             {
                 //printf("%s\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
                 //printf("%s\t",terminalDict[curr_token->t]);
-                printf("Parse error at %d.Trying to recover....\n",curr_token->line);
+                printf("Line : %d Syntax Error. Expected ",curr_token->line);
+                print_error((((last_popped->tn)->node).n)->s.N);
+               // printf("Parse error at %d.Trying to recover....\n",curr_token->line);
                 long long unsigned mask = 1;
 
                
@@ -813,22 +833,51 @@ void parseInput(FILE** fp)
 
                 }
 
-                while((First[last_popped->tn->node.n->s.N]&(mask<<curr_token->t)) == 0){
+                long long unsigned in_first = (First[last_popped->tn->node.n->s.N]&(mask<<curr_token->t));
+                mask = 1;
+                long long unsigned in_follow = (Follow[last_popped->tn->node.n->s.N]&(mask<<curr_token->t));
+                mask = 1;
+
+                while(in_first==0 && in_follow==0){
                     
+
+
                     curr_token = getNextToken(fp);
+
                     while(curr_token==NULL){
                         curr_token = getNextToken(fp);
                         if(ended)
                             exit(0);
                     }
+
+//                    printf("%s\n",terminalDict[curr_token->t]);
+
+                    in_first = (First[last_popped->tn->node.n->s.N]&(mask<<curr_token->t));
                     mask = 1;
+                    in_follow = (Follow[last_popped->tn->node.n->s.N]&(mask<<curr_token->t));
+                    mask = 1;
+
+                    //printf("in_first = %d  in_follow = %d\n",in_first,in_follow);
+                }
+
+                if(in_follow){
+                    pop_after_error = 1;
+                 //   printf("Found Follow...\n");
+                 //   printf("Follow = %s\n",terminalDict[curr_token->t]);
+                }else{
+                   // printf("First Found...\n");
+                    pop_after_error = 0;
                 }
                 
                 error = 1;
+                has_error = 1;
                 //error recovery code.
                 flag = 0;
                 continue;
             }else{
+
+//                printf("<%s>\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
+  //              print_rule(curr);
 
                 rhsNode* to_insert = curr->curr_rule;
                 tNode* fst = createtNode(to_insert,NULL);
@@ -858,16 +907,28 @@ void parseInput(FILE** fp)
         {   
 
             if(ended || last_popped->tn == dollar){
-                printf("Syntax Error.Could'nt Recover\n");
+                //printf("Syntax Error.Could'nt Recover\n");
                 exit(0);
             }
 
             if(last_popped->tn->node.l->s.T!=curr_token->t){
-                printf("Syntax Error at %d\n",curr_token->line);
+                printf("Line: %d Syntax Error. Expected %s\n",curr_token->line,terminalDict[last_popped->tn->node.l->s.T]);
+
+               /* last_popped->tn->node.l->ti = curr_token;
+                flag = 0; // Check this case...*/
+                //flag = 0;
+                flag = 0;
+                error = 1;
+                has_error = 1;
+                pop_after_error = 1;
+                continue;
+
             }
 
             last_popped->tn->node.l->ti = curr_token;
-            flag = 1;
+            flag = 1; // Check this case...
+
+
         }
         
     }
@@ -903,11 +964,13 @@ int main()
     ComputeFirstAndFollowSets();
     populateParseTable();
 
-    FILE *fp1 = fopen("t2.txt", "r");
+    FILE *fp1 = fopen("t6.txt", "r");
     fp1 = getStream(fp1);
     FILE **fp2 = &fp1;
 
-    parseInput(fp2);
+   parseInput(fp2);
+   // print_terminal(First[24]);
+  //  print_rule(parseTable[10][0]);
 
     //printParseTable();
     /*rule_header* rh;
