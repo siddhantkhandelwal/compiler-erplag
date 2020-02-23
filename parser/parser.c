@@ -814,6 +814,11 @@ void parseInput(FILE** fp)
             {
                 //printf("%s\t",nonTerminalDict[(((last_popped->tn)->node).n)->s.N]);
                 //printf("%s\t",terminalDict[curr_token->t]);
+
+                if(ended==1){
+                    printf("Syntax Error. Reached End of File\n");
+                    return;
+                }
                 printf("Line : %d Syntax Error. Expected ",curr_token->line);
                 print_error((((last_popped->tn)->node).n)->s.N);
                // printf("Parse error at %d.Trying to recover....\n",curr_token->line);
@@ -964,7 +969,7 @@ int main()
     ComputeFirstAndFollowSets();
     populateParseTable();
 
-    FILE *fp1 = fopen("t6.txt", "r");
+    FILE *fp1 = fopen("t1.txt", "r");
     fp1 = getStream(fp1);
     FILE **fp2 = &fp1;
 

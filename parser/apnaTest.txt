@@ -1,0 +1,9 @@
+<<<driver program>>>
+start
+	
+	while(2)
+	start
+		print(j);
+	integer
+
+end
