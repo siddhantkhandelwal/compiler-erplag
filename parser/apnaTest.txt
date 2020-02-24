@@ -1,0 +1,43 @@
+<<<driver program>>>
+start
+	
+	while(2)
+	start
+		print(j);
+
+		switch(t)
+		start
+			case true: print(list[index]);
+				   a:=sum*list[index];
+				   break;
+			case false: print(sum);
+				    print(index);
+				    **prints the values of sum and index  15-n times**
+
+				    while(2)
+					start
+						while(2)
+							start
+							end
+					end 
+
+
+
+				    break;
+		end
+
+		
+		a:= true AND ((((5 <== 5))));
+
+
+
+		while(2)
+		start
+			while(2)
+				start
+				end
+		end 
+
+
+	end
+end

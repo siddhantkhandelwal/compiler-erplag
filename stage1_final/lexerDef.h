@@ -1,18 +1,16 @@
+/* LAVANYA SONI - 2017A7PS0151P
+    KUSHAGRA AGRAWAL - 2017A7PS0107P
+    SIDDHANT KHANDELWAL - 2017A7PS0127P
+    GROUP - 11
+*/
+
+
 #ifndef lexerHeader
 #define lexerHeader
 
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
-
-// char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
-//                        "end", "declare", "module", "driver", "program",
-//                        "get_value", "print",
-//                        "use", "with", "parameters", "true", "false", "takes",
-//                        "input", "returns", "AND", "OR", "for", "in", "switch",
-//                        "case", "break", "default", "while"};
 
 enum TERM
 {
