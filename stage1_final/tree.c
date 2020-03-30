@@ -31,6 +31,7 @@ tNode *createtNode(rhsNode *rh, tokenInfo *ti)
         nln->sibling = NULL;
         (tn->node).n = nln;
         tn->leafTag = 1;
+        tn->node.n->is_operator = 0;
     }
     return tn;
 }

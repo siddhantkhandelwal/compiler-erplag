@@ -8,7 +8,7 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <time.h>
-#include "parser.h"
+#include "ast.h"
 
 extern unsigned int ended;
 
@@ -189,10 +189,13 @@ int main(int argc, char* argv[]){
             parseInput(&fp2);  
             FILE* fp = fopen(argv[2], "w");
             tNode* temp = head;
-            printParseTree(temp, fp);
-            fclose(fp);
+            //printParseTree(temp, fp);
+            
             fclose(fp2);
             fclose(fp3);
+            constructAST(head);
+            printParseTree(temp, fp);    
+            fclose(fp);
             ended = 0;
             break;
 

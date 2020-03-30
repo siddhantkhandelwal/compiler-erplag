@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "parserDef.h"
-#include "../lexer/lexer.h"
+#include "lexer.h"
 
 typedef struct tNode tNode;
 
@@ -17,6 +17,8 @@ struct nlNode
     Symbol s;
     tNode *child;
     tNode *sibling;
+    int is_operator;
+    int line;
 };
 
 typedef struct nlNode nlNode;
