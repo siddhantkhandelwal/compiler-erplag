@@ -11,6 +11,9 @@
 #include "lexer.h"
 
 typedef struct tNode tNode;
+typedef struct symbol_entry se;
+typedef struct scope scope;
+typedef struct type_info type_info;
 
 struct nlNode
 {
@@ -19,6 +22,7 @@ struct nlNode
     tNode *sibling;
     int is_operator;
     int line;
+
 };
 
 typedef struct nlNode nlNode;
@@ -44,6 +48,8 @@ struct tNode
     treeNode node;
     int leafTag;
     tNode* parent;
+    scope* sc;
+    se* entry;
 };
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti);

@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "symbolTable.h"
 
 #define KEEP_LENGTH 24
 

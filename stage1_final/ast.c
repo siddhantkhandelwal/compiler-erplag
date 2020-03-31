@@ -222,7 +222,7 @@ void constructAST(tNode* astNode)
                             child->node.n->s.N ==  OPTIONAL || child->node.n->s.N == STATEMENT || child->node.n->s.N == OP1 || child->node.n->s.N == OP2 ||
                             child->node.n->s.N == RELATIONALOP || child->node.n->s.N == LOGICALOP || child->node.n->s.N == WHICHID || child->node.n->s.N == ARITHMETICORBOOLEANEXPRESSION||
                             child->node.n->s.N == ANYTERM || child->node.n->s.N == ARITHMETICEXPR || child->node.n->s.N == TERM || child->node.n->s.N == FACTOR || child->node.n->s.N == VARIDNUM ||
-                            child->node.n->s.N == LVALUEARRSTMT || child->node.n->s.N == LVALUEIDSTMT || child->node.n->s.N == DATATYPE ||  child->node.n->s.N == TYPE)
+                            child->node.n->s.N == LVALUEARRSTMT || child->node.n->s.N == LVALUEIDSTMT || child->node.n->s.N == INDEX)
                     {
                         liftUpNode(child);
                     }
