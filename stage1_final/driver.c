@@ -194,8 +194,9 @@ int main(int argc, char* argv[]){
             fclose(fp2);
             fclose(fp3);
             constructAST(head);
-            make_st(head);
-            printParseTree(temp, fp);    
+            scope* sc = make_st(head);
+            printParseTree(temp, fp);
+            printSymbolTable(sc);    
             fclose(fp);
             ended = 0;
             break;

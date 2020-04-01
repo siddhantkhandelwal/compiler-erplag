@@ -42,4 +42,5 @@ struct scope{
 	se* head;
 };
 
-void make_st(tNode* head);
+scope* make_st(tNode* head);
+void printSymbolTable(scope* sc);
