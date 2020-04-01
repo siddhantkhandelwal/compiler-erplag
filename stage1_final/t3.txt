@@ -5,16 +5,18 @@ start
 	get_value(v_1_2_3);
 	declare result_:integer;
 	[result_]:=use module square with parameters v_1_2_3;
-	print(result);
+	declare result_:real;
+	print(result_);
 end
 
+**
 <<module square>>
 takes input [x:integer];
 returns [value:integer];
 start
 	value:= x*x;
 end
-
+**
 **notice that this test case does not declare the module before the driver module, still it is syntactically correct as moduleDeclarations is optional. Testing whether a module is declared before its use is a matter of semantic analysis**
 
 ** test the correctness of all lexemes and parse tree created

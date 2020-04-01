@@ -41,3 +41,5 @@ struct scope{
 	se* output_list;
 	se* head;
 };
+
+void make_st(tNode* head);

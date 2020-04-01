@@ -194,6 +194,7 @@ int main(int argc, char* argv[]){
             fclose(fp2);
             fclose(fp3);
             constructAST(head);
+            make_st(head);
             printParseTree(temp, fp);    
             fclose(fp);
             ended = 0;

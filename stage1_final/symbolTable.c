@@ -27,8 +27,9 @@ scope* create_new_scope(scope* parent, char* stamp){
 			parent->right_child = temp;
 		}
 
-		temp->parent = parent;
 	}
+
+	temp->parent = parent;
 
 	return temp;
 }
@@ -51,9 +52,7 @@ se* lookupst(char* identifier,scope* sc, int is_func){
 			head = head->next;
 		}
 
-		sc = sc->parent;
-
-		if(head->is_func){
+		if(strcmp(sc->stamp,"module")==0){
 			se* itemp = sc->input_list;
 			while(itemp){
 				if(strcmp(itemp->lexeme,identifier)==0){
@@ -72,6 +71,8 @@ se* lookupst(char* identifier,scope* sc, int is_func){
 				otemp = otemp->next;
 			}
 		}
+
+		sc = sc->parent;
 	}
 
 	/* ERROR ? */
@@ -98,7 +99,7 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 		if(strcmp(temp1->lexeme,to_add->node.l->ti->lexeme)==0){
 
 			if(is_func){
-				if(temp1->func_use!=func_use){
+				if(temp1->func_use!=func_use){  // Multiple function declarations or definitions?
 					temp1->func_use = 2;
 				}
 
@@ -119,7 +120,7 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 	temp1->func_use = func_use;
 	temp1->type = t;
 	temp1->is_array = 0;
-	if(t->basic_type==ARRAY){
+	if(t && t->basic_type==ARRAY){
 		temp1->is_array = 1;
 	}
 	temp1->num_used = 1;
@@ -143,102 +144,112 @@ void populate_st(tNode* head, scope* sc){
 	tNode* child = head->node.n->child;
 	scope* next_scope = sc;
 
+	//printf("%s\n",nonTerminalDict[head->node.n->s.N]);
+
 	while(child!=NULL){
 
 		if(child->leafTag==0){
 
+			if(child->node.l->s.T == ID){
 
-			if(head->node.n->s.N == MODULEDECLARATIONS){
+			//	printf("%s %s\n",child->node.l->ti->lexeme,nonTerminalDict[head->node.n->s.N]);
+				//printf("%s\n",child->node.l->ti->lexeme);
 
-				child->entry = add_to_scope(child,sc,1,0,NULL);
-				child->sc = sc;
-			}
+				if(head->node.n->s.N == MODULEDECLARATIONS){
 
-			else if(head->node.n->s.N==MODULE){
-				child->entry = add_to_scope(child,sc->parent,1,1,NULL);
-				child->sc = sc;
-				//next_scope = create_new_scope(sc,"module");
-			}
+					child->entry = add_to_scope(child,sc,1,0,NULL);
+					child->sc = sc;
+				}
 
-			else if(head->node.n->s.N == OUTPUTPLIST && child->node.l->s.T==ID){
+				else if(head->node.n->s.N==MODULE_NT){
+					
+					child->entry = add_to_scope(child,sc->parent,1,1,NULL);
+					child->sc = sc;
+					//next_scope = create_new_scope(sc,"module");
+				}
 
-				type_info* t = malloc(sizeof(type_info));
-				tNode* dt = child->node.l->sibling;
-				dt = dt->node.n->child;
-				t->basic_type = dt->node.l->s.T;
-				child->entry = add_to_scope(child,sc,0,0,t);
-				child->sc = sc;
-			}
+				else if(head->node.n->s.N == OUTPUTPLIST && child->node.l->s.T==ID){
 
-			else if(head->node.n->s.N == INPUTPLIST && child->node.l->s.T==ID){
-
-				type_info* t = malloc(sizeof(type_info));
-				tNode* dt = child->node.l->sibling;
-				dt = dt->node.n->child;
-				t->basic_type = dt->node.l->s.T;
-
-				if(t->basic_type==ARRAY){
-					dt = dt->node.l->sibling; // rangearrays
-					tNode* tp = dt->node.n->sibling; // type
-					tp = tp->node.n->child;
+					type_info* t = malloc(sizeof(type_info));
+					tNode* dt = child->node.l->sibling;
 					dt = dt->node.n->child;
-					if(dt->node.l->s.T == NUM && dt->node.l->sibling->node.l->s.T==NUM){
-						t->start = dt->node.l->ti->value.v1;
-						t->end = dt->node.l->sibling->node.l->ti->value.v1;
-						t->isStatic = 1;
-					}else{
-						t->isStatic = 0;
+					t->basic_type = dt->node.l->s.T;
+					child->entry = add_to_scope(child,sc,0,0,t);
+					child->sc = sc;
+				}
+
+				else if(head->node.n->s.N == INPUTPLIST && child->node.l->s.T==ID){
+
+					type_info* t = malloc(sizeof(type_info));
+					tNode* dt = child->node.l->sibling;
+					dt = dt->node.n->child;
+					t->basic_type = dt->node.l->s.T;
+
+					if(t->basic_type==ARRAY){
+						dt = dt->node.l->sibling; // rangearrays
+						tNode* tp = dt->node.n->sibling; // type
+						tp = tp->node.n->child;
+						dt = dt->node.n->child;
+						if(dt->node.l->s.T == NUM && dt->node.l->sibling->node.l->s.T==NUM){
+							t->start = dt->node.l->ti->value.v1;
+							t->end = dt->node.l->sibling->node.l->ti->value.v1;
+							t->isStatic = 1;
+						}else{
+							t->isStatic = 0;
+						}
+
+						t->element_type = dt->node.l->s.T;
 					}
 
-					t->element_type = dt->node.l->s.T;
-				}
-
-				child->entry = add_to_scope(child,sc,0,0,t);
-				child->sc = sc;
-			}			
+					child->entry = add_to_scope(child,sc,0,0,t);
+					child->sc = sc;
+				}			
 
 
-			else if(head->node.n->s.N==IDLIST && head->parent->node.n->s.N == DECLARESTMT){
+				else if(head->node.n->s.N==IDLIST && head->parent->node.n->s.N == DECLARESTMT){
 
-				type_info* t = malloc(sizeof(type_info));
-				tNode* dt = head->node.l->sibling; // datatype
-				dt = dt->node.n->child;
-				t->basic_type = dt->node.l->s.T;
-
-				if(t->basic_type==ARRAY){
-					dt = dt->node.l->sibling; // rangearrays
-					tNode* tp = dt->node.n->sibling; // type
-					tp = tp->node.n->child;
+					type_info* t = malloc(sizeof(type_info));
+					tNode* dt = head->node.l->sibling; // datatype
 					dt = dt->node.n->child;
-					if(dt->node.l->s.T == NUM && dt->node.l->sibling->node.l->s.T==NUM){
-						t->start = dt->node.l->ti->value.v1;
-						t->end = dt->node.l->sibling->node.l->ti->value.v1;
-						t->isStatic = 1;
-					}else{
-						t->isStatic = 0;
+					t->basic_type = dt->node.l->s.T;
+
+					if(t->basic_type==ARRAY){
+						dt = dt->node.l->sibling; // rangearrays
+						tNode* tp = dt->node.n->sibling; // type
+						tp = tp->node.n->child;
+						dt = dt->node.n->child;
+						if(dt->node.l->s.T == NUM && dt->node.l->sibling->node.l->s.T==NUM){
+							t->start = dt->node.l->ti->value.v1;
+							t->end = dt->node.l->sibling->node.l->ti->value.v1;
+							t->isStatic = 1;
+						}else{
+							t->isStatic = 0;
+						}
+
+						t->element_type = dt->node.l->s.T;
 					}
 
-					t->element_type = dt->node.l->s.T;
+					child->entry = add_to_scope(child,sc,0,0,t);
+					child->sc = sc;
+
 				}
 
-				child->entry = add_to_scope(child,sc,0,0,t);
-				child->sc = sc;
+				else{
 
-			}
+					//printf("%s\n",child->node.l->ti->lexeme);
 
-			else{
+					if(head->node.n->s.N == MODULEREUSESTMT){
+						lookupst(child->node.l->ti->lexeme,sc,1);
+					}else{
+						lookupst(child->node.l->ti->lexeme,sc,0);
+						//printf("%s %s\n",child->node.l->ti->lexeme,sc->stamp);
+					}
 
-				if(head->node.n->s.N == MODULEREUSESTMT){
-					lookupst(child->node.l->ti->lexeme,sc,1);
-				}else{
-					lookupst(child->node.l->ti->lexeme,sc,0);
 				}
-
-			}
-
+			}	
 		}else{
 
-			if((child->node.n->s.N==MODULE) || (child->node.n->s.N==CONDITIONALSTMT)||(child->node.n->s.N==ITERATIVESTMT)||(child->node.n->s.N==DRIVERMODULE)){
+			if((child->node.n->s.N==MODULE_NT) || (child->node.n->s.N==CONDITIONALSTMT)||(child->node.n->s.N==ITERATIVESTMT)||(child->node.n->s.N==DRIVERMODULE)){
 				next_scope = create_new_scope(sc,nonTerminalDict[child->node.n->s.N]);
 			}
 
@@ -258,6 +269,12 @@ void populate_st(tNode* head, scope* sc){
 
 }
 
+
+void make_st(tNode* head){
+
+	scope* first_scope = create_new_scope(NULL,"program");
+	populate_st(head,first_scope);
+}
 
 
 
