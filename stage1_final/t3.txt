@@ -9,7 +9,7 @@ start
 	print(result_);
 end
 
-**
+
 <<module square>>
 takes input [x:integer];
 returns [value:integer];

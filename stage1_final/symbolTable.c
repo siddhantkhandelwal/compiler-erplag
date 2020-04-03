@@ -253,6 +253,7 @@ void populate_st(tNode* head, scope* sc){
 				next_scope = create_new_scope(sc,nonTerminalDict[child->node.n->s.N]);
 			}
 
+			//child->sc = next_scope;
 			populate_st(child,next_scope);
 
 		}
