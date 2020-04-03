@@ -333,6 +333,10 @@ void printScope(scope* sc)
 			op_list = op_list->next;
 		}	
 	}
+	if(strcmp(sc->stamp, "conditionalstmt") == 0){
+		se *id = sc->head;
+		printf("Lexeme: %s\tType: %s\tNum_USed: %d\n", id->lexeme, terminalDict[id->type->basic_type], id->num_used);
+	}
 	se* head = sc->head;
 	while (head)
 	{
@@ -360,7 +364,7 @@ void printSymbolTable(scope* sc)
 		return;
 	}
 	printScope(sc);
-	scope* child=  sc->left_child;
+	scope* child=sc->left_child;
 	while (child)
 	{
 		printScope(child);
