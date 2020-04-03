@@ -367,7 +367,7 @@ void printSymbolTable(scope* sc)
 	scope* child=sc->left_child;
 	while (child)
 	{
-		printScope(child);
+		printSymbolTable(child);
 		child = child->next;
 	}	
 }
