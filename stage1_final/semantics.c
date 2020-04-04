@@ -1,4 +1,4 @@
-#include "semantics.h"
+    #include "semantics.h"
 
 
 type_info* arrayChecker(tNode* head)
