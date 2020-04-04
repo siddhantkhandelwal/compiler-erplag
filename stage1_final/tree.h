@@ -50,6 +50,7 @@ struct tNode
     tNode* parent;
     scope* sc;
     se* entry;
+    type_info* type;
 };
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti);

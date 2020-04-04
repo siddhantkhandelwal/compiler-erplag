@@ -1,4 +1,4 @@
-#include "symbolTable.h"
+#include "semantics.h"
 
 #define KEEP_LENGTH 24
 

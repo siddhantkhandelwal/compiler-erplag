@@ -23,6 +23,7 @@ struct symbol_entry{
 	scope* scope_info;
 	int is_func;
 	int is_array;
+	int is_used;
 	int offset;
 	int width;
 	int num_used; // Number of times this variable is used;
@@ -42,4 +43,5 @@ struct scope{
 	se* head;
 };
 
-void make_st(tNode* head);
+scope* make_st(tNode* head);
+void printSymbolTable(scope* sc);

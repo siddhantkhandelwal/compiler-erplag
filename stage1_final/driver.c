@@ -42,8 +42,11 @@ void printParseTree(tNode* temp, FILE* fp)
             fprintf(fp, "Lexeme: %-10s\t Line no: %-10d\t\tToken: %-10s\tValue: -----\t\tParent Node: %-10s\t\tLeaf Node: Yes\t\tNode Symbol: -----\n\n", temp->node.l->ti->lexeme, temp->node.l->ti->line,  terminalDict[temp->node.n->s.T],  nonTerminalDict[temp->parent->node.n->s.N]);}
             return;
     }
+
     printParseTree(temp->node.n->child, fp);
     if(temp->parent == NULL)
+    
+   if(temp->parent == NULL)
     {
         fprintf(fp, "Lexeme: -----\t\tLine no: -----\t\tToken: -----\t\tValue: -----\t\tParent Node: ROOT\t\tLeaf Node: No\t\tNode Symbol: %s\n\n",  nonTerminalDict[temp->node.n->s.N]);
     }
@@ -52,7 +55,7 @@ void printParseTree(tNode* temp, FILE* fp)
         fprintf(fp, "Lexeme: -----\t\tLine no: -----\t\tToken: -----\t\tValue: -----\t\tParent Node: %s\t\tLeaf Node: No\t\tNode Symbol: %s\n\n",  nonTerminalDict[temp->parent->node.n->s.N], nonTerminalDict[temp->node.n->s.N]);
 
     }
-    
+  
     if(temp->node.n->child == NULL)
         return;
     tNode* temp2 = temp->node.n->child->node.n->sibling;
@@ -194,8 +197,10 @@ int main(int argc, char* argv[]){
             fclose(fp2);
             fclose(fp3);
             constructAST(head);
-            make_st(head);
-            printParseTree(temp, fp);    
+            scope* sc = make_st(head);
+            printParseTree(temp, fp);
+            //printSymbolTable(sc);
+            //check_semantics(head);    
             fclose(fp);
             ended = 0;
             break;
