@@ -6,8 +6,10 @@ start
 	declare var_1_, var_2_, var_3_:integer;
 	declare R1_abc: boolean;
 	declare r2_ABC: integer;
+	declare arr: array[1...3] of integer;
 	declare R3_abc: real;
 	get_value(var_1_);
+	arr[2] := 5;
 	var_2_:=10;
 	var_3_:= -(6);
 	[R1_abc, r2_ABC, R3_abc] := use module compute with parameters var_1_, var_2_, var_34;
@@ -18,7 +20,7 @@ takes input[a:integer, b:integer, c:integer];
 returns [res_1:boolean, res_2_a:integer, res_2__b:real];
 start
 	declare b:boolean;
-	res_2_a:= -(a*b-c/5);
+	**res_2_a:= -(a*b-c/5);**
 	res_2__b:= ((res_2_a + a)*12+22.34E-2)/13;
 	b := a <=  b AND c >= a OR  a<0 AND false;
 	res_1:= (true AND c==b)OR(b>p AND (a<=c));

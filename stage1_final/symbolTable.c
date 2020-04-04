@@ -125,6 +125,7 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 	strcpy(temp1->lexeme,to_add->node.l->ti->lexeme);
 	temp1->is_func = is_func;
 	temp1->func_use = func_use;
+	temp1->scope_info = sc;
 	temp1->type = t;
 	temp1->is_array = 0;
 	if(t && t->basic_type==ARRAY){
@@ -246,9 +247,17 @@ void populate_st(tNode* head, scope* sc){
 					//printf("%s\n",child->node.l->ti->lexeme);
 					
 					if(head->node.n->s.N == MODULEREUSESTMT){
-						lookupst(child->node.l->ti->lexeme,sc,1, child->node.l->ti->line);
+						child->entry = lookupst(child->node.l->ti->lexeme,sc,1, child->node.l->ti->line);
+						if(child->entry)
+						{
+							child->sc = child->entry->scope_info;
+						}
 					}else{
-						lookupst(child->node.l->ti->lexeme,sc,0, child->node.l->ti->line);
+						child->entry = lookupst(child->node.l->ti->lexeme,sc,0, child->node.l->ti->line);
+						if(child->entry)
+						{
+							child->sc = child->entry->scope_info;
+						}
 						//printf("%s %s\n",child->node.l->ti->lexeme,sc->stamp);
 					}
 
