@@ -153,6 +153,7 @@ type_info *assignmentChecker(tNode *head)
                     head->type = malloc(sizeof(type_info));
                     head->type->basic_type = t1->basic_type;
                     head->type->isStatic = 1;
+                    head->entry->is_control_changed = 1;
                     return head->type;
                 }
                 else
@@ -585,7 +586,7 @@ void check_output_parameters(scope *scope_of_func, tNode *idlist_node)
     while (output_list && idlist_node)
     {
 
-        if (output_list->num_used == 1)
+        if (output_list->is_control_changed == 0)
         {
             printf("Variable %s in function is not assigned a value.\n", output_list->lexeme);
         }
@@ -661,10 +662,12 @@ void iterativeSemantics(tNode *head)
     {
         tNode *whileHeader = head->node.n->child;
         tNode *arbexp = whileHeader->node.n->sibling;
+        tNode *id = arbexp->node.n->child;
+        id->entry->is_control_variable = 1;
         type_info *ti = expressionChecker(arbexp);
         if (ti->basic_type != BOOLEAN)
         {
-            printf("ERROR : (semantics)The control expression of the WHILE loop at line %d, has to be of BOOLEAN type\n", arbexp->node.n->line);
+            printf("\nERROR : (semantics)The control expression of the WHILE loop at line %d, has to be of BOOLEAN type\n", arbexp->node.n->line);
         }
     }
 }
@@ -751,6 +754,18 @@ void checkSemantics(tNode *astNode)
             else if (child->node.n->s.N == ITERATIVESTMT)
             {
                 iterativeSemantics(child);
+                if (child->node.n->child->node.n->s.T == WHILE)
+                {
+                    tNode *whileHeader = child->node.n->child;
+                    tNode *arbexp = whileHeader->node.n->sibling;
+                    tNode *id = arbexp->node.n->child;
+                    if (!(id->entry->is_control_changed))
+                    {
+                        printf("ERROR : (semantics)The control variable of the WHILE loop at line %d, has to be modified in the loop body\n", arbexp->node.n->line);
+                    }
+                    id->entry->is_control_variable = 0;
+                    id->entry->is_control_changed = 0;
+                }
             }
             else if (child->node.n->s.N == CONDITIONALSTMT)
             {

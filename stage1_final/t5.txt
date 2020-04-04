@@ -5,17 +5,17 @@ takes input[list:array[1..15] of    real, n:integer];
 returns  [sum:real];
 start
 	declare index:integer;
-	declare t:integer;
+	declare t:boolean;
 	sum:=0.0;
 	for(index in  1..15)
 	start
 		t:= index<=n;
 		switch(t)
 		start
-			case 0: print(list[index]);
+			case true: print(list[index]);
 				   sum:=sum+list[index];
 				   break;
-			case 1: print(sum);
+			case false: print(sum);
 				    print(index);
 				    **prints the values of sum and index  15-n times**
 				    break;
@@ -50,7 +50,7 @@ start
 	start
 		get_value(tempvar);
 		arr1[i]:=tempvar;
-		i:=i+1;
+		** i:=i+1; **
 		** the semantics of while needs an increment and will be taken care of at the second phase**
 	end
 end

@@ -1,5 +1,5 @@
 ** This testcase demonstrates correctness of module structure with declaration and simple statements**
-declare module square;
+
 <<<driver program>>>
 start
 	declare v_1_2_3:integer;
@@ -10,14 +10,15 @@ start
 	print(result_);
 end
 
-
 <<module square>>
 takes input [x:integer];
 returns [value:integer];
 start
+	use module square with parameters v_1_2_3;
 	declare y:boolean;
 	value := x*y;
 end
+
 
 **notice that this test case does not declare the module before the driver module, still it is syntactically correct as moduleDeclarations is optional. Testing whether a module is declared before its use is a matter of semantic analysis**
 

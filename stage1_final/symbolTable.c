@@ -11,6 +11,7 @@ scope* create_new_scope(scope* parent, char* stamp){
 	temp->input_list = NULL;
 	temp->output_list = NULL;
 	temp->head = NULL;
+	temp->is_func_used = 0;
 
 	memset(temp->stamp,0,25);
 	strcpy(temp->stamp,stamp);
@@ -109,6 +110,7 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 				}
 				  // Multiple function declarations or definitions?
 				temp1->func_use = 2;
+				printf("%s", func_scope->stamp);
 				temp1->scope_info = func_scope;
 				temp1->used_on_lines[temp1->num_used++] = to_add->node.l->ti->line;
 				return temp1;
@@ -133,6 +135,8 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 	temp1->num_used = 1;
 	temp1->used_on_lines[0] = to_add->node.l->ti->line;
 	temp1->scope_info = sc;
+	temp1->is_control_variable=0;
+	temp1->is_control_changed=0;
 	if(is_func)
 		temp1->scope_info = func_scope;
 	temp1->next = temp;
@@ -252,11 +256,15 @@ void populate_st(tNode* head, scope* sc){
 					
 					if(head->node.n->s.N == MODULEREUSESTMT){
 						se* func_entry = lookupst(child->node.l->ti->lexeme,sc,1, child->node.l->ti->line);
-						
 						// Putting scope of the function in MODULEREUSESTMT node. Used later.
 						head->entry = func_entry;
 						if(func_entry==NULL)
 							printf("Error : Function should be declared before use. Function semantics will not be checked\n");
+						else{
+							if(func_entry->scope_info && func_entry->scope_info->is_func_used){
+								printf("Error : Recursion Detected\n");
+							}
+						}
 						
 					}else{
 						child->entry = lookupst(child->node.l->ti->lexeme,sc,0, child->node.l->ti->line);
@@ -292,11 +300,16 @@ void populate_st(tNode* head, scope* sc){
 				
 				next_scope = create_new_scope(sc,nonTerminalDict[child->node.n->s.N]);
 			}
-
+			if(child->node.n->s.N==MODULE_NT){
+				next_scope->is_func_used = 1;
+			}
 			//child->sc = next_scope;
 			populate_st(child,next_scope);
-
+			if(child->node.n->s.N==MODULE_NT){
+				next_scope->is_func_used = 0;
+			}
 		}
+
 
 		if(child->leafTag)
         {
