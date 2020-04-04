@@ -8,7 +8,7 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <time.h>
-#include "ast.h"
+#include "semantics.h"
 
 extern unsigned int ended;
 
@@ -196,7 +196,8 @@ int main(int argc, char* argv[]){
             constructAST(head);
             scope* sc = make_st(head);
             printParseTree(temp, fp);
-            printSymbolTable(sc);    
+            printSymbolTable(sc);  
+            checkSemantics(head);  
             fclose(fp);
             ended = 0;
             break;

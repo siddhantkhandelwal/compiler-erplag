@@ -71,7 +71,7 @@ void deleteNode(tNode* astNode, tNode* child)
     {
         astNode->node.n->child = child->node.l->sibling;   
     }
-    else if(temp == child && astNode->leafTag ==  1)
+    else if(temp == child && child->leafTag ==  1)
     {
         astNode->node.n->child = child->node.n->sibling;
     }
@@ -187,7 +187,7 @@ void constructAST(tNode* astNode)
 {
     tNode* child;
     
-    Terminal keep[] = {PRINT,  AND, OR, FOR, INTEGER, REAL, BOOLEAN, ARRAY, GET_VALUE, TRUE, FALSE, WHILE, ID, NUM, RNUM, PLUS, MINUS, MUL, DIV, LT, LE, GT, GE, NE, EQ, ASSIGNOP};
+    Terminal keep[] = {PRINT,  AND, OR, FOR, INTEGER, REAL, BOOLEAN, ARRAY, GET_VALUE, TRUE, FALSE, WHILE, ID, NUM, RNUM, PLUS, MINUS, MUL, DIV, LT, LE, GT, GE, NE, EQ/*, ASSIGNOP*/};
 
     if(astNode->leafTag == 1)
     {
@@ -224,6 +224,7 @@ void constructAST(tNode* astNode)
                             child->node.n->s.N == ANYTERM || child->node.n->s.N == ARITHMETICEXPR || child->node.n->s.N == TERM || child->node.n->s.N == FACTOR || child->node.n->s.N == VARIDNUM ||
                             child->node.n->s.N == LVALUEARRSTMT || child->node.n->s.N == LVALUEIDSTMT || child->node.n->s.N == INDEX || child->node.n->s.N == NEWNT)
                     {
+                        if(child->node.n->is_operator == 0)
                         liftUpNode(child);
                     }
                     else

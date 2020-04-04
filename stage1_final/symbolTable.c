@@ -84,7 +84,7 @@ se* lookupst(char* identifier,scope* sc, int is_func, int line_num){
 }
 
 
-se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* t){
+se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* t,scope* func_scope){
 
 	se* temp;
 
@@ -109,7 +109,7 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 				}
 				  // Multiple function declarations or definitions?
 				temp1->func_use = 2;
-				
+				temp1->scope_info = func_scope;
 				temp1->used_on_lines[temp1->num_used++] = to_add->node.l->ti->line;
 				return temp1;
 			}
@@ -132,7 +132,9 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 	}
 	temp1->num_used = 1;
 	temp1->used_on_lines[0] = to_add->node.l->ti->line;
-
+	temp1->scope_info = sc;
+	if(is_func)
+		temp1->scope_info = func_scope;
 	temp1->next = temp;
 
 	if(to_add->parent->node.n->s.N == INPUTPLIST)
@@ -153,6 +155,9 @@ void populate_st(tNode* head, scope* sc){
 
 	//printf("%s\n",nonTerminalDict[head->node.n->s.N]);
 
+	/*if(head->node.n->is_operator==1)
+		printf("Yes\n");*/
+
 	while(child!=NULL){
 
 		if(child->leafTag==0){
@@ -164,13 +169,13 @@ void populate_st(tNode* head, scope* sc){
 
 				if(head->node.n->s.N == MODULEDECLARATIONS){
 
-					child->entry = add_to_scope(child,sc,1,0,NULL);
+					child->entry = add_to_scope(child,sc,1,0,NULL,NULL);
 					child->sc = sc;
 				}
 
 				else if(head->node.n->s.N==MODULE_NT){
 					
-					child->entry = add_to_scope(child,sc->parent,1,1,NULL);
+					child->entry = add_to_scope(child,sc->parent,1,1,NULL,sc);
 					child->sc = sc;
 					//next_scope = create_new_scope(sc,"module");
 				}
@@ -181,7 +186,7 @@ void populate_st(tNode* head, scope* sc){
 					tNode* dt = child->node.l->sibling;
 					dt = dt->node.n->child;
 					t->basic_type = dt->node.l->s.T;
-					child->entry = add_to_scope(child,sc,0,0,t);
+					child->entry = add_to_scope(child,sc,0,0,t,NULL);
 					child->sc = sc;
 				}
 
@@ -208,7 +213,7 @@ void populate_st(tNode* head, scope* sc){
 						t->element_type = tp->node.l->s.T;
 					}
 
-					child->entry = add_to_scope(child,sc,0,0,t);
+					child->entry = add_to_scope(child,sc,0,0,t,NULL);
 					child->sc = sc;
 				}			
 
@@ -236,7 +241,7 @@ void populate_st(tNode* head, scope* sc){
 						t->element_type = tp->node.l->s.T;
 					}
 
-					child->entry = add_to_scope(child,sc,0,0,t);
+					child->entry = add_to_scope(child,sc,0,0,t,NULL);
 					child->sc = sc;
 
 				}
@@ -246,9 +251,15 @@ void populate_st(tNode* head, scope* sc){
 					//printf("%s\n",child->node.l->ti->lexeme);
 					
 					if(head->node.n->s.N == MODULEREUSESTMT){
-						lookupst(child->node.l->ti->lexeme,sc,1, child->node.l->ti->line);
+						se* func_entry = lookupst(child->node.l->ti->lexeme,sc,1, child->node.l->ti->line);
+						
+						// Putting scope of the function in MODULEREUSESTMT node. Used later.
+						head->entry = func_entry;
+						if(func_entry==NULL)
+							printf("Error : Function should be declared before use. Function semantics will not be checked\n");
+						
 					}else{
-						lookupst(child->node.l->ti->lexeme,sc,0, child->node.l->ti->line);
+						child->entry = lookupst(child->node.l->ti->lexeme,sc,0, child->node.l->ti->line);
 						//printf("%s %s\n",child->node.l->ti->lexeme,sc->stamp);
 					}
 
@@ -278,9 +289,11 @@ void populate_st(tNode* head, scope* sc){
 		else{
 
 			if((child->node.n->s.N==MODULE_NT) || (child->node.n->s.N==CONDITIONALSTMT)||(child->node.n->s.N==ITERATIVESTMT)||(child->node.n->s.N==DRIVERMODULE)){
+				
 				next_scope = create_new_scope(sc,nonTerminalDict[child->node.n->s.N]);
 			}
 
+			//child->sc = next_scope;
 			populate_st(child,next_scope);
 
 		}
@@ -363,7 +376,7 @@ void printSymbolTable(scope* sc)
 	scope* child=  sc->left_child;
 	while (child)
 	{
-		printScope(child);
+		printSymbolTable(child);
 		child = child->next;
 	}	
 }
