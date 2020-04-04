@@ -1,12 +1,12 @@
 ** This testcase demonstrates correctness of module structure with declaration and simple statements**
 
+declare module 	square;
 <<<driver program>>>
 start
 	declare v_1_2_3:integer;
 	get_value(v_1_2_3);
 	declare result_:integer;
 	[result_]:=use module square with parameters v_1_2_3;
-	declare result_:real;
 	print(result_);
 end
 
@@ -14,9 +14,9 @@ end
 takes input [x:integer];
 returns [value:integer];
 start
-	use module square with parameters v_1_2_3;
+	
 	declare y:boolean;
-	value := x*y;
+	**value := x*y;**
 end
 
 

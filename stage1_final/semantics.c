@@ -150,6 +150,8 @@ type_info *assignmentChecker(tNode *head)
             {
                 if (t1->basic_type == t2->basic_type)
                 {
+
+
                     head->type = malloc(sizeof(type_info));
                     head->type->basic_type = t1->basic_type;
                     head->type->isStatic = 1;
@@ -663,9 +665,8 @@ void iterativeSemantics(tNode *head)
         tNode *whileHeader = head->node.n->child;
         tNode *arbexp = whileHeader->node.n->sibling;
         tNode *id = arbexp->node.n->child;
-        id->entry->is_control_variable = 1;
         type_info *ti = expressionChecker(arbexp);
-        if (ti->basic_type != BOOLEAN)
+        if (ti && ti->basic_type != BOOLEAN)
         {
             printf("\nERROR : (semantics)The control expression of the WHILE loop at line %d, has to be of BOOLEAN type\n", arbexp->node.n->line);
         }
@@ -736,10 +737,24 @@ void checkSemantics(tNode *astNode)
             //     //printf("Here1\n");
             //     expressionCheckerInit(child);
             // }
+            if (child->node.n->s.N == ITERATIVESTMT)
+            {
+                if (child->node.n->child->node.n->s.T == WHILE)
+                {
+                    tNode *whileHeader = child->node.n->child;
+                    tNode *arbexp = whileHeader->node.n->sibling;
+                    tNode *id = arbexp->node.n->child;
+                   
+                    id->entry->is_control_variable = 1;
+                    id->entry->is_control_changed = 0;
+                }
+            }
             checkSemantics(child);
             if (child->node.n->s.N == ASSIGNMENTSTMT)
             {
                 //printf("Here2\n");
+                child->node.n->child->entry->is_control_changed = 0;
+                printf("%s\n",child->node.n->child->node.l->ti->lexeme);
                 assignmentChecker(child->node.n->child);
             }
             else if (child->node.n->s.N == IOSTMT)
