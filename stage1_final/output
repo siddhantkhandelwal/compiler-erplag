@@ -350,19 +350,5 @@ Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstm
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
 
-Lexeme: i         	 Line no: 53        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
-
-Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
-
-Lexeme: i         	 Line no: 53        		Token: ID        	Value: -----		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
-
-Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: casestmts
-
-Lexeme: 1         		Line no: 53        		Token: NUM       		Value: 1         		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
-
-Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
-
-Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
-
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: module		Leaf Node: No		Node Symbol: moduledef
 
