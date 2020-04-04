@@ -652,9 +652,6 @@ void conditionalSemantics(tNode *head)
         {
             printf("ERROR : (semantics) The BOOLEAN identifier '%s' in switch statement at line %d must be followed by the DEFAULT statement..\n", id->entry->lexeme, id->node.n->line);
         }
-        while (cs != NULL)
-        {
-        }
     }
     tNode *temp = cs->node.n->child;
     if (id->entry->type->basic_type == BOOLEAN && temp->node.n->child->node.n->s.T != TRUE && temp->node.n->sibling->node.n->sibling->node.n->s.T != FALSE)
