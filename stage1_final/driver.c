@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
             scope *sc = make_st(head);
             printParseTree(temp, fp);
             // printSymbolTable(sc);
-            //checkSemantics(head);
+            checkSemantics(head);
             fclose(fp);
             ended = 0;
             break;
