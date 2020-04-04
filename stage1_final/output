@@ -58,7 +58,7 @@ Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declares
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
 
-Lexeme: boolean   	 Line no: 8         		Token: BOOLEAN   	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+Lexeme: integer   	 Line no: 8         		Token: INTEGER   	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
 
@@ -104,7 +104,7 @@ Lexeme: t         	 Line no: 13        		Token: ID        	Value: -----		Parent 
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: conditionalstmt
 
-Lexeme: true      	 Line no: 15        		Token: TRUE      	Value: -----		Parent Node: value     		Leaf Node: Yes		Node Symbol: -----
+Lexeme: 0         		Line no: 15        		Token: NUM       		Value: 0         		Parent Node: value     		Leaf Node: Yes		Node Symbol: -----
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: casestmts		Leaf Node: No		Node Symbol: value
 
@@ -140,7 +140,7 @@ Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstm
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
 
-Lexeme: false     	 Line no: 18        		Token: FALSE     	Value: -----		Parent Node: value     		Leaf Node: Yes		Node Symbol: -----
+Lexeme: 1         		Line no: 18        		Token: NUM       		Value: 1         		Parent Node: value     		Leaf Node: Yes		Node Symbol: -----
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: casestmts		Leaf Node: No		Node Symbol: value
 

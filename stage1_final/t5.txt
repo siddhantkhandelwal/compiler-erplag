@@ -5,17 +5,17 @@ takes input[list:array[1..15] of    real, n:integer];
 returns  [sum:real];
 start
 	declare index:integer;
-	declare t:boolean;
+	declare t:integer;
 	sum:=0.0;
 	for(index in  1..15)
 	start
 		t:= index<=n;
 		switch(t)
 		start
-			case true: print(list[index]);
+			case 0: print(list[index]);
 				   sum:=sum+list[index];
 				   break;
-			case false: print(sum);
+			case 1: print(sum);
 				    print(index);
 				    **prints the values of sum and index  15-n times**
 				    break;
