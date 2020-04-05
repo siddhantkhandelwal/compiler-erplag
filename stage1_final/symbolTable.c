@@ -1,5 +1,7 @@
 #include "symbolTable.h"
 
+int OFFSET = 0;
+
 scope* create_new_scope(scope* parent, char* stamp){
 
 	scope* temp = malloc(sizeof(scope));
@@ -29,6 +31,9 @@ scope* create_new_scope(scope* parent, char* stamp){
 		}
 
 	}
+
+	if(strcmp("module",stamp)==0)
+		OFFSET = 0;
 
 	temp->parent = parent;
 
@@ -140,6 +145,38 @@ se* add_to_scope(tNode* to_add, scope* sc,int is_func, int func_use, type_info* 
 	if(is_func)
 		temp1->scope_info = func_scope;
 	temp1->next = temp;
+
+	if(sc->parent!=NULL){
+
+		if(temp1->is_array==0){
+			temp1->offset = OFFSET;
+
+			if(temp1->type->basic_type==INTEGER){
+				OFFSET = OFFSET+2;
+			}else if(temp1->type->basic_type == REAL){
+				OFFSET = OFFSET+4;
+			}else if(temp1->type->basic_type == BOOLEAN){
+				OFFSET++;
+			}
+		}else{
+			if(temp1->type->isStatic == 1){
+				temp1->offset = OFFSET;
+				int start = temp1->type->start;
+				int end = temp1->type->end;
+				int width = (end-start+1);
+				if(width<0){
+					printf("Error : Array end index should be greater than start index.\n");
+				}
+				if(temp1->type->basic_type==INTEGER){
+					OFFSET = OFFSET+(2*width);
+				}else if(temp1->type->basic_type == REAL){
+					OFFSET = OFFSET+(4*width);
+				}else if(temp1->type->basic_type == BOOLEAN){
+					OFFSET = OFFSET*width;
+				}				
+			}
+		}
+	}	
 
 	if(to_add->parent->node.n->s.N == INPUTPLIST)
 		sc->input_list = temp1;
