@@ -4,7 +4,6 @@
     GROUP - 11
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "parserDef.h"
@@ -22,14 +21,13 @@ struct nlNode
     tNode *sibling;
     int is_operator;
     int line;
-
 };
 
 typedef struct nlNode nlNode;
 
 struct lNode
 {
-	Symbol s;
+    Symbol s;
     tokenInfo *ti;
     tNode *sibling;
 };
@@ -47,10 +45,10 @@ struct tNode
 {
     treeNode node;
     int leafTag;
-    tNode* parent;
-    scope* sc;
-    se* entry;
-    type_info* type;
+    tNode *parent;
+    scope *sc;
+    se *entry;
+    type_info *type;
 };
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti);

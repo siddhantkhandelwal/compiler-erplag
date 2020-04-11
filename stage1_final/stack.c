@@ -4,7 +4,6 @@
     GROUP - 11
 */
 
-
 #include "stack.h"
 
 stack st;
@@ -52,12 +51,14 @@ stackNode *pop()
     return sn;
 }
 
-void print_stack(){
+void print_stack()
+{
 
-    stackNode* temp = st.top;
-    while(temp){
+    stackNode *temp = st.top;
+    while (temp)
+    {
 
-        printf("%d\n",temp->tn->node.n->s.N);
+        printf("%d\n", temp->tn->node.n->s.N);
         temp = temp->next;
     }
 }

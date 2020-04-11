@@ -4,8 +4,6 @@
     GROUP - 11
 */
 
-
-
 #ifndef lexHeader
 #define lexHeader
 
@@ -19,7 +17,7 @@ extern int line;
 FILE *getStream(FILE *fp);
 tokenInfo *getNextToken(FILE **fp);
 void removeComments(char *testCaseFile);
-void printLexerOutput(char* testCaseFile);
+void printLexerOutput(char *testCaseFile);
 
 int keywordChecker(char val[]);
 void flush(char *str, int elementsToFlush);

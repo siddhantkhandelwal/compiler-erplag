@@ -4,7 +4,6 @@
     GROUP - 11
 */
 
-
 #include "lexer.h"
 
 #define MAXLEN 20
@@ -15,7 +14,6 @@ unsigned int ended = 0;
 int buffer_ptr = -1;
 
 char buffer[BUFFLEN];
-
 
 char *keywordDict[] = {"integer", "real", "boolean", "of", "array", "start",
                        "end", "declare", "module", "driver", "program",
@@ -50,8 +48,6 @@ FILE *reloadBuffer(FILE *fp)
     fp = getStream(fp);
     return fp;
 }
-
-
 
 int keywordChecker(char val[])
 {
@@ -129,7 +125,7 @@ tokenInfo *getNextToken(FILE **fp)
         buffer_ptr++;
         check_buffer(fp);
         curr_char = buffer[buffer_ptr];
-        
+
         tokenInfo *token;
 
         switch (state)
@@ -160,7 +156,7 @@ tokenInfo *getNextToken(FILE **fp)
 
                 lexeme_read[len] = curr_char;
                 len++;
-                
+
                 check_buffer(fp);
                 state = 1;
                 break;
@@ -170,7 +166,7 @@ tokenInfo *getNextToken(FILE **fp)
             {
                 lexeme_read[len] = curr_char;
                 len++;
-                
+
                 check_buffer(fp);
                 state = 2;
                 break;
@@ -180,7 +176,7 @@ tokenInfo *getNextToken(FILE **fp)
             {
                 lexeme_read[len] = curr_char;
                 len++;
-                
+
                 check_buffer(fp);
                 state = 6;
                 break;
@@ -245,8 +241,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(SEMICOL, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -255,8 +250,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(COMMA, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -265,8 +259,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(SQBO, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -275,8 +268,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(SQBC, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -285,8 +277,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(BO, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -295,8 +286,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(BC, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -305,8 +295,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(PLUS, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -315,8 +304,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(MINUS, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -325,8 +313,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = curr_char;
                 len++;
                 token = createToken(DIV, lexeme_read, line);
-                
-                
+
                 return token;
             }
 
@@ -338,7 +325,7 @@ tokenInfo *getNextToken(FILE **fp)
 
         case 1:
 
-            curr_char = buffer[buffer_ptr]; 
+            curr_char = buffer[buffer_ptr];
 
             while ((curr_char >= 'a' && curr_char <= 'z') || (curr_char >= 'A' && curr_char <= 'Z') || (curr_char >= '0' && curr_char <= '9') || curr_char == '_')
             {
@@ -369,12 +356,9 @@ tokenInfo *getNextToken(FILE **fp)
             else
                 token = createToken(ID, lexeme_read, line);
 
-            
             return token;
 
         case 2:
-
-            
 
             while (curr_char >= '0' && curr_char <= '9')
             {
@@ -396,10 +380,7 @@ tokenInfo *getNextToken(FILE **fp)
             buffer_ptr--;
 
             token = createToken(NUM, lexeme_read, line);
-            
-            
-            
-            
+
             return token;
 
         case 3:
@@ -408,8 +389,8 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len - 1] = '\0';
                 len--;
                 token = createToken(NUM, lexeme_read, line);
-                
-                buffer_ptr -= 2; 
+
+                buffer_ptr -= 2;
                 return token;
             }
             if (curr_char < '0' || curr_char > '9')
@@ -435,8 +416,7 @@ tokenInfo *getNextToken(FILE **fp)
             }
             buffer_ptr--;
             token = createToken(RNUM, lexeme_read, line);
-            
-           
+
             return token;
 
         case 4:
@@ -453,7 +433,7 @@ tokenInfo *getNextToken(FILE **fp)
             {
                 lexeme_read[--len] = '\0';
                 token = createToken(RNUM, lexeme_read, line);
-                
+
                 buffer_ptr -= 2;
                 return token;
             }
@@ -467,19 +447,13 @@ tokenInfo *getNextToken(FILE **fp)
             }
             buffer_ptr--;
             token = createToken(RNUM, lexeme_read, line);
-            
-            
+
             return token;
 
         case 5:
             if (curr_char < '0' || curr_char > '9')
             {
-                
-                
-                
-                
-                
-                
+
                 buffer_ptr--;
                 printf("Lexical error at line %d\n", line);
                 return NULL;
@@ -494,33 +468,31 @@ tokenInfo *getNextToken(FILE **fp)
             }
             buffer_ptr--;
             token = createToken(RNUM, lexeme_read, line);
-            
-            
+
             return token;
 
         case 6:
             if (curr_char == '*')
             {
                 lexeme_read[--len] = '\0';
-                
+
                 state = 7;
                 break;
             }
             token = createToken(MUL, lexeme_read, line);
-            
-            
+
             buffer_ptr--;
             return token;
 
         case 7:
             while (curr_char && (curr_char != '*') && (curr_char != '\n'))
             {
-                
+
                 buffer_ptr++;
                 check_buffer(fp);
                 curr_char = buffer[buffer_ptr];
             }
-            if(!curr_char)
+            if (!curr_char)
             {
                 return NULL;
             }
@@ -539,7 +511,7 @@ tokenInfo *getNextToken(FILE **fp)
             if (curr_char == '*')
             {
                 state = 0;
-                
+
                 break;
             }
             else if (curr_char == '\n')
@@ -571,8 +543,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(EQ, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
@@ -594,15 +565,13 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(GE, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
             {
                 token = createToken(GT, lexeme_read, line);
-                
-                
+
                 buffer_ptr--;
                 return token;
             }
@@ -612,15 +581,13 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(DRIVERENDDEF, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
             {
                 token = createToken(ENDDEF, lexeme_read, line);
-                
-                
+
                 buffer_ptr--;
                 return token;
             }
@@ -637,15 +604,13 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(LE, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
             {
                 token = createToken(LT, lexeme_read, line);
-                
-                
+
                 buffer_ptr--;
                 return token;
             }
@@ -655,15 +620,13 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(DRIVERDEF, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
             {
                 token = createToken(DEF, lexeme_read, line);
-                
-                
+
                 buffer_ptr--;
                 return token;
             }
@@ -673,8 +636,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(RANGEOP, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
@@ -689,8 +651,7 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(NE, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
@@ -705,61 +666,16 @@ tokenInfo *getNextToken(FILE **fp)
                 lexeme_read[len] = buffer[buffer_ptr];
                 len++;
                 token = createToken(ASSIGNOP, lexeme_read, line);
-                
-                
+
                 return token;
             }
             else
             {
                 token = createToken(COLON, lexeme_read, line);
-                
-                
+
                 buffer_ptr--;
                 return token;
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-    

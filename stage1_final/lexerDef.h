@@ -4,13 +4,11 @@
     GROUP - 11
 */
 
-
 #ifndef lexerHeader
 #define lexerHeader
 
 #include <stdio.h>
 #include <stdlib.h>
-
 
 enum TERM
 {

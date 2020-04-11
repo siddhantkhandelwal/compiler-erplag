@@ -4,11 +4,10 @@
     GROUP - 11
 */
 
-
 #include "tree.h"
 #include <stdlib.h>
 
-tNode* head = NULL;
+tNode *head = NULL;
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti)
 {
@@ -55,16 +54,19 @@ void inserttNode(tNode *ptn, tNode *tn)
         else
         {
 
-            tNode* prev = NULL;
+            tNode *prev = NULL;
 
-
-            if(ptn->leafTag == 0){
+            if (ptn->leafTag == 0)
+            {
 
                 return;
-            }else{
+            }
+            else
+            {
                 temptn = ptn->node.n->child;
 
-                if(temptn==NULL){
+                if (temptn == NULL)
+                {
                     ptn->node.n->child = tn;
                     return;
                 }
@@ -74,10 +76,13 @@ void inserttNode(tNode *ptn, tNode *tn)
 
             int tg = temptn->leafTag;
 
-            while(1){
+            while (1)
+            {
 
-                if(tg==0){
-                    if(temptn->node.l->sibling==NULL){
+                if (tg == 0)
+                {
+                    if (temptn->node.l->sibling == NULL)
+                    {
                         temptn->node.l->sibling = tn;
                         return;
                     }
@@ -85,22 +90,21 @@ void inserttNode(tNode *ptn, tNode *tn)
                     temptn = temptn->node.l->sibling;
                     tg = temptn->leafTag;
                     continue;
+                }
+                else
+                {
 
-                }else{
-
-                     if(temptn->node.n->sibling==NULL){
+                    if (temptn->node.n->sibling == NULL)
+                    {
                         temptn->node.n->sibling = tn;
                         return;
                     }
 
                     temptn = temptn->node.n->sibling;
                     tg = temptn->leafTag;
-                    continue;                   
+                    continue;
                 }
-                
             }
         }
     }
 }
-
-
