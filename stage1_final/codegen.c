@@ -1,6 +1,9 @@
 #include "codegen.h"
 
 int num_relop;
+int num_conditional = 0;
+int num_for = 0;
+int num_while = 0;
 
 void codeGenModuleDef(FILE *fp, tNode *head)
 {
@@ -281,6 +284,125 @@ void codeGenExpression(FILE *fp, tNode *head)
     }
 }
 
+void generate_conditional(tNode *cond_stmt)
+{
+
+    tNode *id = cond_stmt->node.n->child;
+    tNode *case_stmts = id->node.l->sibling;
+    tNode *actual_stmts = case_stmts->node.n->child;
+    tNode *default_stmt = case_stmts->node.n->sibling;
+
+    num_conditional++;
+
+    if (id->entry->type->basic_type == INTEGER)
+    {
+
+        fprintf(code, "MOV ECX, DWORD[EBP-2-%d]\n", id->entry->offset);
+
+        tNode *curr_stmt = actual_stmts;
+        tNode *next_stmt = actual_stmts->node.n->sibling->node.n->sibling;
+
+        while (curr_stmt)
+        {
+
+            fprintf(code, "CMP ECX, %d\n", curr_stmt->node.n->child->node.l->ti->value.v1);
+            if (next_stmt)
+            {
+                fprintf(code, "JNZ CASE_%d-%d\n", num_conditional, next_stmt->node.n->child->node.l->ti->value.v1);
+            }
+            else
+            {
+                fprintf(code, "JNZ DEFAULT_%d\n", num_conditional);
+            }
+
+            generate_code(curr_stmt->node.n->sibling);
+            fprintf(code, "JMP SWITCH_END%d\n", num_conditional);
+            if (next_stmt)
+                fprintf(code, "CASE_%d-%d : ", num_conditional, next_stmt->node.n->child->node.l->ti->value.v1);
+
+            tNode *temp = next_stmt;
+            curr_stmt = temp;
+            if (temp)
+                next_stmt = next_stmt->node.n->sibling->node.n->sibling;
+        }
+
+        fprintf(code, "DEFAULT_%d : ", num_conditional);
+        generate_code(default_stmt->node.n->child);
+        fprintf(code, "SWITCH_END%d : ", num_conditional);
+    }
+    else
+    {
+
+        fprintf(code, "MOV ECX, DWORD[EBP-2-%d]\n", id->entry->offset);
+        tNode *fst_stmt = actual_stmts;
+        tNode *sec_stmt = actual_stmts->node.n->sibling->node.n->sibling;
+
+        fprintf(code, "CMP ECX, 1\n");
+        fprintf(code, "JNZ FALSE_%d\n", num_conditional);
+        if (fst_stmt->node.n->child->node.l->ti->t == TRUE)
+        {
+            fprintf(code, "TRUE_%d : ", num_conditional);
+            generate_code(fst_stmt->node.n->sibling);
+            fprintf(code, "JMP SWITCH_END%d\n", num_conditional);
+            fprintf(code, "FALSE_%d : \n", num_conditional);
+            if (sec_stmt)
+                generate_code(sec_stmt->node.n->sibling);
+            fprintf(code, "JMP SWITCH_END%d\n", num_conditional);
+        }
+        else
+        {
+
+            fprintf(code, "TRUE_%d : ", num_conditional);
+            if (sec_stmt)
+                generate_code(sec_stmt->node.n->sibling);
+            fprintf(code, "JMP SWITCH_END%d\n", num_conditional);
+            fprintf(code, "FALSE_%d : \n", num_conditional);
+            generate_code(fst_stmt->node.n->sibling);
+            fprintf(code, "JMP SWITCH_END%d\n", num_conditional);
+        }
+    }
+}
+
+void generate_iterative(tNode *head)
+{
+
+    tNode *loop_type = head->node.n->child;
+
+    if (loop_type->node.l->ti->t == FOR)
+    {
+
+        num_for++;
+
+        tNode *id = loop_type->node.l->sibling;
+        tNode *range = id->node.l->sibling;
+        tNode *lower = range->node.n->child;
+        tNode *upper = lower->node.l->sibling;
+        fprintf(code, "MOV ECX, %d\n", lower->node.l->ti->value.v1);
+        fprintf(code, "FOR_LOOP_%d : ", num_for);
+        fprintf(code, "MOV DWORD[EBP-2-%d], ECX\n", id->entry->offset);
+        generate_code(range->node.n->sibling);
+        fprintf(code, "MOV ECX, DWORD[EBP-2-%d]\n", id->entry->offset); // Assuming that loop variable is not changed inside the loop
+        fprintf(code, "INC ECX\n");
+        fprintf(code, "CMP ECX, %d\n", upper->node.l->ti->value.v1);
+        fprintf(code, "JLE FOR_LOOP_%d\n", num_for);
+    }
+    else
+    {
+
+        num_while++;
+        tNode *loop_expr = loop_type->node.l->sibling;
+        fprintf(code, "WHILE_LOOP_CHECK_%d : \n", num_while);
+        generate_code(loop_expr);
+        fprintf(code, "POP EAX\n");
+        fprintf(code, "CMP EAX, 1\n");
+        fprintf(code, "JNZ WHILE_LOOP_END%d\n", num_while);
+        fprintf(code, "WHILE_LOOP_%d : ", num_while);
+        generate_code(loop_expr->node.n->sibling);
+        fprintf(code, "JMP WHILE_LOOP_CHECK_%d\n", num_while);
+        fprintf(code, "WHILE_LOOP_END%d : ", num_while);
+    }
+}
+
 void codeGeniostmt(FILE *fp, tNode *head)
 {
     // add this to data section of the assembly code
@@ -397,6 +519,16 @@ void codeGen(FILE *fp, tNode *head)
     if (head->node.n->s.N == ASSIGNMENTSTMT)
     {
         codeGenAssigment(fp, head->node.n->child);
+    }
+    if (head->node.n->s.N == CONDITIONALSTMT)
+    {
+        generate_conditional(head);
+        return;
+    }
+    else if (head->node.n->s.N == ITERATIVESTMT)
+    {
+
+        generate_iterative(head);
     }
     tNode *temp = head->node.n->child;
     while (temp)
