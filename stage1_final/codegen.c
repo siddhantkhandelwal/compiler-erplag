@@ -151,7 +151,7 @@ void codeGenExpression(FILE *fp, tNode *head)
             fprintf(fp, "MOV EAX, 1\n");
             fprintf(fp, "PUSH EAX\n");
         }
-        else if (head->node.l->s.T == TRUE)
+        else if (head->node.l->s.T == FALSE)
         {
             fprintf(fp, "MOV EAX, 0\n");
             fprintf(fp, "PUSH EAX\n");
@@ -281,33 +281,6 @@ void codeGenExpression(FILE *fp, tNode *head)
     }
 }
 
-void printTree(tNode *head)
-{
-    if (head == NULL)
-    {
-        return;
-    }
-    if (head->leafTag == 0)
-    {
-        if (head->node.l->s.T == ID)
-            printf("%s %s", head->node.l->ti->lexeme, terminalDict[head->type->basic_type]);
-        return;
-    }
-    tNode *temp = head->node.n->child;
-    while (temp)
-    {
-        printTree(temp);
-        if (temp->leafTag == 0)
-        {
-            temp = temp->node.l->sibling;
-        }
-        else
-        {
-            temp = temp->node.n->sibling;
-        }
-    }
-}
-
 void codeGeniostmt(FILE *fp, tNode *head)
 {
     // add this to data section of the assembly code
@@ -384,6 +357,33 @@ void codeGeniostmt(FILE *fp, tNode *head)
         fprintf(fp, "call printf\n");
         fprintf(fp, "pop rcx\n");
         fprintf(fp, "pop rax\n");
+    }
+}
+
+void printTree(tNode *head)
+{
+    if (head == NULL)
+    {
+        return;
+    }
+    if (head->leafTag == 0)
+    {
+        if (head->node.l->s.T == ID)
+            printf("%s %s", head->node.l->ti->lexeme, terminalDict[head->type->basic_type]);
+        return;
+    }
+    tNode *temp = head->node.n->child;
+    while (temp)
+    {
+        printTree(temp);
+        if (temp->leafTag == 0)
+        {
+            temp = temp->node.l->sibling;
+        }
+        else
+        {
+            temp = temp->node.n->sibling;
+        }
     }
 }
 
