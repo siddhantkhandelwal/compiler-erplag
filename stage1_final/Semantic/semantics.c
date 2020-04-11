@@ -236,7 +236,8 @@ type_info *expressionChecker(tNode *head)
     else if (head->node.n->is_operator && (head->node.n->s.T == AND || head->node.n->s.T == OR))
     {
         type_info *t1 = expressionChecker(head->node.n->child);
-
+        if(t1)
+        {
         type_info *t2;
         if (head->node.n->child->leafTag == 1)
         {
@@ -314,7 +315,12 @@ type_info *expressionChecker(tNode *head)
         {
             printf("Type Error for %s\n", terminalDict[head->node.n->s.T]);
             return NULL;
-        }
+        }}
+    else
+    {
+        return NULL;
+    }
+    
     }
 
     else if (head->node.n->is_operator && (head->node.n->s.T == GE || head->node.n->s.T == LE || head->node.n->s.T == LT || head->node.n->s.T == GT || head->node.n->s.T == EQ))
@@ -777,18 +783,19 @@ void checkSemantics(tNode *astNode)
                     tNode *whileHeader = child->node.n->child;
                     tNode *arbexp = whileHeader->node.n->sibling;
                     tNode *id = arbexp->node.n->child;
-                   
+                   if(id->entry){
                     id->entry->is_control_variable = 1;
-                    id->entry->is_control_changed = 0;
+                    id->entry->is_control_changed = 0;}
                 }
             }
             checkSemantics(child);
             if (child->node.n->s.N == ASSIGNMENTSTMT)
             {
                 //printf("Here2\n");
+                if(child->node.n->child->entry){
                 child->node.n->child->entry->is_control_changed = 0;
                 printf("%s\n",child->node.n->child->node.l->ti->lexeme);
-                assignmentChecker(child->node.n->child);
+                assignmentChecker(child->node.n->child);}
             }
             else if (child->node.n->s.N == IOSTMT)
             {
@@ -807,12 +814,13 @@ void checkSemantics(tNode *astNode)
                     tNode *whileHeader = child->node.n->child;
                     tNode *arbexp = whileHeader->node.n->sibling;
                     tNode *id = arbexp->node.n->child;
+                    if(id->entry){
                     if (!(id->entry->is_control_changed))
                     {
                         printf("ERROR : (semantics)The control variable of the WHILE loop at line %d, has to be modified in the loop body\n", arbexp->node.n->line);
                     }
                     id->entry->is_control_variable = 0;
-                    id->entry->is_control_changed = 0;
+                    id->entry->is_control_changed = 0;}
                 }
             }
             else if (child->node.n->s.N == CONDITIONALSTMT)

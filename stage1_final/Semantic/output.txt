@@ -1,0 +1,646 @@
+Lexeme: var_demo_array	 Line no: 5         		Token: ID        	Value: -----		Parent Node: module    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: program		Leaf Node: No		Node Symbol: module
+
+Lexeme: x         	 Line no: 6         		Token: ID        	Value: -----		Parent Node: inputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: module		Leaf Node: No		Node Symbol: inputplist
+
+Lexeme: integer   	 Line no: 6         		Token: INTEGER   	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: inputplist		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: m         	 Line no: 6         		Token: ID        	Value: -----		Parent Node: inputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: array     	 Line no: 6         		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: inputplist		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 2         		Line no: 6         		Token: NUM       		Value: 2         		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 20        		Line no: 6         		Token: NUM       		Value: 20        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 6         		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: p         	 Line no: 6         		Token: ID        	Value: -----		Parent Node: inputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: real      	 Line no: 6         		Token: REAL      	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: inputplist		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: n         	 Line no: 7         		Token: ID        	Value: -----		Parent Node: outputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: module		Leaf Node: No		Node Symbol: outputplist
+
+Lexeme: integer   	 Line no: 7         		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: outputplist		Leaf Node: No		Node Symbol: type
+
+Lexeme: k         	 Line no: 7         		Token: ID        	Value: -----		Parent Node: outputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: boolean   	 Line no: 7         		Token: BOOLEAN   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: outputplist		Leaf Node: No		Node Symbol: type
+
+Lexeme: a         	 Line no: 9         		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: b         	 Line no: 9         		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: integer   	 Line no: 9         		Token: INTEGER   	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: moduledef		Leaf Node: No		Node Symbol: statements
+
+Lexeme: get_value 	 Line no: 10        		Token: GET_VALUE 	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: iostmt
+
+Lexeme: b         	 Line no: 10        		Token: ID        	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: p         	 Line no: 11        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: array     	 Line no: 11        		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 2         		Line no: 11        		Token: NUM       		Value: 2         		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 20        		Line no: 11        		Token: NUM       		Value: 20        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 11        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: a         	 Line no: 12        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: m         	 Line no: 12        		Token: ID        	Value: -----		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: casestmts
+
+Lexeme: 5         		Line no: 12        		Token: NUM       		Value: 5         		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: 3         		Line no: 12        		Token: NUM       		Value: 3         		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: p         	 Line no: 13        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: m         	 Line no: 13        		Token: ID        	Value: -----		Parent Node: expression		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: p         	 Line no: 14        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: 10        		Line no: 14        		Token: NUM       		Value: 10        		Parent Node: whichstmt 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: a         	 Line no: 14        		Token: ID        	Value: -----		Parent Node: op2       		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: n4		Leaf Node: No		Node Symbol: op2
+
+Lexeme: b         	 Line no: 14        		Token: ID        	Value: -----		Parent Node: op2       		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: n4
+
+Lexeme: 20        		Line no: 14        		Token: NUM       		Value: 20        		Parent Node: op2       		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: n4		Leaf Node: No		Node Symbol: op2
+
+Lexeme: h         	 Line no: 14        		Token: ID        	Value: -----		Parent Node: op2       		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: n         	 Line no: 15        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: a         	 Line no: 15        		Token: ID        	Value: -----		Parent Node: n4        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: n4
+
+Lexeme: b         	 Line no: 15        		Token: ID        	Value: -----		Parent Node: n4        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: b         	 Line no: 16        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: real      	 Line no: 16        		Token: REAL      	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: b         	 Line no: 17        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: b         	 Line no: 17        		Token: ID        	Value: -----		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: casestmts
+
+Lexeme: 3         		Line no: 17        		Token: NUM       		Value: 3         		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: k         	 Line no: 18        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: a         	 Line no: 18        		Token: ID        	Value: -----		Parent Node: n8        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: varidnum		Leaf Node: No		Node Symbol: n8
+
+Lexeme: b         	 Line no: 18        		Token: ID        	Value: -----		Parent Node: n8        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: varidnum
+
+Lexeme: b         	 Line no: 18        		Token: ID        	Value: -----		Parent Node: n8        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: varidnum		Leaf Node: No		Node Symbol: n8
+
+Lexeme: 100       		Line no: 18        		Token: NUM       		Value: 100       		Parent Node: n8        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: print     	 Line no: 19        		Token: PRINT     	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: iostmt
+
+Lexeme: k         	 Line no: 19        		Token: ID        	Value: -----		Parent Node: var       		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: iostmt		Leaf Node: No		Node Symbol: var
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: module		Leaf Node: No		Node Symbol: moduledef
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: ROOT		Leaf Node: No		Node Symbol: program
+
+Lexeme: f1        	 Line no: 23        		Token: ID        	Value: -----		Parent Node: module    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: program		Leaf Node: No		Node Symbol: module
+
+Lexeme: a         	 Line no: 24        		Token: ID        	Value: -----		Parent Node: inputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: module		Leaf Node: No		Node Symbol: inputplist
+
+Lexeme: array     	 Line no: 24        		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: inputplist		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 10        		Line no: 24        		Token: NUM       		Value: 10        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 30        		Line no: 24        		Token: NUM       		Value: 30        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 24        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: b         	 Line no: 24        		Token: ID        	Value: -----		Parent Node: inputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: array     	 Line no: 24        		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: inputplist		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 10        		Line no: 24        		Token: NUM       		Value: 10        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 30        		Line no: 24        		Token: NUM       		Value: 30        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 24        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: c         	 Line no: 24        		Token: ID        	Value: -----		Parent Node: inputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: real      	 Line no: 24        		Token: REAL      	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: inputplist		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: m         	 Line no: 25        		Token: ID        	Value: -----		Parent Node: outputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: module		Leaf Node: No		Node Symbol: outputplist
+
+Lexeme: boolean   	 Line no: 25        		Token: BOOLEAN   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: outputplist		Leaf Node: No		Node Symbol: type
+
+Lexeme: n         	 Line no: 25        		Token: ID        	Value: -----		Parent Node: outputplist		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 25        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: outputplist		Leaf Node: No		Node Symbol: type
+
+Lexeme: x         	 Line no: 27        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: y         	 Line no: 27        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: real      	 Line no: 27        		Token: REAL      	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: moduledef		Leaf Node: No		Node Symbol: statements
+
+Lexeme: get_value 	 Line no: 28        		Token: GET_VALUE 	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: iostmt
+
+Lexeme: y         	 Line no: 28        		Token: ID        	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: A         	 Line no: 29        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: B         	 Line no: 29        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: array     	 Line no: 29        		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 4         		Line no: 29        		Token: NUM       		Value: 4         		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 10        		Line no: 29        		Token: NUM       		Value: 10        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 29        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: get_value 	 Line no: 30        		Token: GET_VALUE 	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: iostmt
+
+Lexeme: B         	 Line no: 30        		Token: ID        	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: C         	 Line no: 31        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: array     	 Line no: 31        		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 10        		Line no: 31        		Token: NUM       		Value: 10        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 30        		Line no: 31        		Token: NUM       		Value: 30        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 31        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: A         	 Line no: 32        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: B         	 Line no: 32        		Token: ID        	Value: -----		Parent Node: expression		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: C         	 Line no: 33        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: a         	 Line no: 33        		Token: ID        	Value: -----		Parent Node: expression		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: D         	 Line no: 34        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: C         	 Line no: 34        		Token: ID        	Value: -----		Parent Node: expression		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: x         	 Line no: 35        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: c         	 Line no: 35        		Token: ID        	Value: -----		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: casestmts
+
+Lexeme: y         	 Line no: 35        		Token: ID        	Value: -----		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: C         	 Line no: 36        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: 18        		Line no: 36        		Token: NUM       		Value: 18        		Parent Node: whichstmt 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: a         	 Line no: 36        		Token: ID        	Value: -----		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: casestmts
+
+Lexeme: 18        		Line no: 36        		Token: NUM       		Value: 18        		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: b         	 Line no: 36        		Token: ID        	Value: -----		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: 18        		Line no: 36        		Token: NUM       		Value: 18        		Parent Node: casestmts 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: A         	 Line no: 37        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: 5         		Line no: 37        		Token: NUM       		Value: 5         		Parent Node: whichstmt 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: B         	 Line no: 37        		Token: ID        	Value: -----		Parent Node: n4        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: n4
+
+Lexeme: 6         		Line no: 37        		Token: NUM       		Value: 6         		Parent Node: n4        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: 10        		Line no: 37        		Token: NUM       		Value: 10        		Parent Node: n4        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: A         	 Line no: 38        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: array     	 Line no: 38        		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 10        		Line no: 38        		Token: NUM       		Value: 10        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 70        		Line no: 38        		Token: NUM       		Value: 70        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 38        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: m         	 Line no: 39        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: A         	 Line no: 39        		Token: ID        	Value: -----		Parent Node: term      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: term
+
+Lexeme: 5         		Line no: 39        		Token: NUM       		Value: 5         		Parent Node: term      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: C         	 Line no: 39        		Token: ID        	Value: -----		Parent Node: term      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: 18        		Line no: 39        		Token: NUM       		Value: 18        		Parent Node: term      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: m         	 Line no: 40        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: c         	 Line no: 40        		Token: ID        	Value: -----		Parent Node: logicalop 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: var		Leaf Node: No		Node Symbol: logicalop
+
+Lexeme: x         	 Line no: 40        		Token: ID        	Value: -----		Parent Node: logicalop 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: var
+
+Lexeme: E         	 Line no: 40        		Token: ID        	Value: -----		Parent Node: logicalop 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: var		Leaf Node: No		Node Symbol: logicalop
+
+Lexeme: 10        		Line no: 40        		Token: NUM       		Value: 10        		Parent Node: logicalop 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: y         	 Line no: 40        		Token: ID        	Value: -----		Parent Node: logicalop 		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: n         	 Line no: 41        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: 20        		Line no: 41        		Token: NUM       		Value: 20        		Parent Node: op2       		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: n4		Leaf Node: No		Node Symbol: op2
+
+Lexeme: 8         		Line no: 41        		Token: NUM       		Value: 8         		Parent Node: op2       		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: expression		Leaf Node: No		Node Symbol: n4
+
+Lexeme: 5         		Line no: 41        		Token: NUM       		Value: 5         		Parent Node: n4        		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: module		Leaf Node: No		Node Symbol: moduledef
+
+Lexeme: v_1_2_3   	 Line no: 48        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: A         	 Line no: 48        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: integer   	 Line no: 48        		Token: INTEGER   	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: moduledef		Leaf Node: No		Node Symbol: statements
+
+Lexeme: u1        	 Line no: 49        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: boolean   	 Line no: 49        		Token: BOOLEAN   	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: A         	 Line no: 50        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: 12        		Line no: 50        		Token: NUM       		Value: 12        		Parent Node: expression		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: p         	 Line no: 51        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: real      	 Line no: 51        		Token: REAL      	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: p         	 Line no: 52        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: 23.56     	 Line no: 52        		Token: RNUM      	Value: 23.560000 		Parent Node: expression		Leaf Node: Yes	 Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: get_value 	 Line no: 53        		Token: GET_VALUE 	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: iostmt
+
+Lexeme: v_1_2_43  	 Line no: 53        		Token: ID        	Value: -----		Parent Node: iostmt    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: B         	 Line no: 54        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: C         	 Line no: 54        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: array     	 Line no: 54        		Token: ARRAY     	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: 2         		Line no: 54        		Token: NUM       		Value: 2         		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: rangearrays
+
+Lexeme: 20        		Line no: 54        		Token: NUM       		Value: 20        		Parent Node: rangearrays		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: integer   	 Line no: 54        		Token: INTEGER   	Value: -----		Parent Node: type      		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: datatype		Leaf Node: No		Node Symbol: type
+
+Lexeme: v_1_2_3   	 Line no: 55        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: modulereusestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: u1        	 Line no: 55        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: modulereusestmt
+
+Lexeme: var_demo_array	 Line no: 55        		Token: ID        	Value: -----		Parent Node: modulereusestmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: A         	 Line no: 55        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: modulereusestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: B         	 Line no: 55        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: p         	 Line no: 55        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: v_1_2_3   	 Line no: 56        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: modulereusestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: k         	 Line no: 56        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: modulereusestmt
+
+Lexeme: var_demo_array	 Line no: 56        		Token: ID        	Value: -----		Parent Node: modulereusestmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: A         	 Line no: 56        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: modulereusestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: B         	 Line no: 56        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: p         	 Line no: 56        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: B         	 Line no: 57        		Token: ID        	Value: -----		Parent Node: assignmentstmt		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: assignmentstmt
+
+Lexeme: C         	 Line no: 57        		Token: ID        	Value: -----		Parent Node: expression		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: whichstmt		Leaf Node: No		Node Symbol: expression
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: simplestmt
+
+Lexeme: B         	 Line no: 58        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: idlist
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: statements		Leaf Node: No		Node Symbol: declarestmt
+
+Lexeme: real      	 Line no: 58        		Token: REAL      	Value: -----		Parent Node: datatype  		Leaf Node: Yes		Node Symbol: -----
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: declarestmt		Leaf Node: No		Node Symbol: datatype
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: drivermodule		Leaf Node: No		Node Symbol: moduledef
+
+Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: program		Leaf Node: No		Node Symbol: drivermodule
+

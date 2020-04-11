@@ -4,12 +4,12 @@ start
 
 	declare i:integer;
 	declare k:integer;
-	**i:=1;**
-	while(i<=k)
-	start
+	i:=1;
+	**while(i<=k)**
+	**start**
 		 i:=i+1;
 		** the semantics of while needs an increment and will be taken care of at the second phase**
-	end
+	**end**
 
 	
 end

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "codegen.h"
+#include "semantics.h"
 
 extern unsigned int ended;
 
@@ -200,9 +200,9 @@ int main(int argc, char *argv[])
             printParseTree(temp, fp);
             // printSymbolTable(sc);
             checkSemantics(head);
-            FILE* fp5 = fopen("code.asm", "w");
-            codeGen(fp5, head);
-            fclose(fp5);
+            //FILE* fp5 = fopen("code.asm", "w");
+            //codeGen(fp5, head);
+            //fclose(fp5);
             fclose(fp);
             ended = 0;
             break;
