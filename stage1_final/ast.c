@@ -211,18 +211,21 @@ void constructAST(tNode *astNode)
                             liftUpNode(child);
                         }
                     }
-                    else if (child->node.n->s.N == INPUTPLISTNEW || (child->node.n->s.N == OTHERMODULES /*&& child->parent->node.n->s.N == OTHERMODULES*/) ||
+                    else if ((child->node.n->s.N == INPUTPLISTNEW || (child->node.n->s.N == OTHERMODULES /*&& child->parent->node.n->s.N == OTHERMODULES*/) ||
                              child->node.n->s.N == OUTPUTPLISTNEW || (child->node.n->s.N == STATEMENTS && child->parent->node.n->s.N == STATEMENTS) ||
                              child->node.n->s.N == N9 || child->node.n->s.N == IDLISTNEW || child->node.n->s.N == RET ||
                              child->node.n->s.N == OPTIONAL || child->node.n->s.N == STATEMENT || child->node.n->s.N == OP1 || child->node.n->s.N == OP2 ||
-                             child->node.n->s.N == RELATIONALOP || child->node.n->s.N == LOGICALOP || child->node.n->s.N == WHICHID || child->node.n->s.N == ARITHMETICORBOOLEANEXPRESSION ||
-                             child->node.n->s.N == ANYTERM || child->node.n->s.N == ARITHMETICEXPR || child->node.n->s.N == TERM || child->node.n->s.N == FACTOR || child->node.n->s.N == VARIDNUM ||
-                             child->node.n->s.N == LVALUEARRSTMT || child->node.n->s.N == LVALUEIDSTMT || child->node.n->s.N == INDEX || child->node.n->s.N == NEWNT)
+                             child->node.n->s.N == RELATIONALOP || child->node.n->s.N == LOGICALOP || child->node.n->s.N == WHICHID || child->node.n->s.N == VARIDNUM ||
+                             child->node.n->s.N == LVALUEARRSTMT || child->node.n->s.N == LVALUEIDSTMT || child->node.n->s.N == INDEX || child->node.n->s.N == NEWNT || child->node.n->s.N == BOOLCONSTT) && !child->node.n->is_operator)
                     {
-                        if (child->node.n->is_operator == 0)
                             liftUpNode(child);
                     }
-                    else
+                    else if (child->node.n->child != NULL &&
+                            (((child->node.n->child->node.l->ti->t == AND || child->node.n->child->node.l->ti->t == OR) && (child->parent->node.n->s.N == ARITHMETICORBOOLEANEXPRESSION || child->parent->node.n->s.N == N7)) ||
+                             ((child->node.n->child->node.l->ti->t == GE || child->node.n->child->node.l->ti->t == GT || child->node.n->child->node.l->ti->t == EQ || child->node.n->child->node.l->ti->t == LE || child->node.n->child->node.l->ti->t == LT) && (child->parent->node.n->s.N == ANYTERM || child->parent->node.n->s.N == N8)) ||
+                             ((child->node.n->child->node.l->ti->t == PLUS || child->node.n->child->node.l->ti->t == MINUS) && (child->parent->node.n->s.N == ARITHMETICEXPR || child->parent->node.n->s.N == N4)) ||
+                             ((child->node.n->child->node.l->ti->t == MUL || child->node.n->child->node.l->ti->t == DIV) && (child->parent->node.n->s.N == TERM || child->parent->node.n->s.N == N5))) 
+                            )
                     {
                         tNode *temp1 = child->parent->node.n->child;
                         tNode *last = NULL;
@@ -239,14 +242,10 @@ void constructAST(tNode *astNode)
                             }
                         }
 
-                        if (child->node.n->child != NULL &&
-                            (((child->node.n->child->node.l->ti->t == AND || child->node.n->child->node.l->ti->t == OR) && (child->parent->node.n->s.N == ARITHMETICORBOOLEANEXPRESSION || child->parent->node.n->s.N == N7)) ||
-                             ((child->node.n->child->node.l->ti->t == GE || child->node.n->child->node.l->ti->t == GT || child->node.n->child->node.l->ti->t == EQ || child->node.n->child->node.l->ti->t == LE || child->node.n->child->node.l->ti->t == LT) && (child->parent->node.n->s.N == ANYTERM || child->parent->node.n->s.N == N8)) ||
-                             ((child->node.n->child->node.l->ti->t == PLUS || child->node.n->child->node.l->ti->t == MINUS) && (child->parent->node.n->s.N == ARITHMETICEXPR || child->parent->node.n->s.N == N4)) ||
-                             ((child->node.n->child->node.l->ti->t == MUL || child->node.n->child->node.l->ti->t == DIV) && (child->parent->node.n->s.N == TERM || child->parent->node.n->s.N == N5))) &&
-                            last == child)
-                        {
+                        
+                        if(last == child){
                             child->parent->node.n->s = child->node.n->child->node.l->s;
+                            //printf("%s\n", child->node.n->child->node.l->ti->lexeme);
                             child->parent->node.n->line = child->node.n->child->node.l->ti->line;
                             child->parent->node.n->is_operator = 1;
                             deleteNode(child, child->node.n->child);
@@ -267,7 +266,15 @@ void constructAST(tNode *astNode)
                                 }
                             }
                         }
+                        
                     }
+                    else if (child->node.n->s.N == ARITHMETICORBOOLEANEXPRESSION ||
+                             child->node.n->s.N == ANYTERM || child->node.n->s.N == ARITHMETICEXPR || child->node.n->s.N == TERM || child->node.n->s.N == FACTOR )
+                    {
+                        if (child->node.n->is_operator == 0)
+                       liftUpNode(child);
+                    }
+                    
                 }
             }
             if (child->leafTag)

@@ -15,6 +15,8 @@ scope *create_new_scope(scope *parent, char *stamp)
 	temp->output_list = NULL;
 	temp->head = NULL;
 	temp->is_func_used = 0;
+	temp->label_ip = 0;
+	temp->label_op = 0;
 
 	memset(temp->stamp, 0, 25);
 	strcpy(temp->stamp, stamp);
@@ -101,6 +103,23 @@ se *lookupst(char *identifier, scope *sc, int is_func, int line_num)
 	return NULL;
 }
 
+se* addElement(se* list, se* temp)
+{
+	printf("Inside Add element. Adding %s\n", temp->lexeme);
+	if(list == NULL)
+	{
+		return temp;
+	}
+	se* temp1 = list;
+	while (temp1->next)
+	{
+		temp1 = temp1->next;
+	}
+	temp1->next = temp;
+	temp->next = NULL;
+	return list;
+}
+
 se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info *t, scope *func_scope)
 {
 
@@ -114,12 +133,13 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 		temp = sc->head;
 
 	se *temp1 = temp;
-
+	//se* prev = NULL;
 	while (temp1)
 	{
+		//printf("%s\n", temp1->lexeme);
 		if (strcmp(temp1->lexeme, to_add->node.l->ti->lexeme) == 0)
 		{
-
+			
 			if (is_func)
 			{
 				if (temp1->func_use == 2 || temp1->func_use == func_use)
@@ -135,11 +155,16 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 				return temp1;
 			}
 
-			printf("Variable Declared Earlier\n");
+			printf("Variable %s Declared Earlier\n", temp1->lexeme);
 			return NULL;
 		}
-
+		//printf("Inside if\n");
+		//prev = temp1;
 		temp1 = temp1->next;
+		// if(temp1)
+		// {
+		// 	printf("%s:prev\n", prev->lexeme);
+		// }
 	}
 
 	temp1 = malloc(sizeof(se));
@@ -159,7 +184,7 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 	temp1->is_control_changed = 0;
 	if (is_func)
 		temp1->scope_info = func_scope;
-	temp1->next = temp;
+	
 
 	if (sc->parent != NULL)
 	{
@@ -209,13 +234,20 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 			}
 		}
 	}
-
+	temp1->next = temp;
 	if (to_add->parent->node.n->s.N == INPUTPLIST)
+	{
 		sc->input_list = temp1;
+	}
+		
 	else if (to_add->parent->node.n->s.N == OUTPUTPLIST)
+	{	
 		sc->output_list = temp1;
-	else
+	}
+	else{
+		
 		sc->head = temp1;
+	}
 
 	return temp1;
 }
@@ -394,10 +426,13 @@ void populate_st(tNode *head, scope *sc)
 			}
 			//child->sc = next_scope;
 			populate_st(child, next_scope);
+
 			if (child->node.n->s.N == MODULE_NT)
 			{
 				next_scope->is_func_used = 0;
+
 			}
+			next_scope = sc;
 		}
 
 		if (child->leafTag)

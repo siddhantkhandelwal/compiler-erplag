@@ -1,12 +1,3 @@
-** Test case 6: Testing function types  
-This Includes 
-1. Number and types of input and output parameters
-2. static bound checking and static type checking in expressions - arithmetic and boolean (extension of test case 5) 
-
-Multiple level nesting using integer, real, boolean data types including static array data type
-Variant of test case 5**
-
-
 <<module function1>>
 takes input [data: array[100..150] of boolean, weight: real, length: integer, b:array[35..50] of real, q:integer];
 returns [R1: real, R2: integer, R3: boolean, R4: integer];

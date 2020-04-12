@@ -1,11 +1,9 @@
 <<<driver program>>>
 start
 	
-end
-<<module empty>>
-takes input[a:boolean];
-start
-
-    ** shdfbsdh bfhds 
-
+	declare k:boolean;					 		
+	declare  q: real;
+	
+	k:= true AND false OR q;		**ERROR: type mismatch error**
+	      
 end

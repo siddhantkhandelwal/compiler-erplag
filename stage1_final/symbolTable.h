@@ -43,6 +43,8 @@ struct scope{
 	se* output_list;
 	se* head;
 	int is_func_used;
+	int label_ip;
+	int label_op;
 };
 
 scope* make_st(tNode* head);

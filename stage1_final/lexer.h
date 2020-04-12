@@ -12,7 +12,7 @@
 #include <string.h>
 #include "lexerDef.h"
 extern unsigned int ended;
-#define BUFFLEN 4096
+#define BUFFLEN 20480
 extern int line;
 FILE *getStream(FILE *fp);
 tokenInfo *getNextToken(FILE **fp);
