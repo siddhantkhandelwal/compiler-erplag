@@ -190,7 +190,7 @@ type_info *assignmentChecker(tNode *head)
                 else
                 {
                     head->type = NULL;
-                    printf("Type error for %s in assignment statement.\n", head->node.l->ti->lexeme);
+                    printf("Type error for  in assignment statement. Line: %d\n", head->node.l->ti->line);
                     return NULL;
                 }
             }
@@ -648,7 +648,7 @@ void check_input_parameters(scope *scope_of_func, tNode *input_list)
 void checkModuleDef(tNode* head)
 {
     tNode* outp_list = head->node.n->child->node.l->sibling->node.n->sibling;
-    if(outp_list)
+    if(outp_list->node.n->s.N == OUTPUTPLIST)
     {
         tNode* temp = outp_list->node.n->child;
         while (temp)
@@ -711,7 +711,7 @@ void check_output_parameters(scope *scope_of_func, tNode *idlist_node)
             printf("Error : Types of output function parameters don't match. Line: %d\n", idlist_node->node.l->ti->line);
             return;
         }
-
+        idlist_node->entry->is_control_changed = 1;
         output_list = output_list->next;
         idlist_node = idlist_node->node.l->sibling;
     }
@@ -782,7 +782,7 @@ void iterativeSemantics(tNode *head)
 void conditionalSemantics(tNode *head)
 {
     tNode *id = head->node.n->child;
-    tNode *cs = id->node.n->sibling;
+    tNode *cs = id->node.l->sibling;
     tNode *df = cs->node.n->sibling;
     if (id->entry && id->entry->type->basic_type != INTEGER && id->entry->type->basic_type != BOOLEAN)
     {
@@ -796,14 +796,32 @@ void conditionalSemantics(tNode *head)
         }
         else if (id->entry && id->entry->type->basic_type == BOOLEAN && df != NULL)
         {
-            printf("ERROR : (semantics) The BOOLEAN identifier '%s' in switch statement at line %d must not be followed by the DEFAULT statement..\n", id->entry->lexeme, id->node.l->ti->line);
+            printf("Switch statements with boolean identifier can have only true and false as labels. Line: %d\n", df->node.n->child->node.l->ti->line);
         }
     }
     tNode *temp = cs->node.n->child;
-    if (id->entry && id->entry->type->basic_type == BOOLEAN && temp->node.n->child->node.n->s.T != TRUE && temp->node.n->sibling->node.n->sibling->node.n->s.T != FALSE)
+    if (id->entry && id->entry->type->basic_type == BOOLEAN)
     {
-        printf("ERROR : (semantics) Switch statement with BOOLEAN typed identifier can have only TRUE and FALSE values in case statements. Found otherwise at line %d\n", temp->node.n->child->node.l->ti->line);
+        while (temp)
+        {
+            if(temp->node.n->child->node.l->s.T != TRUE && temp->node.n->child->node.l->s.T != FALSE)
+            {
+                printf("Switch statements with boolean identifier can have only true and false as labels. Line: %d\n", temp->node.n->child->node.l->ti->line);
+            }
+
+        if (temp->node.n->sibling)
+        {
+            temp = temp->node.n->sibling->node.n->sibling;
+        }
+        else
+        {
+            temp = NULL;
+        }
+
+        }
+        
     }
+    else{
     while (temp)
     {
         if (id->entry && id->entry->type->basic_type == INTEGER && temp->node.n->child->node.n->s.T != NUM)
@@ -818,6 +836,7 @@ void conditionalSemantics(tNode *head)
         {
             temp = NULL;
         }
+    }
     }
 }
 
@@ -850,6 +869,15 @@ void checkSemantics(tNode *astNode)
                     tNode *whileHeader = child->node.n->child;
                     tNode *arbexp = whileHeader->node.n->sibling;
                     tNode *id = arbexp->node.n->child;
+                   if(id->entry){
+                    id->entry->is_control_variable = 1;
+                    id->entry->is_control_changed = 0;}
+                }
+                if (child->node.n->child->node.n->s.T == FOR)
+                {
+                    tNode *forHeader = child->node.n->child;
+                    tNode *id = forHeader->node.n->sibling;
+                   // tNode *id = arbexp->node.n->child;
                    if(id->entry){
                     id->entry->is_control_variable = 1;
                     id->entry->is_control_changed = 0;}
@@ -889,6 +917,19 @@ void checkSemantics(tNode *astNode)
                     id->entry->is_control_variable = 0;
                     id->entry->is_control_changed = 0;}
                 }
+                else if (child->node.n->child->node.n->s.T == FOR)
+                {
+                    tNode *forHeader = child->node.n->child;
+                    tNode *id = forHeader->node.n->sibling;
+                    if(id->entry)
+                    {
+                        if(id->entry->is_control_changed)
+                        {
+                            printf("ERROR : (semantics)The control variable of the FOR loop at line %d, has been in the loop body", id->node.l->ti->line);
+                        }
+                    }
+                }
+                
             }
             else if (child->node.n->s.N == CONDITIONALSTMT)
             {

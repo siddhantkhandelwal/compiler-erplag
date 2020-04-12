@@ -29,6 +29,7 @@ struct symbol_entry{
 	int width;
 	int num_used; // Number of times this variable is used;
 	int used_on_lines[50];
+	int error_flag;
 };
 
 struct scope{

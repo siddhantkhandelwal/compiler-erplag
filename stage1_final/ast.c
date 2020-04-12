@@ -182,7 +182,7 @@ void constructAST(tNode *astNode)
 {
     tNode *child;
 
-    Terminal keep[] = {PRINT, AND, OR, FOR, INTEGER, REAL, BOOLEAN, ARRAY, GET_VALUE, TRUE, FALSE, WHILE, ID, NUM, RNUM, PLUS, MINUS, MUL, DIV, LT, LE, GT, GE, NE, EQ /*, ASSIGNOP*/};
+    Terminal keep[] = {PRINT, AND, OR, FOR, INTEGER, REAL, BOOLEAN, ARRAY, GET_VALUE, TRUE, FALSE, WHILE, ID, NUM, RNUM, PLUS, MINUS, MUL, DIV, LT, LE, GT, GE, NE, EQ, DEFAULT /*, ASSIGNOP*/};
 
     if (astNode->leafTag == 1)
     {
