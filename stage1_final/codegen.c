@@ -407,12 +407,11 @@ void codeGeniostmt(FILE *fp, tNode *head)
 {
     // add this to data section of the assembly code
     // MEM: times 1000 db 0
-    // intinputFormat: db \"%%d\",10,0
-    // realinputFormat db \"%%f\",10,0
+    // intinputFormat: db \"%d\"
+    // realinputFormat db \"%f\"
     // intvar: times 8 db 0
     // realvar: times 8 db 0
-    // men:  db \"Value is %%d \",10,0
-    // arr:  times 2 db 0
+    // men:  db \"Output: %d \"
 
     if (head->node.n->child->node.l->s.T == GET_VALUE)
     {
