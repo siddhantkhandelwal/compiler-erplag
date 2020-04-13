@@ -406,12 +406,11 @@ void generate_iterative(tNode *head)
 void codeGeniostmt(FILE *fp, tNode *head)
 {
     // add this to data section of the assembly code
-    // MEM: times 1000 db 0
-    // intinputFormat: db \"%d\"
-    // realinputFormat db \"%f\"
+    // intinputFormat: db \"%d\", 10
+    // realinputFormat db \"%f\", 10
     // intvar: times 8 db 0
     // realvar: times 8 db 0
-    // men:  db \"Output: %d \"
+    // men:  db \"Output: %d \", 10
 
     if (head->node.n->child->node.l->s.T == GET_VALUE)
     {
@@ -419,45 +418,66 @@ void codeGeniostmt(FILE *fp, tNode *head)
         tNode *id = head->node.n->child->node.l->sibling;
         if (id->entry->is_array == 1)
         {
-            int array_size = id->entry->width;
-            int counter = 0;
-            while (counter < array_size)
+            int array_size;
+            if (id->entry->type->element_type == INTEGER)
             {
-                if (id->entry->type->element_type == INTEGER || id->entry->type->element_type == BOOLEAN)
+                array_size = (id->entry->width) * 2;
+            }
+            else if (id->entry->type->element_type == BOOLEAN)
+            {
+                array_size = (id->entry->width) * 1;
+            }
+            else
+            {
+                array_size = (id->entry->width) * 2;
+            }
+            num_for++;
+            fprintf(fp, "XOR ECX, ECX\n");
+            fprintf(fp, "FOR_LOOP_%d : ", num_for);
+            if (id->entry->type->element_type == INTEGER || id->entry->type->element_type == BOOLEAN)
+            {
+                fprintf(fp, "MOV RSI,intvar+0\n");
+                fprintf(fp, "MOV RDI,intinputFormat\n");
+                fprintf(fp, "XOR RAX,RAX\n");
+                fprintf(fp, "call scanf\n");
+                fprintf(fp, "MOV AX,word[intvar+0]\n");
+                if (id->entry->type->element_type == INTEGER)
                 {
-                    fprintf(fp, "MOV AX,word[intvar+0]\n");
-                    fprintf(fp, "MOV RSI,intvar+0\n");
-                    fprintf(fp, "MOV RDI,intinputFormat\n");
-                    fprintf(fp, "XOR RAX,RAX\n");
-                    fprintf(fp, "call scanf\n");
-                    fprintf(fp, "MOV AX,word[intvar+0]\n");
-                    if (id->entry->type->element_type == INTEGER)
-                    {
-                        fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset + counter);
-                    }
-                    else
-                    {
-                        fprintf(fp, "MOV byte[MEM+%d],AX\n", id->entry->offset + counter);
-                    }
+                    fprintf(fp, "MOV word[%d+ECX],AX\n", id->entry->offset);
                 }
                 else
                 {
-                    fprintf(fp, "MOV AX,word[realvar+0]\n");
-                    fprintf(fp, "MOV RSI,realvar+0\n");
-                    fprintf(fp, "MOV RDI,realinputFormat\n");
-                    fprintf(fp, "XOR RAX,RAX\n");
-                    fprintf(fp, "call scanf\n");
-                    fprintf(fp, "MOV AX,word[realvar+0]\n");
-                    fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset + counter);
+                    fprintf(fp, "MOV byte[%d+ECX],AX\n", id->entry->offset);
                 }
-                counter++;
             }
+            else
+            {
+                fprintf(fp, "MOV RSI,realvar+0\n");
+                fprintf(fp, "MOV RDI,realinputFormat\n");
+                fprintf(fp, "XOR RAX,RAX\n");
+                fprintf(fp, "call scanf\n");
+                fprintf(fp, "MOV AX,word[realvar+0]\n");
+                fprintf(fp, "MOV word[%d+ECX],AX\n", id->entry->offset);
+            }
+            if (id->entry->type->element_type == INTEGER)
+            {
+                fprintf(fp, "ADD ECX, 2\n");
+            }
+            else if (id->entry->type->element_type == BOOLEAN)
+            {
+                fprintf(fp, "INC ECX\n");
+            }
+            else
+            {
+                fprintf(fp, "ADD ECX, 2\n");
+            }
+            fprintf(fp, "CMP ECX, %d\n", array_size);
+            fprintf(fp, "JLE FOR_LOOP_%d\n", num_for);
         }
         else
         {
             if (id->entry->type->basic_type == INTEGER || id->entry->type->basic_type == BOOLEAN)
             {
-                fprintf(fp, "MOV AX,word[intvar+0]\n");
                 fprintf(fp, "MOV RSI,intvar+0\n");
                 fprintf(fp, "MOV RDI,intinputFormat\n");
                 fprintf(fp, "XOR RAX,RAX\n");
@@ -465,22 +485,21 @@ void codeGeniostmt(FILE *fp, tNode *head)
                 fprintf(fp, "MOV AX,word[intvar+0]\n");
                 if (id->entry->type->basic_type == INTEGER)
                 {
-                    fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset);
+                    fprintf(fp, "MOV word[%d],AX\n", id->entry->offset);
                 }
                 else
                 {
-                    fprintf(fp, "MOV byte[MEM+%d],AX\n", id->entry->offset);
+                    fprintf(fp, "MOV byte[%d],AX\n", id->entry->offset);
                 }
             }
             else
             {
-                fprintf(fp, "MOV AX,word[realvar+0]\n");
                 fprintf(fp, "MOV RSI,realvar+0\n");
                 fprintf(fp, "MOV RDI,realinputFormat\n");
                 fprintf(fp, "XOR RAX,RAX\n");
                 fprintf(fp, "call scanf\n");
                 fprintf(fp, "MOV AX,word[realvar+0]\n");
-                fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset);
+                fprintf(fp, "MOV word[%d],AX\n", id->entry->offset);
             }
         }
     }
@@ -488,15 +507,74 @@ void codeGeniostmt(FILE *fp, tNode *head)
     {
         // print
         tNode *var = head->node.n->child->node.l->sibling;
+        tNode *id = var->node.n->child;
         if (var->node.n->child->node.l->s.T == ID && var->node.n->child->entry->is_array == 1)
         {
-            if (var->node.n->child->node.l->sibling != NULL)
+            if (id->node.l->sibling != NULL)
             {
                 // array element
+                int off = id->entry->offset;
+                if (id->node.l->sibling->node.l->s.T == NUM)
+                {
+                    int disp = id->node.l->sibling->node.l->ti->value.v1;
+                    fprintf(fp, "mov AX,word[%d]\n", off + disp);
+                }
+                else if (id->node.l->sibling->node.l->s.T == ID)
+                {
+                    fprintf(fp, "mov DX, word[%d]\n", id->node.l->sibling->entry->offset);
+                    fprintf(fp, "mov AX, word[DX+%d]\n", off);
+                }
+                fprintf(fp, "push rax\n");
+                fprintf(fp, "push rcx\n");
+                fprintf(fp, "mov rdi, men\n");
+                fprintf(fp, "mov rsi, rax\n");
+                fprintf(fp, "xor rax, rax\n");
+                fprintf(fp, "call printf\n");
+                fprintf(fp, "pop rcx\n");
+                fprintf(fp, "pop rax\n");
             }
             else
             {
                 // complete array
+                int array_size;
+                if (id->entry->type->element_type == INTEGER)
+                {
+                    array_size = (id->entry->width) * 2;
+                }
+                else if (id->entry->type->element_type == BOOLEAN)
+                {
+                    array_size = (id->entry->width) * 1;
+                }
+                else
+                {
+                    array_size = (id->entry->width) * 2;
+                }
+                num_for++;
+                fprintf(fp, "XOR ECX, ECX\n");
+                fprintf(fp, "FOR_LOOP_%d : ", num_for);
+                fprintf(fp, "mov AX,word[%d+ECX]\n", var->node.n->child->entry->offset);
+                fprintf(fp, "push rax\n");
+                fprintf(fp, "push rcx\n");
+                fprintf(fp, "mov rdi, men\n");
+                fprintf(fp, "mov rsi, rax\n");
+                fprintf(fp, "xor rax, rax\n");
+                fprintf(fp, "call printf\n");
+                fprintf(fp, "pop rcx\n");
+                fprintf(fp, "pop rax\n");
+                if (id->entry->type->element_type == INTEGER)
+                {
+                    fprintf(fp, "ADD ECX, 2\n");
+                }
+                else if (id->entry->type->element_type == BOOLEAN)
+                {
+                    fprintf(fp, "INC ECX\n");
+                }
+                else
+                {
+                    fprintf(fp, "ADD ECX, 2\n");
+                }
+                fprintf(fp, "CMP ECX, %d\n", array_size);
+                fprintf(fp, "JLE FOR_LOOP_%d\n", num_for);
             }
         }
         else
@@ -518,7 +596,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
             }
             else if (var->node.n->child->node.l->s.T == ID && var->node.n->child->node.l->sibling == NULL)
             {
-                fprintf(fp, "mov AX,word[MEM+%d]\n", var->node.n->child->entry->offset);
+                fprintf(fp, "mov AX,word[%d]\n", var->node.n->child->entry->offset);
             }
             fprintf(fp, "push rax\n");
             fprintf(fp, "push rcx\n");
