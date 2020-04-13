@@ -416,69 +416,120 @@ void codeGeniostmt(FILE *fp, tNode *head)
 
     if (head->node.n->child->node.l->s.T == GET_VALUE)
     {
+        // Get_VALUE
         tNode *id = head->node.n->child->node.l->sibling;
-        if (id->entry->type->basic_type == INTEGER || id->entry->type->basic_type == BOOLEAN)
+        if (id->entry->is_array == 1)
         {
-            fprintf(fp, "MOV AX,word[intvar+0]\n");
-            fprintf(fp, "MOV RSI,intvar+0\n");
-            fprintf(fp, "MOV RDI,intinputFormat\n");
-            fprintf(fp, "XOR RAX,RAX\n");
-            fprintf(fp, "call scanf\n");
-            fprintf(fp, "MOV AX,word[intvar+0]\n");
-            if (id->entry->type->basic_type == INTEGER)
+            int array_size = id->entry->width;
+            int counter = 0;
+            while (counter < array_size)
             {
-                fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset);
-            }
-            else
-            {
-                fprintf(fp, "MOV byte[MEM+%d],AX\n", id->entry->offset);
+                if (id->entry->type->element_type == INTEGER || id->entry->type->element_type == BOOLEAN)
+                {
+                    fprintf(fp, "MOV AX,word[intvar+0]\n");
+                    fprintf(fp, "MOV RSI,intvar+0\n");
+                    fprintf(fp, "MOV RDI,intinputFormat\n");
+                    fprintf(fp, "XOR RAX,RAX\n");
+                    fprintf(fp, "call scanf\n");
+                    fprintf(fp, "MOV AX,word[intvar+0]\n");
+                    if (id->entry->type->element_type == INTEGER)
+                    {
+                        fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset + counter);
+                    }
+                    else
+                    {
+                        fprintf(fp, "MOV byte[MEM+%d],AX\n", id->entry->offset + counter);
+                    }
+                }
+                else
+                {
+                    fprintf(fp, "MOV AX,word[realvar+0]\n");
+                    fprintf(fp, "MOV RSI,realvar+0\n");
+                    fprintf(fp, "MOV RDI,realinputFormat\n");
+                    fprintf(fp, "XOR RAX,RAX\n");
+                    fprintf(fp, "call scanf\n");
+                    fprintf(fp, "MOV AX,word[realvar+0]\n");
+                    fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset + counter);
+                }
+                counter++;
             }
         }
         else
         {
-            fprintf(fp, "MOV AX,word[realvar+0]\n");
-            fprintf(fp, "MOV RSI,realvar+0\n");
-            fprintf(fp, "MOV RDI,realinputFormat\n");
-            fprintf(fp, "XOR RAX,RAX\n");
-            fprintf(fp, "call scanf\n");
-            fprintf(fp, "MOV AX,word[realvar+0]\n");
-            fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset);
+            if (id->entry->type->basic_type == INTEGER || id->entry->type->basic_type == BOOLEAN)
+            {
+                fprintf(fp, "MOV AX,word[intvar+0]\n");
+                fprintf(fp, "MOV RSI,intvar+0\n");
+                fprintf(fp, "MOV RDI,intinputFormat\n");
+                fprintf(fp, "XOR RAX,RAX\n");
+                fprintf(fp, "call scanf\n");
+                fprintf(fp, "MOV AX,word[intvar+0]\n");
+                if (id->entry->type->basic_type == INTEGER)
+                {
+                    fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset);
+                }
+                else
+                {
+                    fprintf(fp, "MOV byte[MEM+%d],AX\n", id->entry->offset);
+                }
+            }
+            else
+            {
+                fprintf(fp, "MOV AX,word[realvar+0]\n");
+                fprintf(fp, "MOV RSI,realvar+0\n");
+                fprintf(fp, "MOV RDI,realinputFormat\n");
+                fprintf(fp, "XOR RAX,RAX\n");
+                fprintf(fp, "call scanf\n");
+                fprintf(fp, "MOV AX,word[realvar+0]\n");
+                fprintf(fp, "MOV word[MEM+%d],AX\n", id->entry->offset);
+            }
         }
     }
     else
     {
+        // print
         tNode *var = head->node.n->child->node.l->sibling;
-        if (var->node.n->child->node.n->s.N == BOOLCONSTT)
+        if (var->node.n->child->node.l->s.T == ID && var->node.n->child->entry->is_array == 1)
         {
-            if (var->node.n->child->node.n->child->node.l->s.T == TRUE)
+            if (var->node.n->child->node.l->sibling != NULL)
             {
-                fprintf(fp, "mov AX,1\n");
+                // array element
             }
             else
             {
-                fprintf(fp, "mov AX,0\n");
+                // complete array
             }
-        }
-        else if (var->node.n->child->node.l->s.T == NUM || var->node.n->child->node.l->s.T == RNUM)
-        {
-            fprintf(fp, "mov AX,%s\n", var->node.n->child->node.l->ti->lexeme);
-        }
-        else if (var->node.n->child->node.l->s.T == ID && var->node.n->child->node.l->sibling == NULL)
-        {
-            fprintf(fp, "mov AX,word[MEM+%d]\n", var->node.n->child->entry->offset);
         }
         else
         {
-            //array
+            if (var->node.n->child->node.n->s.N == BOOLCONSTT)
+            {
+                if (var->node.n->child->node.n->child->node.l->s.T == TRUE)
+                {
+                    fprintf(fp, "mov AX,1\n");
+                }
+                else
+                {
+                    fprintf(fp, "mov AX,0\n");
+                }
+            }
+            else if (var->node.n->child->node.l->s.T == NUM || var->node.n->child->node.l->s.T == RNUM)
+            {
+                fprintf(fp, "mov AX,%s\n", var->node.n->child->node.l->ti->lexeme);
+            }
+            else if (var->node.n->child->node.l->s.T == ID && var->node.n->child->node.l->sibling == NULL)
+            {
+                fprintf(fp, "mov AX,word[MEM+%d]\n", var->node.n->child->entry->offset);
+            }
+            fprintf(fp, "push rax\n");
+            fprintf(fp, "push rcx\n");
+            fprintf(fp, "mov rdi, men\n");
+            fprintf(fp, "mov rsi, rax\n");
+            fprintf(fp, "xor rax, rax\n");
+            fprintf(fp, "call printf\n");
+            fprintf(fp, "pop rcx\n");
+            fprintf(fp, "pop rax\n");
         }
-        fprintf(fp, "push rax\n");
-        fprintf(fp, "push rcx\n");
-        fprintf(fp, "mov rdi, men\n");
-        fprintf(fp, "mov rsi, rax\n");
-        fprintf(fp, "xor rax, rax\n");
-        fprintf(fp, "call printf\n");
-        fprintf(fp, "pop rcx\n");
-        fprintf(fp, "pop rax\n");
     }
 }
 
