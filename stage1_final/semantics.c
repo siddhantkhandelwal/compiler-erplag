@@ -648,7 +648,7 @@ void check_input_parameters(scope *scope_of_func, tNode *input_list)
 void checkModuleDef(tNode* head)
 {
     tNode* outp_list = head->node.n->child->node.l->sibling->node.n->sibling;
-    if(outp_list)
+    if(outp_list->node.n->s.N == OUTPUTPLIST)
     {
         tNode* temp = outp_list->node.n->child;
         while (temp)
@@ -665,7 +665,6 @@ void checkModuleDef(tNode* head)
             }
         }
     }
-
 }
 
 void check_output_parameters(scope *scope_of_func, tNode *idlist_node)
@@ -712,6 +711,7 @@ void check_output_parameters(scope *scope_of_func, tNode *idlist_node)
             return;
         }
 
+        idlist_node->entry->is_control_changed = 1;
         output_list = output_list->next;
         idlist_node = idlist_node->node.l->sibling;
     }
