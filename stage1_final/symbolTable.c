@@ -62,6 +62,22 @@ se *lookupst(char *identifier, scope *sc, int is_func, int line_num)
 			{
 				if (!is_func || (is_func && head->is_func))
 					head->used_on_lines[head->num_used++] = line_num;
+				if(is_func && head->is_func)
+				{
+					if(head->func_use == 0)
+					{
+						head->error_flag = 0;
+					}
+					else if (head->func_use == 2)
+					{
+						if(head->error_flag != 0)
+						{
+							printf("Declaration of function %s is redundant. Line: %d\n", head->lexeme, line_num);
+							//return NULL;
+						}
+					}
+					
+				}
 				return head;
 			}
 
@@ -99,26 +115,26 @@ se *lookupst(char *identifier, scope *sc, int is_func, int line_num)
 	}
 
 	/* ERROR ? */
-	printf("Error %s Not found.\n", identifier);
+	printf("Error %s Not found. Line: %d\n", identifier, line_num);
 	return NULL;
 }
 
-se* addElement(se* list, se* temp)
-{
-	printf("Inside Add element. Adding %s\n", temp->lexeme);
-	if(list == NULL)
-	{
-		return temp;
-	}
-	se* temp1 = list;
-	while (temp1->next)
-	{
-		temp1 = temp1->next;
-	}
-	temp1->next = temp;
-	temp->next = NULL;
-	return list;
-}
+// se* addElement(se* list, se* temp)
+// {
+// 	printf("Inside Add element. Adding %s\n", temp->lexeme);
+// 	if(list == NULL)
+// 	{
+// 		return temp;
+// 	}
+// 	se* temp1 = list;
+// 	while (temp1->next)
+// 	{
+// 		temp1 = temp1->next;
+// 	}
+// 	temp1->next = temp;
+// 	temp->next = NULL;
+// 	return list;
+// }
 
 se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info *t, scope *func_scope)
 {
@@ -144,18 +160,18 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 			{
 				if (temp1->func_use == 2 || temp1->func_use == func_use)
 				{
-					printf("Variable Declared Earlier\n");
+					printf("Function re-declaration on re-definition for %s. Line: %d\n", to_add->node.l->ti->lexeme, to_add->node.l->ti->line);
 					return NULL;
 				}
 				// Multiple function declarations or definitions?
 				temp1->func_use = 2;
-				printf("%s", func_scope->stamp);
+				//printf("%s", func_scope->stamp);
 				temp1->scope_info = func_scope;
 				temp1->used_on_lines[temp1->num_used++] = to_add->node.l->ti->line;
 				return temp1;
 			}
 
-			printf("Variable %s Declared Earlier\n", temp1->lexeme);
+			printf("Variable %s Declared Earlier. Line: %d\n", temp1->lexeme, to_add->node.l->ti->line);
 			return NULL;
 		}
 		//printf("Inside if\n");
@@ -195,7 +211,7 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 
 			if (temp1->type->basic_type == INTEGER)
 			{
-				OFFSET = OFFSET + 2;
+				OFFSET = OFFSET + 4;
 			}
 			else if (temp1->type->basic_type == REAL)
 			{
@@ -203,7 +219,7 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 			}
 			else if (temp1->type->basic_type == BOOLEAN)
 			{
-				OFFSET++;
+				OFFSET = OFFSET + 4;
 			}
 		}
 		else
@@ -221,7 +237,7 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 				}
 				if (temp1->type->basic_type == INTEGER)
 				{
-					OFFSET = OFFSET + (2 * width);
+					OFFSET = OFFSET + (4 * width);
 				}
 				else if (temp1->type->basic_type == REAL)
 				{
@@ -229,7 +245,7 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 				}
 				else if (temp1->type->basic_type == BOOLEAN)
 				{
-					OFFSET = OFFSET * width;
+					OFFSET = OFFSET + (4*width);
 				}
 			}
 		}
@@ -376,12 +392,12 @@ void populate_st(tNode *head, scope *sc)
 						// Putting scope of the function in MODULEREUSESTMT node. Used later.
 						head->entry = func_entry;
 						if (func_entry == NULL)
-							printf("Error : Function should be declared before use. Function semantics will not be checked\n");
+							printf("Error : Function should be declared before use. Function semantics will not be checked. Line: %d\n", child->node.l->ti->line);
 						else
 						{
 							if (func_entry->scope_info && func_entry->scope_info->is_func_used)
 							{
-								printf("Error : Recursion Detected\n");
+								printf("Error : Recursion Detected. Line: %d\n",child->node.l->ti->line);
 							}
 						}
 					}

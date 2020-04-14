@@ -1,0 +1,17 @@
+<<<driver program>>>
+start
+	declare z,k:integer;
+
+	z:=9;
+
+	for(k in 10..15)
+        start
+             declare a, b:integer;
+              a:= 7;
+              get_value(b);
+              a:= a+b;
+              print(a); 
+              z:= z+k+a*2;
+              print(z);
+        end
+end

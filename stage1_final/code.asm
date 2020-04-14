@@ -1,30 +1,388 @@
-POP EAX
-MOV dword[EBP-2-2] EAX
-POP EAX
-MOV EAX, dword[EBP-6-2]
+extern printf
+extern scanf
+section .data
+intinputFormat: db "%d",0
+realinputFormat: db "%f",0
+intvar: times 100 dd 0
+realvar: times 100 dd 0
+men:  db "Output: %d ", 10,0
+section .text
+global main
+main:
+mov ebp, esp
+push EAX
+push EAX
 PUSH EAX
-MOV EAX, dword[EBP-0-2]
+PUSH EAX
+PUSH EAX
+PUSH EAX
+PUSH EAX
+PUSH EAX
+PUSH EAX
+PUSH EAX
+PUSH EAX
+mov EDX, ESP
+SUB EDX, 4
+push EDX
+SUB ESP, 24
+MOV EAX, 1
+PUSH EAX
+POP EAX
+MOV [dword EBP-28-12],EAX
+MOV EAX, 5
+PUSH EAX
+POP EAX
+MOV [dword EBP-16-12],EAX
+MOV EAX, 9
+PUSH EAX
+POP EAX
+MOV [dword EBP-20-12],EAX
+PUSH intvar+0
+PUSH intinputFormat
+call scanf
+ADD ESP,8
+MOV EAX,dword[intvar+0]
+MOV dword[EBP-12],EAX
+PUSH intvar+0
+PUSH intinputFormat
+call scanf
+ADD ESP,8
+MOV EAX,dword[intvar+0]
+MOV dword[EBP-16],EAX
+MOV EAX, [dword EBP-0-12]
+PUSH EAX
+MOV EAX, [dword EBP-4-12]
+PUSH EAX
+MOV EAX, [dword EBP-20-12]
 PUSH EAX
 POP EBX
 POP EAX
-CMP EAX, EBX
-JLE TRUE0
-MOVE EAX, 0
-JUMP FALSE0
-TRUE0: MOV EAX,1
-FALSE0:
+IMUL EBX
 PUSH EAX
-MOV dword[EBP-8-2] EAX
+MOV EAX, [dword EBP-16-12]
+PUSH EAX
+MOV EAX, [dword EBP-20-12]
+PUSH EAX
+POP EBX
 POP EAX
-MOV EAX, dword[EBP-2-2]
+SUB EAX, EBX
+PUSH EAX
+MOV EAX, [dword EBP-4-12]
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+MOV EAX, [dword EBP-16-12]
+PUSH EAX
+MOV EAX, 2
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+MOV EAX, [dword EBP-20-12]
+PUSH EAX
+MOV EAX, [dword EBP-0-12]
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+POP EBX
+POP EAX
+SUB EAX, EBX
 PUSH EAX
 POP EBX
 POP EAX
 ADD EAX, EBX
 PUSH EAX
-MOV dword[EBP-2-2] EAX
+POP EBX
 POP EAX
-MOV EAX, 1
+ADD EAX, EBX
 PUSH EAX
-MOV dword[EBP-6-2] EAX
+POP EBX
 POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EAX
+MOV [dword EBP-8-12],EAX
+mov EAX,dword[EBP - 20]
+push eax
+push men
+call printf
+pop eax
+pop eax
+MOV ECX, 10
+FOR_LOOP_1 : MOV DWORD[EBP-24], ECX
+PUSH EAX
+PUSH EAX
+MOV EAX, 7
+PUSH EAX
+POP EAX
+MOV [dword EBP-40-12],EAX
+PUSH intvar+0
+PUSH intinputFormat
+call scanf
+ADD ESP,8
+MOV EAX,dword[intvar+0]
+MOV dword[EBP-56],EAX
+MOV EAX, [dword EBP-40-12]
+PUSH EAX
+MOV EAX, [dword EBP-44-12]
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EAX
+MOV [dword EBP-40-12],EAX
+mov EAX,dword[EBP - 52]
+push eax
+push men
+call printf
+pop eax
+pop eax
+MOV EAX, [dword EBP-8-12]
+PUSH EAX
+MOV EAX, [dword EBP-12-12]
+PUSH EAX
+MOV EAX, [dword EBP-40-12]
+PUSH EAX
+MOV EAX, 2
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EAX
+MOV [dword EBP-8-12],EAX
+mov EAX,dword[EBP - 20]
+push eax
+push men
+call printf
+pop eax
+pop eax
+MOV ECX, DWORD[EBP-24]
+INC ECX
+CMP ECX, 15
+JLE FOR_LOOP_1
+MOV EAX, [dword EBP-0-12]
+PUSH EAX
+MOV EAX, [dword EBP-4-12]
+PUSH EAX
+MOV EAX, [dword EBP-20-12]
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+MOV EAX, [dword EBP-16-12]
+PUSH EAX
+MOV EAX, [dword EBP-20-12]
+PUSH EAX
+POP EBX
+POP EAX
+SUB EAX, EBX
+PUSH EAX
+MOV EAX, [dword EBP-4-12]
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+MOV EAX, [dword EBP-16-12]
+PUSH EAX
+MOV EAX, 2
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+MOV EAX, [dword EBP-20-12]
+PUSH EAX
+MOV EAX, [dword EBP-0-12]
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+POP EBX
+POP EAX
+SUB EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EAX
+MOV [dword EBP-8-12],EAX
+MOV EAX, [dword EBP-8-12]
+PUSH EAX
+MOV EAX, 10
+PUSH EAX
+POP EBX
+POP EAX
+CMP EAX, EBX
+JG TRUE0
+MOV EAX, 0
+JMP FALSE0
+TRUE0: MOV EAX,1
+FALSE0:
+PUSH EAX
+MOV EAX, [dword EBP-16-12]
+PUSH EAX
+MOV EAX, [dword EBP-20-12]
+PUSH EAX
+POP EBX
+POP EAX
+CMP EAX, EBX
+JLE TRUE1
+MOV EAX, 0
+JMP FALSE1
+TRUE1: MOV EAX,1
+FALSE1:
+PUSH EAX
+MOV EAX, [dword EBP-0-12]
+PUSH EAX
+MOV EAX, [dword EBP-4-12]
+PUSH EAX
+POP EBX
+POP EAX
+CMP EAX, EBX
+JL TRUE2
+MOV EAX, 0
+JMP FALSE2
+TRUE2: MOV EAX,1
+FALSE2:
+PUSH EAX
+MOV EAX, [dword EBP-28-12]
+PUSH EAX
+POP EBX
+POP EAX
+AND EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+AND EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+OR EAX, EBX
+PUSH EAX
+POP EAX
+MOV [dword EBP-32-12],EAX
+mov EAX,dword[EBP - 20]
+push eax
+push men
+call printf
+pop eax
+pop eax
+mov EAX,dword[EBP - 40]
+push eax
+push men
+call printf
+pop eax
+pop eax
+XOR ECX, ECX
+FOR_LOOP_2 : PUSH ECX
+PUSH intvar+0
+PUSH intinputFormat
+call scanf
+ADD ESP,8
+POP ECX
+MOV EAX,dword[intvar+0]
+PUSH EDX
+MOV EDX,EBP
+SUB EDX,ECX
+MOV dword[SS:EDX- 52],EAX
+POP EDX
+ADD ECX, 4
+CMP ECX, 24
+JL FOR_LOOP_2
+MOV EAX, [dword EBP-16-12]
+PUSH EAX
+MOV EAX, [dword EBP-0-12]
+PUSH EAX
+MOV ECX, [dword EBP-36-12]
+MOV EAX, [dword ECX-16]
+PUSH EAX
+MOV EAX, 2
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+MOV ECX, [dword EBP-36-12]
+MOV EAX, [dword ECX-20]
+PUSH EAX
+MOV EAX, 3
+PUSH EAX
+POP EBX
+POP EAX
+IMUL EBX
+PUSH EAX
+MOV ECX, [dword EBP-36-12]
+MOV EAX, [dword ECX-24]
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EBX
+POP EAX
+ADD EAX, EBX
+PUSH EAX
+POP EAX
+MOV [dword EBP-4-12],EAX
+mov EAX,dword[EBP - 16]
+push eax
+push men
+call printf
+pop eax
+pop eax
+XOR ECX, ECX
+PUSH EDX
+FOR_LOOP_3 : MOV EDX, dword[EBP-48]
+SUB EDX,ECX
+mov EAX,dword[SS:EDX-4]
+push edx
+push ecx
+push eax
+push men
+call printf
+pop eax
+pop eax
+pop ecx
+pop edx
+ADD ECX, 4
+CMP ECX, 24
+JL FOR_LOOP_3
+POP EDX
+mov eax,1
+mov ebx,0
+int 80h

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "semantics.h"
+#include "codegen.h"
 
 extern unsigned int ended;
 
@@ -191,17 +191,17 @@ int main(int argc, char *argv[])
             parseInput(&fp2);
             FILE *fp = fopen(argv[2], "w");
             tNode *temp = head;
-            printParseTree(temp, fp);
+            //printParseTree(temp, fp);
 
             fclose(fp2);
             fclose(fp3);
             constructAST(head);
             scope *sc = make_st(head);
-            //printParseTree(temp, fp);
-            //printSymbolTable(sc);
+            printParseTree(temp, fp);
+           // printSymbolTable(sc);
             checkSemantics(head);
-            // FILE *fp5 = fopen("code.asm", "w");
-            // codeGen(fp5, head);
+            FILE *fp5 = fopen("code.asm", "w");
+            codeGenInit(fp5, head);
             // fclose(fp5);
             fclose(fp);
             ended = 0;
