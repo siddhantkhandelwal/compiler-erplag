@@ -110,7 +110,17 @@ type_info *assignmentChecker(tNode *head)
                     type_info *t2 = expressionChecker(head_sibling->node.l->sibling->node.n->child);
                     if (t2)
                     {
-                        if (t1->element_type != t2->basic_type)
+
+                        if(t2->basic_type==ARRAY){
+                            if(t1->element_type!=t2->element_type){
+                                printf("Error: type error for assignment statement. Line: %d\n", head->node.l->ti->line);
+                                head->type = NULL;
+                                return NULL;
+                            }else{
+                                return entry->type;
+                            }
+                        }
+                        else if (t1->element_type != t2->basic_type)
                         {
                             printf("Error: type error for assignment statement. Line: %d\n", head->node.l->ti->line);
                             head->type = NULL;
@@ -183,6 +193,19 @@ type_info *assignmentChecker(tNode *head)
                     head->type->isStatic = 1;
                     //head->entry->is_control_changed = 1;
                     return head->type;
+                }else if(t2->basic_type == ARRAY){
+                    if(t1->basic_type == t2->element_type){
+
+                        head->type = malloc(sizeof(type_info));
+                        head->type->basic_type = t1->basic_type;
+                        head->type->isStatic = 1;
+                        return head->type;
+                    }
+
+                    head->type = NULL;
+                    printf("Type error for  in assignment statement. Line: %d\n", head->node.l->ti->line);
+                    return NULL;
+
                 }
                 else
                 {

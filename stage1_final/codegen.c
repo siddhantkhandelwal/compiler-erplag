@@ -93,6 +93,31 @@ void codeGenAssigment(FILE *fp, tNode *head)
     {
         if (head->type->isStatic == 0)
         {
+            if(head->entry->type->isStatic==1){ // Dynamic Index Static Array
+
+                codeGenExpression(fp, head->node.l->sibling->node.l->sibling);
+
+                tNode* index = head->node.l->sibling;
+                //fprintf(fp,"PUSH EDX\n");
+                fprintf(fp,"MOV EDX, dword[EBP- %d]\n",(index->entry->offset+K));
+                fprintf(fp,"PUSH ECX\n");
+                fprintf(fp, "MOV ECX,%d\n",head->entry->type->start);
+                fprintf(fp,"CMP EDX,ECX\n");
+                fprintf(fp, "JL END\n");
+                fprintf(fp, "MOV ECX,%d\n",head->entry->type->end);
+                fprintf(fp,"CMP EDX,ECX\n");
+                fprintf(fp, "JG END\n");
+                fprintf(fp,"POP ECX\n");
+                //fprintf(fp,"POP EDX\n");
+                fprintf(fp, "POP EAX\n" );
+                fprintf(fp,"MOV ECX, [dword EBP-%d]\n",(head->entry->offset+K));
+                fprintf(fp,"SUB EDX, %d\n",head->entry->type->start);
+                fprintf(fp,"SHL EDX,2\n");
+                fprintf(fp,"ADD EDX,4\n");
+                fprintf(fp,"SUB ECX,EDX\n");
+                fprintf(fp, "MOV [dword SS : ECX],EAX\n");
+               // fprintf(fp, "PUSH EAX\n");
+            }
         }
         else
         {
@@ -100,7 +125,7 @@ void codeGenAssigment(FILE *fp, tNode *head)
             fprintf(fp, "POP EAX\n");
             int offset = (head->node.l->sibling->node.l->ti->value.v1 - head->type->start) * 4;
             fprintf(fp, "MOV ECX, [dword EBP-%d-%d]\n", head->entry->offset, K);
-            fprintf(fp, "MOV [dword ECX-%d], EAX\n", offset);
+            fprintf(fp, "MOV [dword ECX-%d], EAX\n", offset+4);
         }
     }
     else
@@ -127,6 +152,30 @@ void codeGenExpression(FILE *fp, tNode *head)
             {
                 if (head->type->isStatic == 0)
                 {
+
+                    if(head->entry->type->isStatic==1){ // Dynamic Index Static Array
+
+                        tNode* index = head->node.l->sibling;
+                        //fprintf(fp,"PUSH EDX\n");
+                        fprintf(fp,"MOV EDX, dword[EBP- %d]\n",(index->entry->offset+K));
+                        fprintf(fp,"PUSH ECX\n");
+                        fprintf(fp, "MOV ECX,%d\n",head->entry->type->start);
+                        fprintf(fp,"CMP EDX,ECX\n");
+                        fprintf(fp, "JL END\n");
+                        fprintf(fp, "MOV ECX,%d\n",head->entry->type->end);
+                        fprintf(fp,"CMP EDX,ECX\n");
+                        fprintf(fp, "JG END\n");
+                        fprintf(fp,"POP ECX\n");
+                        //fprintf(fp,"POP EDX\n");
+
+                        fprintf(fp,"MOV ECX, [dword EBP-%d]\n",(head->entry->offset+K));
+                        fprintf(fp,"SUB EDX, %d\n",head->entry->type->start);
+                        fprintf(fp,"SHL EDX,2\n");
+                        fprintf(fp,"ADD EDX,4\n");
+                        fprintf(fp,"SUB ECX,EDX\n");
+                        fprintf(fp, "MOV EAX, [dword SS: ECX]\n");
+                        fprintf(fp, "PUSH EAX\n");
+                    }   
                 }
                 else
                 {
@@ -680,7 +729,7 @@ void codeGenInit(FILE* fp, tNode* head){
 
     fprintf(fp,"section .data\n");
       
-    fprintf(fp,"intinputFormat: db \"%%d\",0\nrealinputFormat: db \"%%f\",0\nintvar: times 100 dd 0\nrealvar: times 100 dd 0\nmen:  db \"Output: %%d \", 10,0\n");
+    fprintf(fp,"intinputFormat: db \"%%d\",0\nrealinputFormat: db \"%%f\",0\nintvar: times 100 dd 0\nrealvar: times 100 dd 0\nmen:  db \"Output: %%d \", 10,0\nerrorMsg : db \"Array Index Out of Bounds\",0\n");
 
     fprintf(fp,"section .text\nglobal main\nmain:\n");
 
@@ -691,6 +740,12 @@ void codeGenInit(FILE* fp, tNode* head){
     codeGen(fp,head);
 
     fprintf(fp, "mov eax,1\nmov ebx,0\nint 80h\n");
+
+    fprintf(fp, "END : \n");
+    fprintf(fp, "PUSH errorMsg\n");
+    fprintf(fp, "call printf\n");
+    fprintf(fp, "mov eax,1\nmov ebx,0\nint 80h\n");
+
 
     //fprintf(fp, "ret\n");
 
@@ -749,16 +804,20 @@ void codeGen(FILE *fp, tNode *head)
             }
         }else{
 
-            se* temp = id_child->entry;
-            if(temp->type->isStatic == 1){
 
-                fprintf(fp,"mov EDX, ESP\n");
-                fprintf(fp,"SUB EDX, 4\n");
-                fprintf(fp,"push EDX\n");
-                int s = temp->type->start;
-                int e = temp->type->end;
-                int w = e-s+1;
-                fprintf(fp,"SUB ESP, %d\n",4*w);
+            while(id_child){
+                se* temp = id_child->entry;
+                if(temp->type->isStatic == 1){
+
+                    fprintf(fp,"mov EDX, ESP\n");
+                    fprintf(fp,"SUB EDX, 4\n");
+                    fprintf(fp,"push EDX\n");
+                    int s = temp->type->start;
+                    int e = temp->type->end;
+                    int w = e-s+1;
+                    fprintf(fp,"SUB ESP, %d\n",4*w);
+                }
+                id_child = id_child->node.l->sibling;
             }
         }
     }

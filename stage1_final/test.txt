@@ -1,17 +1,14 @@
 <<<driver program>>>
 start
-	declare z,k:integer;
+	**declare m, temp:integer;**
+	declare m:integer;
+	declare A,C: array[6..10] of integer;
+	**get_value(A);**
+	**print(A);**
+	**m:=7;
+	temp:=5;**
+	C[7]:=7;
 
-	z:=9;
 
-	for(k in 10..15)
-        start
-             declare a, b:integer;
-              a:= 7;
-              get_value(b);
-              a:= a+b;
-              print(a); 
-              z:= z+k+a*2;
-              print(z);
-        end
+
 end
