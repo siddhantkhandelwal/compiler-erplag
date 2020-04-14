@@ -235,18 +235,22 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 				{
 					printf("Error : Array end index should be greater than start index.\n");
 				}
-				if (temp1->type->basic_type == INTEGER)
+				if (temp1->type->element_type == INTEGER)
 				{
 					OFFSET = OFFSET + (4 * width);
 				}
-				else if (temp1->type->basic_type == REAL)
+				else if (temp1->type->element_type == REAL)
 				{
 					OFFSET = OFFSET + (4 * width);
 				}
-				else if (temp1->type->basic_type == BOOLEAN)
+				else if (temp1->type->element_type == BOOLEAN)
 				{
 					OFFSET = OFFSET + (4*width);
 				}
+			}else{
+
+				temp1->offset = OFFSET;
+				OFFSET = OFFSET+4;
 			}
 		}
 	}
@@ -336,6 +340,7 @@ void populate_st(tNode *head, scope *sc)
 							t->start = dt->node.l->ti->value.v1;
 							t->end = dt->node.l->sibling->node.l->ti->value.v1;
 							t->isStatic = 1;
+
 						}
 						else
 						{
@@ -372,6 +377,8 @@ void populate_st(tNode *head, scope *sc)
 						else
 						{
 							t->isStatic = 0;
+							t->start_dyn = dt;
+							t->end_dyn = dt->node.l->sibling;
 						}
 
 						t->element_type = tp->node.l->s.T;

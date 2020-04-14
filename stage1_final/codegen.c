@@ -4,6 +4,8 @@ int num_relop = 0;
 int num_conditional = 0;
 int num_for = 0;
 int num_while = 0;
+int dynamic_offset = 0;
+
 
 void codeGenModuleDef(FILE *fp, tNode *head)
 {
@@ -124,6 +126,7 @@ void codeGenAssigment(FILE *fp, tNode *head)
             codeGenExpression(fp, head->node.l->sibling->node.l->sibling);
             fprintf(fp, "POP EAX\n");
             int offset = (head->node.l->sibling->node.l->ti->value.v1 - head->type->start) * 4;
+            printf("%s %d\n",head->node.l->ti->lexeme,head->entry->offset);
             fprintf(fp, "MOV ECX, [dword EBP-%d-%d]\n", head->entry->offset, K);
             fprintf(fp, "MOV [dword ECX-%d], EAX\n", offset+4);
         }
@@ -132,7 +135,7 @@ void codeGenAssigment(FILE *fp, tNode *head)
     {
         codeGenExpression(fp, head->node.l->sibling);
         fprintf(fp, "POP EAX\n");
-        fprintf(fp, "MOV [dword EBP-%d-%d],EAX\n", head->entry->offset, K);
+        fprintf(fp, "MOV [dword EBP-%d-%d-dynOffset],EAX\n", head->entry->offset, K);
     }
 }
 
@@ -729,7 +732,7 @@ void codeGenInit(FILE* fp, tNode* head){
 
     fprintf(fp,"section .data\n");
       
-    fprintf(fp,"intinputFormat: db \"%%d\",0\nrealinputFormat: db \"%%f\",0\nintvar: times 100 dd 0\nrealvar: times 100 dd 0\nmen:  db \"Output: %%d \", 10,0\nerrorMsg : db \"Array Index Out of Bounds\",0\n");
+    fprintf(fp,"intinputFormat: db \"%%d\",0\nrealinputFormat: db \"%%f\",0\nintvar: times 100 dd 0\nrealvar: times 100 dd 0\nmen:  db \"Output: %%d \", 10,0\nerrorMsg : db \"Array Index Out of Bounds\",10,0\ndynOffset : dd 0\n");
 
     fprintf(fp,"section .text\nglobal main\nmain:\n");
 
@@ -816,7 +819,23 @@ void codeGen(FILE *fp, tNode *head)
                     int e = temp->type->end;
                     int w = e-s+1;
                     fprintf(fp,"SUB ESP, %d\n",4*w);
-                }
+                }/*else{
+                    fprintf(fp,"mov EDX, ESP\n");
+                    fprintf(fp,"SUB EDX, 4\n");
+                    fprintf(fp,"push EDX\n");
+                    int s,e;
+                    tNode* range_arrays = dt->node.n->child->node.l->sibling;
+                    tNode* l = range_arrays->node.n->child;
+                    tNode* r;
+                    if(l->leafTag==0){
+                        r = l->node.l->sibling;
+                        s = temp->start;
+                    }else{
+
+                        s = start_dyn->node.
+                        r = l->node.n->sibling
+                    }
+                }*/
                 id_child = id_child->node.l->sibling;
             }
         }
