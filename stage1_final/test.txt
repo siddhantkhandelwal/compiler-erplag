@@ -1,16 +1,14 @@
 <<<driver program>>>
 start
-	**declare m, temp:integer;**
-	declare m,temp:integer;
-	declare A,C: array[6..10] of integer;
-	get_value(A);
-	for(m in 6..10)
-        start
-		temp:= A[m];
-		C[m]:= temp;
-	end
-	print(C);
-
-
-
+declare x, y, z:integer;
+declare loop_var:integer;
+declare A: array[2..4] of integer;
+A[2] := 3;
+	y:= 7-3-2;
+	z:= 56;
+	loop_var := 3;
+	get_value(x);
+print(y);
+z:= loop_var +A[2]+ x *3 - 4 + 6 - 3*4 + 5;
+print(z);
 end

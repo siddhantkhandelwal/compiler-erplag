@@ -12,6 +12,7 @@ int isImportant(int nodeSymbol, Terminal *keep_symbols, int len)
     return 0;
 }
 
+
 // void printParseTree(tNode* temp, FILE* fp)
 // {
 //     if(!temp)
@@ -62,6 +63,161 @@ int isImportant(int nodeSymbol, Terminal *keep_symbols, int len)
 //         temp2 = temp2->node.n->sibling;
 //     }
 // }
+
+
+void rotate(tNode* above, tNode* below){
+
+    tNode* rsib_above = above->parent->node.n->child;
+    tNode* prev = NULL;
+
+    if((rsib_above->leafTag == 0) || (rsib_above->leafTag && rsib_above->node.n->is_operator==0)){
+        
+        while(1){
+
+            if(rsib_above->leafTag==0){
+                tNode* temp = rsib_above->node.l->sibling;
+                if(temp->leafTag==0){
+                    prev = rsib_above;
+                    rsib_above = temp;
+                    continue;
+                }else{
+                    if(temp->node.n->is_operator && temp->node.n->s.T == above->node.n->s.T){
+                        prev = rsib_above;
+                        rsib_above = temp;
+                        break;
+                    }
+                }
+            }else{
+                tNode* temp = rsib_above->node.n->sibling;
+                if(temp->leafTag==0){
+                    prev  = rsib_above;
+                    rsib_above = temp;
+                    continue;
+                }else{
+                    if(temp->node.n->is_operator && temp->node.n->s.T == above->node.n->s.T){
+                        prev = rsib_above;
+                        rsib_above = temp;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if(prev){
+        if(prev->leafTag==0)
+            prev->node.l->sibling = below;
+        else
+            prev->node.n->sibling = below;
+    }else{
+
+        above->parent->node.n->child = below;
+    }
+
+    tNode* below_child1 = below->node.n->child;
+    tNode* below_child2;
+
+
+    if(below_child1->leafTag==0){
+        tNode* temp;
+        temp = below_child1->node.l->sibling;
+        if(temp->leafTag == 0){
+            if(temp->node.l->sibling == NULL){
+                below_child2 = temp;
+                below_child1->node.l->sibling = NULL;
+            }else{
+                below_child2 = temp->node.l->sibling;
+                temp->node.l->sibling = NULL;
+            }
+        }else{
+             if(temp->node.n->sibling == NULL){
+                below_child2 = temp;
+                below_child1->node.l->sibling = NULL;
+            }else{
+                below_child2 = temp->node.n->sibling;
+                temp->node.n->sibling = NULL;
+            }
+        }
+    }else{
+        tNode* temp;
+        temp = below_child1->node.n->sibling;
+        if(temp->leafTag == 0){
+            if(temp->node.l->sibling == NULL){
+                below_child2 = temp;
+                below_child1->node.n->sibling = NULL;
+            }else{
+                below_child2 = temp->node.l->sibling;
+                temp->node.l->sibling = NULL;
+            }
+        }else{
+             if(temp->node.n->sibling == NULL){
+                below_child2 = temp;
+                below_child1->node.n->sibling = NULL;
+            }else{
+                below_child2 = temp->node.n->sibling;
+                temp->node.n->sibling = NULL;
+            }
+        }
+    }
+
+
+    tNode* above_child = above->node.n->child;
+    if(above_child->leafTag==0){
+        tNode* temp = above_child->node.l->sibling;
+        
+        if(temp->leafTag==0){
+            if(temp->node.l->sibling==NULL){
+                above_child->node.l->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }else{
+                temp->node.l->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }
+        }else{
+            if(temp->node.n->sibling==NULL){
+                above_child->node.l->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }else{
+                temp->node.n->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }
+        }
+    }else{
+        tNode* temp = above_child->node.n->sibling;
+        
+        if(temp->leafTag==0){
+            if(temp->node.l->sibling==NULL){
+                above_child->node.n->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }else{
+                temp->node.l->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }
+        }else{
+            if(temp->node.n->sibling==NULL){
+                above_child->node.n->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }else{
+                temp->node.n->sibling = below_child1;
+                above->node.n->sibling = below_child2;
+                below->node.n->child = above;
+            }
+        }
+    }
+        
+
+    below->parent = above->parent;
+    above->parent = below;
+    below_child1->parent = above;
+    
+}
 
 void deleteNode(tNode *astNode, tNode *child)
 {
@@ -277,6 +433,31 @@ void constructAST(tNode *astNode)
                     
                 }
             }
+            if(child->leafTag && child->node.n->is_operator && child->node.n->s.T == MINUS){
+            tNode* rchild = child->node.n->child;
+            tNode* below = NULL;
+            tNode* temp;
+            if(rchild->leafTag==0)
+                temp = rchild->node.l->sibling;
+            else
+                temp = rchild->node.n->sibling;
+            if(temp->leafTag && temp->node.n->is_operator && (temp->node.n->s.T == PLUS || temp->node.n->s.T == MINUS)){
+                below = temp;
+            }else{
+                tNode *temp2;
+                if(temp->leafTag==0)
+                    temp2 = temp->node.l->sibling;
+                else
+                    temp2 = temp->node.n->sibling;
+
+                if(temp2 && temp2->leafTag && temp2->node.n->is_operator && temp2->node.n->s.T == PLUS)
+                    below = temp2;
+            }
+
+            if(below){
+                rotate(child,below);
+            }
+        }
             if (child->leafTag)
             {
                 child = child->node.n->sibling;
@@ -293,5 +474,6 @@ void constructAST(tNode *astNode)
             temp->node.l->sibling = temp2->node.n->child;
             //astNode->node.n->s.T = ASSIGNOP;
         }
+        
     }
 }

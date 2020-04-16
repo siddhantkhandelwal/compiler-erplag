@@ -26,7 +26,7 @@ start
 		print(x);
 		print(y);
 		print(z);                           **As long as there is no run time error with respect to the bounds, x, y, z get printed**
-	end                     
+	end              
 end
 
 ** On the console

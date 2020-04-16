@@ -12,8 +12,9 @@ struct type_info{
 	int start;
 	int end;
 	int isStatic;
-	tNode* start_dyn;
-	tNode* end_dyn;
+	//tNode* start_dyn;
+	//tNode* end_dyn;
+	int dyn_index;
 };
 
 struct symbol_entry{

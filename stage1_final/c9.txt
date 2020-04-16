@@ -21,7 +21,10 @@ start
 			case 1: y:= x*2-y+loop_var;
 				print(y);
                         	break;
-			case 2: z:= x*3-z+loop_var;
+			case 2: 
+			print(x);
+			print(loop_var);
+			z:= x*3-z+loop_var;
 				print(z);
                         	break;
 			default:print(x);

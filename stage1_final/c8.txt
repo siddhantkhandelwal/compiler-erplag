@@ -12,7 +12,7 @@ start
 	declare b: boolean;
 	get_value(x);
 	y:= 19;
-	z:= 56;
+	z:= 56; b := true;
 	switch(x)
 	start
 		case 1: y:= x*2-y;
@@ -24,6 +24,15 @@ start
 		default:print(x);
 			break;
 	end
+
+	switch(b)
+	start
+		case true: print(y);
+		break;
+		case false: print(x);
+		break;
+	end
+
 	print(y);
 	print(z);
 end

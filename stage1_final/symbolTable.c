@@ -1,7 +1,7 @@
 #include "symbolTable.h"
 
 int OFFSET = 0;
-
+int dyn_arrays = 0;
 scope *create_new_scope(scope *parent, char *stamp)
 {
 
@@ -250,6 +250,8 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 			}else{
 
 				temp1->offset = OFFSET;
+				temp1->type->dyn_index = dyn_arrays;
+				dyn_arrays++;
 				OFFSET = OFFSET+4;
 			}
 		}
@@ -377,8 +379,8 @@ void populate_st(tNode *head, scope *sc)
 						else
 						{
 							t->isStatic = 0;
-							t->start_dyn = dt;
-							t->end_dyn = dt->node.l->sibling;
+							//t->start_dyn = dt;
+							// /t->end_dyn = dt->node.l->sibling;
 						}
 
 						t->element_type = tp->node.l->s.T;
