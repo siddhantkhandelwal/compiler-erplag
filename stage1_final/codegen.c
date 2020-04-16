@@ -11,7 +11,7 @@ void codeGenModuleDef(FILE *fp, tNode *head)
 {
     //print label as id.
     tNode *child = head->node.n->child;
-    fprintf(fp, "PROC %s:\n", child->node.l->ti->lexeme);
+    fprintf(fp, "%s:\n", child->node.l->ti->lexeme);
     child = child->node.l->sibling;
     tNode *child_child = child->node.n->child;
     int count = 0;
@@ -20,7 +20,7 @@ void codeGenModuleDef(FILE *fp, tNode *head)
         count++;
         child_child = child_child->node.l->sibling->node.n->sibling;
     }
-    fprintf(fp, "SUB ESP, %d\n", 4 * count);
+    fprintf(fp, "SUB ESP, %d\n", 4 * (count+1));
     fprintf(fp, "MOV EDX, ESP\n");
     tNode *outp_list = child->node.n->sibling;
     if (outp_list->node.n->s.N == OUTPUTPLIST)
@@ -42,12 +42,13 @@ void codeGenModuleDef(FILE *fp, tNode *head)
 
     fprintf(fp, "MOV ESP, EBP\n");
     fprintf(fp, "SUB ESP, 8\n");
-    fprintf(fp, "POP EBP");
+    fprintf(fp, "POP EBP\n");
     fprintf(fp, "ret\n");
 }
 
 void codeGenModuleReuse(FILE *fp, tNode *head)
 {
+    fprintf(fp, "PUSH EDX\n");
     fprintf(fp, "MOV [dword ESP-8], EBP\n");
     se *callee_entry = head->entry;
     scope *callee_scope = callee_entry->scope_info;
@@ -69,11 +70,22 @@ void codeGenModuleReuse(FILE *fp, tNode *head)
     {
         fprintf(fp, "MOV EDX, [dword EBP-%d-%d]\n", K, id_list_child->entry->offset);
         fprintf(fp, "MOV [dword ESP-%d-%d], EDX\n", K, ip_list_callee->offset);
+        if(id_list_child->entry->type->basic_type==ARRAY){
+
+            if(id_list_child->entry->type->isStatic==0){
+                fprintf(fp, "MOV EDX, dword[start+%d]\n",id_list_child->entry->type->dyn_index);
+                fprintf(fp, "MOV dword[start+%d], EDX\n",ip_list_callee->type->dyn_index);
+                fprintf(fp, "MOV EDX, dword[end+%d]\n",id_list_child->entry->type->dyn_index);
+                fprintf(fp, "MOV dword[end+%d], EDX\n",ip_list_callee->type->dyn_index);
+            }
+        }
+
         id_list_child = id_list_child->node.l->sibling;
         ip_list_callee = ip_list_callee->next;
     }
     fprintf(fp, "MOV EBP, ESP\n");
     fprintf(fp, "call %s\n", func->node.l->ti->lexeme);
+
     if (head->node.n->child->leafTag)
     {
         tNode *op_list = head->node.n->child;
@@ -86,6 +98,8 @@ void codeGenModuleReuse(FILE *fp, tNode *head)
             op_list_element = op_list_element->node.l->sibling;
         }
     }
+
+    fprintf(fp, "POP EDX\n");
 }
 
 void codeGenAssigment(FILE *fp, tNode *head)
@@ -529,12 +543,14 @@ void codeGeniostmt(FILE *fp, tNode *head)
                 fprintf(fp, "FOR_LOOP_%d : ", num_for);
                 if (id->entry->type->element_type == INTEGER || id->entry->type->element_type == BOOLEAN)
                 {
-                 fprintf(fp,"PUSH ECX\n");
+                    fprintf(fp,"PUSH EDX\n");
+                    fprintf(fp,"PUSH ECX\n");
                     fprintf(fp, "PUSH intvar+0\n");
                     fprintf(fp, "PUSH intinputFormat\n");
                     fprintf(fp, "call scanf\n");
                     fprintf(fp,"ADD ESP,8\n");
                     fprintf(fp, "POP ECX\n");
+                    fprintf(fp,"POP EDX\n");
                     fprintf(fp, "MOV EAX,dword[intvar+0]\n");
                     fprintf(fp, "PUSH EDX\n");
                     fprintf(fp, "MOV EDX,EBP\n");
@@ -549,6 +565,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
             
                 else
                 {
+
                     fprintf(fp, "PUSH realvar+0\n");
                     fprintf(fp, "PUSH realinputFormat\n");
                     //fprintf(fp, "XOR EAX,EAX\n");
@@ -582,12 +599,14 @@ void codeGeniostmt(FILE *fp, tNode *head)
                 fprintf(fp, "FOR_LOOP_%d : ", num_for);
                 if (id->entry->type->element_type == INTEGER || id->entry->type->element_type == BOOLEAN)
                 {
+                    fprintf(fp,"PUSH EDX\n");
                     fprintf(fp,"PUSH ECX\n");
                     fprintf(fp, "PUSH intvar+0\n");
                     fprintf(fp, "PUSH intinputFormat\n");
                     fprintf(fp, "call scanf\n");
                     fprintf(fp,"ADD ESP,8\n");
                     fprintf(fp, "POP ECX\n");
+                    fprintf(fp,"POP EDX\n");
                     fprintf(fp, "MOV EAX,dword[intvar+0]\n");
                     fprintf(fp, "PUSH EDX\n");
                     fprintf(fp, "MOV EDX, dyn_arrays\n");
@@ -636,11 +655,13 @@ void codeGeniostmt(FILE *fp, tNode *head)
         {
             if (id->entry->type->basic_type == INTEGER || id->entry->type->basic_type == BOOLEAN)
             {
+                fprintf(fp,"PUSH EDX\n");
                 fprintf(fp, "PUSH intvar+0\n");
                 fprintf(fp, "PUSH intinputFormat\n");
                 //fprintf(fp, "XOR EAX,EAX\n");
                 fprintf(fp, "call scanf\n");
                 fprintf(fp, "ADD ESP,8\n");
+                fprintf(fp,"POP EDX\n");
                 fprintf(fp, "MOV EAX,dword[intvar+0]\n");
                 if (id->entry->type->basic_type == INTEGER)
                 {
@@ -722,11 +743,13 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     num_for++;
                     fprintf(fp, "XOR ECX, ECX\n");
                     //fprintf(fp, "PUSH EDX\n");
-                    
+                    fprintf(fp,"PUSH EDX\n");
                     fprintf(fp, "FOR_LOOP_%d : ", num_for);
+                    
                     fprintf(fp, "MOV EDX, dword[EBP-%d]\n",(id->entry->offset+K));
                     fprintf(fp, "SUB EDX,ECX\n");
                     fprintf(fp, "mov EAX,dword[SS:EDX-4]\n");
+                    
                     fprintf(fp, "push edx\n");
                     fprintf(fp, "push ecx\n");
                     fprintf(fp, "push eax\n");
@@ -740,6 +763,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     fprintf(fp, "pop eax\n");
                     fprintf(fp, "pop ecx\n");
                     fprintf(fp, "pop edx\n");
+                    
                     if (id->entry->type->element_type == INTEGER)
                     {
                         fprintf(fp, "ADD ECX, 4\n");
@@ -761,12 +785,14 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     num_for++;
                     fprintf(fp, "XOR ECX, ECX\n");
                     //fprintf(fp, "PUSH EDX\n");
-                    
+                    fprintf(fp,"PUSH EDX\n");
                     fprintf(fp, "FOR_LOOP_%d : ", num_for);
+
                     fprintf(fp, "MOV EDX, dword[EBP-%d]\n",(id->entry->offset+K));
                     fprintf(fp, "ADD EDX, dyn_arrays\n");
                     fprintf(fp, "ADD EDX,ECX\n");
                     fprintf(fp, "mov EAX,dword[DS:EDX]\n");
+                    
                     fprintf(fp, "push edx\n");
                     fprintf(fp, "push ecx\n");
                     fprintf(fp, "push eax\n");
@@ -780,6 +806,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     fprintf(fp, "pop eax\n");
                     fprintf(fp, "pop ecx\n");
                     fprintf(fp, "pop edx\n");
+                    
                     if (id->entry->type->element_type == INTEGER)
                     {
                         fprintf(fp, "ADD ECX, 4\n");
@@ -798,6 +825,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     fprintf(fp, "SHL EDI, 2\n");
                     fprintf(fp, "CMP ECX, EDI\n");
                     fprintf(fp, "JL FOR_LOOP_%d\n", num_for);
+                    fprintf(fp,"POP EDX\n");
                 }
                 
             }
@@ -824,6 +852,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
             {
                 fprintf(fp, "mov EAX,dword[EBP - %d]\n", (K + var->node.n->child->entry->offset));
             }
+            fprintf(fp,"PUSH EDX\n");
             fprintf(fp, "push eax\n");
            //  fprintf(fp, "push ecx\n");
            // fprintf(fp, "MOV EAX, dword[EBP-%d]\n", );
@@ -834,6 +863,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
            // fprintf(fp, "pop ecx\n");
             fprintf(fp, "pop eax\n");
             fprintf(fp, "pop eax\n");
+            fprintf(fp, "POP EDX\n");
         }
     }
 }
@@ -877,11 +907,11 @@ void codeGenInit(FILE* fp, tNode* head){
 
     fprintf(fp, "dyn_arrays: times 100 dd 0\n");
 
-    fprintf(fp,"section .text\nglobal main\nmain:\n");
+    fprintf(fp,"section .text\nglobal main\n");
 
-    fprintf(fp, "mov ebp, esp\n");
+//    fprintf(fp, "mov ebp, esp\n");
 
-    fprintf(fp, "push EAX\npush EAX\n");    
+//    fprintf(fp, "push EAX\npush EAX\n");    
 
     codeGen(fp,head);
 
@@ -905,9 +935,19 @@ void codeGen(FILE *fp, tNode *head)
         return;
     }
 
+    if(head->node.n->s.N == DRIVERMODULE){
+        fprintf(fp,"main:\n");
+
+        fprintf(fp, "mov ebp, esp\n");
+
+        fprintf(fp, "push EAX\npush EAX\n");
+    }
+
     if (head->node.n->s.N == ASSIGNMENTSTMT)
-    {
+    {   
+        fprintf(fp,"PUSH EDX\n");
         codeGenAssigment(fp, head->node.n->child);
+        fprintf(fp,"POP EDX\n");
     }
     else if (head->node.n->s.N == CONDITIONALSTMT)
     {

@@ -38,7 +38,7 @@ scope *create_new_scope(scope *parent, char *stamp)
 		}
 	}
 
-	if (strcmp("module", stamp) == 0)
+	if (strcmp("module", stamp) == 0 || strcmp("drivermodule", stamp) == 0)
 		OFFSET = 0;
 
 	temp->parent = parent;
@@ -224,35 +224,46 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 		}
 		else
 		{
-			if (temp1->type->isStatic == 1)
-			{
-				temp1->offset = OFFSET;
-				OFFSET = OFFSET + 4;
-				int start = temp1->type->start;
-				int end = temp1->type->end;
-				int width = (end - start + 1);
-				if (width < 0)
+			if(to_add->parent->node.n->s.N != INPUTPLIST){
+
+				if (temp1->type->isStatic == 1)
 				{
-					printf("Error : Array end index should be greater than start index.\n");
-				}
-				if (temp1->type->element_type == INTEGER)
-				{
-					OFFSET = OFFSET + (4 * width);
-				}
-				else if (temp1->type->element_type == REAL)
-				{
-					OFFSET = OFFSET + (4 * width);
-				}
-				else if (temp1->type->element_type == BOOLEAN)
-				{
-					OFFSET = OFFSET + (4*width);
+					temp1->offset = OFFSET;
+					OFFSET = OFFSET + 4;
+					int start = temp1->type->start;
+					int end = temp1->type->end;
+					int width = (end - start + 1);
+					if (width < 0)
+					{
+						printf("Error : Array end index should be greater than start index.\n");
+					}
+					if (temp1->type->element_type == INTEGER)
+					{
+						OFFSET = OFFSET + (4 * width);
+					}
+					else if (temp1->type->element_type == REAL)
+					{
+						OFFSET = OFFSET + (4 * width);
+					}
+					else if (temp1->type->element_type == BOOLEAN)
+					{
+						OFFSET = OFFSET + (4*width);
+					}
+				}else{
+
+					temp1->offset = OFFSET;
+					temp1->type->dyn_index = dyn_arrays;
+					dyn_arrays++;
+					OFFSET = OFFSET+4;
 				}
 			}else{
 
+				if(temp1->type->isStatic == 0){
+					temp1->type->dyn_index = dyn_arrays;
+					dyn_arrays++;
+				}
 				temp1->offset = OFFSET;
-				temp1->type->dyn_index = dyn_arrays;
-				dyn_arrays++;
-				OFFSET = OFFSET+4;
+				OFFSET = OFFSET + 4;
 			}
 		}
 	}

@@ -16,7 +16,7 @@ start
 	p:= a*b+ d*2-3;
 	m:= c AND a<=b;
 	u:= p+q;
-	v:= m OR p<=q;
+	v:= true;
 	print(a);
 	print(b);
 	print(c);

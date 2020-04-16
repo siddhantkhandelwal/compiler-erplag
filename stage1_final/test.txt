@@ -1,14 +1,35 @@
+<<module compute_expr2>>
+takes input[x:integer];
+returns [y:integer];
+start
+	
+	y:=15;
+	print(x);
+	
+end
+
+
+<<module compute_expr>>
+takes input[x:integer,y:integer, A: array[2..5] of integer];
+returns [u:integer];
+start
+	
+
+	u:=A[3];
+	A[3]:=x;
+	print(A);
+	print(y);
+	[u]:= use module compute_expr2 with parameters u; 
+	
+end
+
 <<<driver program>>>
 start
-declare x, y, z:integer;
-declare loop_var:integer;
-declare A: array[2..4] of integer;
-A[2] := 3;
-	y:= 7-3-2;
-	z:= 56;
-	loop_var := 3;
-	get_value(x);
-print(y);
-z:= loop_var +A[2]+ x *3 - 4 + 6 - 3*4 + 5;
-print(z);
+	declare A: array[2..5] of integer;
+	declare z,a,b: integer;
+	get_value(A);
+	a:=8;
+	b:=9;
+	[z]:= use module compute_expr with parameters a,b, A;
+	print(z);
 end
