@@ -10,7 +10,7 @@
 #include "codegen.h"
 
 extern unsigned int ended;
-int nodeCount=0;
+int nodeCount = 0;
 
 void printParseTree(tNode *temp, FILE *fp)
 {
@@ -182,6 +182,7 @@ int main(int argc, char *argv[])
             break;
 
         case 2:
+            // print PT
             ended = 0;
             flushHash();
             flush_grammar();
@@ -202,6 +203,7 @@ int main(int argc, char *argv[])
             break;
 
         case 3:
+            // Print AST
             ended = 0;
             flushHash();
             flush_grammar();
@@ -241,31 +243,58 @@ int main(int argc, char *argv[])
             temp = head;
             fpPT = fopen("pt.txt", "w");
             printParseTree(temp, fpPT);
+            fclose(fpPT);
             int nodesPT = nodeCount;
             nodeCount = 0;
             temp = head;
             printf("Order of traversal: Post-Order\n");
             constructAST(head);
             sc = make_st(head);
+            fpPT = fopen("ast.txt", "w");
             printParseTree(temp, fpPT);
             fclose(fpPT);
             fclose(fpGrammar);
             fclose(fpSource);
             int nodesAST = nodeCount;
-            ended = 0;
             printf("\nNodes of Parse Tree: %d\t Allocated Memory: %ld Bytes\n", nodesPT, nodesPT * sizeof(tNode));
             printf("Nodes of Abstract Syntax Tree: %d\t Allocated Memory: %ld Bytes\n", nodesAST, nodesAST * sizeof(tNode));
-            long int diff =  ((nodesPT * sizeof(tNode)) - (nodesAST * sizeof(tNode)));
-            double compression = (double)diff/(nodesPT * sizeof(tNode));
-            printf("Compression Percentage: %f\n", compression*100);
+            double compression = (double)(nodesPT - nodesAST) / nodesPT;
+            printf("Compression Percentage: %f\n", compression * 100);
+            ended = 0;
             break;
 
         case 5:
+            ended = 0;
+            flushHash();
+            flush_grammar();
+            populateHashTable();
+            fpGrammar = fopen("grammar", "r");
+            populateGrammar(fpGrammar);
+            ComputeFirstAndFollowSets();
+            populateParseTable();
+            fpSource = fopen(argv[1], "r");
+            fpSource = getStream(fpSource);
+            head = NULL;
+            parseInput(&fpSource);
+            temp = head;
+            fpPT = fopen("pt.txt", "w");
+            printParseTree(temp, fpPT);
+            fclose(fpPT);
+            nodeCount = 0;
+            temp = head;
+            constructAST(head);
+            sc = make_st(head);
+            fpPT = fopen("ast.txt", "w");
+            printParseTree(temp, fpPT);
+            fclose(fpPT);
+            fclose(fpGrammar);
+            fclose(fpSource);
             printSymbolTable(sc);
+            ended = 0;
             break;
 
         case 6:
-            // Printing total memory requirement
+            // Printing total memory requirement function wise
 
         case 7:
             // Static & Dynamic Arrays
