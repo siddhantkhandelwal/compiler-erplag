@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
         exit(-1);
     }
 
-    FILE *fpGrammar, *fpSource, *fpPT;
+    FILE *fpGrammar, *fpSource, *fpPT, *fpASM;
     clock_t start_time, end_time;
     scope *sc;
     tNode *temp;
@@ -166,6 +166,7 @@ int main(int argc, char *argv[])
         printf("6. For printing the total memory requirement (sum total of widths of all variables in the function scope) for each function\n");
         printf("7. For printing the type expressions and width of array variables in a line for a test case\n");
         printf("8. For compiling to verify the syntactic and semantic correctness of the input source code. Also (on the console) the total time taken by the integrated compiler\n");
+        printf("9. For producing assembly code\n");
 
         scanf("%d", &choice);
         getchar();
@@ -300,6 +301,7 @@ int main(int argc, char *argv[])
             // Static & Dynamic Arrays
 
         case 8:
+            ended = 0;
             start_time = clock();
             flushHash();
             flush_grammar();
@@ -325,6 +327,29 @@ int main(int argc, char *argv[])
             fclose(fpSource);
             break;
 
+        case 9:
+            ended = 0;
+            flushHash();
+            flush_grammar();
+            populateHashTable();
+            fpGrammar = fopen("grammar", "r");
+            populateGrammar(fpGrammar);
+            ComputeFirstAndFollowSets();
+            populateParseTable();
+            fpSource = fopen(argv[1], "r");
+            fpSource = getStream(fpSource);
+            head = NULL;
+            parseInput(&fpSource);
+            constructAST(head);
+            sc = make_st(head);
+            fclose(fpGrammar);
+            fclose(fpSource);
+            checkSemantics(head);
+            fpASM = fopen(argv[2], "w");
+            codeGenInit(fpASM, head);
+            fclose(fpASM);
+            ended = 0;
+            break;
         default:
             printf("Incorrect choice. Enter a number from 0 to 9.\n");
         }
