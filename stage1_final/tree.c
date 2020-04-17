@@ -11,7 +11,6 @@ tNode *head = NULL;
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti)
 {
-
     tNode *tn = malloc(sizeof(tNode));
     if (rh->tag == 0)
     {
