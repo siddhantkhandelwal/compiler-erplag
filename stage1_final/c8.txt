@@ -25,14 +25,6 @@ start
 			break;
 	end
 
-	switch(b)
-	start
-		case true: print(y);
-		break;
-		case false: print(x);
-		break;
-	end
-
 	print(y);
 	print(z);
 end

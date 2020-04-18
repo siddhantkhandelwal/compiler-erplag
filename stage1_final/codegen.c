@@ -5,6 +5,7 @@ int num_conditional = 0;
 int num_for = 0;
 int num_while = 0;
 int dynamic_offset = 0;
+int num_print_bool = 0;
 
 
 void codeGenModuleDef(FILE *fp, tNode *head)
@@ -111,6 +112,7 @@ void codeGenAssigment(FILE *fp, tNode *head)
         {
             if(head->entry->type->isStatic==1){ // Dynamic Index Static Array
 
+
                 codeGenExpression(fp, head->node.l->sibling->node.l->sibling);
 
                 tNode* index = head->node.l->sibling;
@@ -132,7 +134,7 @@ void codeGenAssigment(FILE *fp, tNode *head)
                 fprintf(fp,"ADD EDX,4\n");
                 fprintf(fp,"SUB ECX,EDX\n");
                 fprintf(fp, "MOV [dword SS : ECX],EAX\n");
-               // fprintf(fp, "PUSH EAX\n");
+               // fprintf(fp, "POP EDX\n");
             }
         }
         else
@@ -539,10 +541,19 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     array_size = (width) * 4;
                 }
                 num_for++;
+                fprintf(fp,"PUSH ECX\n");
+                fprintf(fp,"PUSH EDX\n");
+                fprintf(fp,"PUSH %d\n",width);
+                fprintf(fp,"PUSH arr_msg\n");
+                fprintf(fp,"call printf\n");
+                fprintf(fp,"add esp,8\n");
+                fprintf(fp,"POP EDX\n");
+                fprintf(fp,"POP ECX\n");
                 fprintf(fp, "XOR ECX, ECX\n");
                 fprintf(fp, "FOR_LOOP_%d : ", num_for);
                 if (id->entry->type->element_type == INTEGER || id->entry->type->element_type == BOOLEAN)
                 {
+
                     fprintf(fp,"PUSH EDX\n");
                     fprintf(fp,"PUSH ECX\n");
                     fprintf(fp, "PUSH intvar+0\n");
@@ -595,6 +606,18 @@ void codeGeniostmt(FILE *fp, tNode *head)
             else
             {
                 num_for++;
+                fprintf(fp,"PUSH ECX\n");
+                fprintf(fp,"PUSH EDX\n");
+                fprintf(fp, "MOV EDI, dword[end + %d]\n", id->entry->type->dyn_index * 4);
+                fprintf(fp, "SUB EDI, dword[start + %d]\n", id->entry->type->dyn_index * 4);
+                fprintf(fp, "INC EDI\n");
+                fprintf(fp, "PUSH EDI\n");
+                fprintf(fp,"PUSH arr_msg\n");
+                fprintf(fp,"call printf\n");
+                fprintf(fp,"add esp,8\n");
+                fprintf(fp,"POP EDX\n");
+                fprintf(fp,"POP ECX\n");
+
                 fprintf(fp, "XOR ECX, ECX\n");
                 fprintf(fp, "FOR_LOOP_%d : ", num_for);
                 if (id->entry->type->element_type == INTEGER || id->entry->type->element_type == BOOLEAN)
@@ -654,7 +677,14 @@ void codeGeniostmt(FILE *fp, tNode *head)
         else
         {
             if (id->entry->type->basic_type == INTEGER || id->entry->type->basic_type == BOOLEAN)
-            {
+            {   
+
+                fprintf(fp,"PUSH EDX\n");
+                fprintf(fp,"PUSH int_msg\n");
+                fprintf(fp,"call printf\n");
+                fprintf(fp,"ADD ESP,4\n");
+                fprintf(fp,"POP EDX\n");
+
                 fprintf(fp,"PUSH EDX\n");
                 fprintf(fp, "PUSH intvar+0\n");
                 fprintf(fp, "PUSH intinputFormat\n");
@@ -695,32 +725,94 @@ void codeGeniostmt(FILE *fp, tNode *head)
             {
                 // array element
                 int off = id->entry->offset;
-                if (id->node.l->sibling->node.l->s.T == NUM)
-                {
-                    int disp = id->node.l->sibling->node.l->ti->value.v1 - id->entry->type->start;
-                    fprintf(fp,"push EDX\n");
-                    fprintf(fp,"mov EDX, dword[EBP-%d]\n",(K+off));
-                    fprintf(fp, "mov EAX,dword[EDX-%d]\n", ((disp*4)+4));
-                    fprintf(fp, "pop EDX\n");
+                if(var->node.n->child->entry->type->isStatic==1){
+                    if (id->node.l->sibling->node.l->s.T == NUM)
+                    {
+                        int disp = id->node.l->sibling->node.l->ti->value.v1 - id->entry->type->start;
+                        fprintf(fp,"push EDX\n");
+                        fprintf(fp,"mov EDX, dword[EBP-%d]\n",(K+off));
+                        fprintf(fp, "mov EAX,dword[EDX-%d]\n", ((disp*4)+4));
+                        fprintf(fp, "pop EDX\n");
+                    }
+                    else if (id->node.l->sibling->node.l->s.T == ID)
+                    {
+                        fprintf(fp,"push EDX\n");
+                        fprintf(fp,"push EBX\n");
+                        fprintf(fp, "mov EBX, dword[EBP-%d]\n",(id->node.l->sibling->entry->offset+K));
+                        fprintf(fp, "cmp ebx,%d\n",id->entry->type->start);
+                        fprintf(fp, "JL END\n");
+                        fprintf(fp, "cmp ebx,%d\n",id->entry->type->end);
+                        fprintf(fp, "JG END\n");
+                        fprintf(fp, "sub EBX,%d\n",id->entry->type->start);
+                        fprintf(fp, "shl EBX,2\n");
+
+                        fprintf(fp,"mov EDX, dword[EBP-%d]\n",(K+off));
+                        fprintf(fp, "sub edx,ebx\n");
+                        fprintf(fp, "sub edx,4\n");
+                        fprintf(fp, "mov EAX, dword[EDX]\n");
+                        fprintf(fp, "pop EBX\n");
+                        fprintf(fp, "pop EDX\n");
+                    }
+                }else{
+                    if (id->node.l->sibling->node.l->s.T == NUM)
+                    {
+                        //int disp = id->node.l->sibling->node.l->ti->value.v1 - id->entry->type->start;
+                        fprintf(fp,"push EDX\n");
+                        fprintf(fp,"mov EDX, dword[EBP-%d]\n",(K+off));
+                        fprintf(fp, "cmp dword[start+%d],%d\n",id->entry->type->dyn_index*4,id->node.l->sibling->node.l->ti->value.v1);
+                        fprintf(fp, "JG END\n");
+                        fprintf(fp, "cmp dword[end+%d],%d\n",id->entry->type->dyn_index*4,id->node.l->sibling->node.l->ti->value.v1);
+                        fprintf(fp, "JL END\n");
+                        fprintf(fp, "MOV EDX,%d\n",id->node.l->sibling->node.l->ti->value.v1);
+                        fprintf(fp, "SUB EDX,dword[start+%d]\n",id->entry->type->dyn_index*4);
+                        fprintf(fp, "SHL EDX,2\n");
+                        fprintf(fp, "mov EAX,dword[dyn_arrays+EDX]\n");
+                        fprintf(fp, "pop EDX\n");
+                    }
+                    else if (id->node.l->sibling->node.l->s.T == ID)
+                    {
+                        fprintf(fp,"push EDX\n");
+                        fprintf(fp,"push EBX\n");
+                        fprintf(fp, "mov EBX, dword[EBP-%d]\n",(id->node.l->sibling->entry->offset+K));
+                        fprintf(fp, "cmp ebx,dword[start+%d]\n",id->entry->type->dyn_index*4);
+                        fprintf(fp, "JL END\n");
+                        fprintf(fp, "cmp ebx,dword[end+%d]\n",id->entry->type->dyn_index*4);
+                        fprintf(fp, "JG END\n");
+                        fprintf(fp, "sub EBX,dword[start+%d]\n",id->entry->type->dyn_index*4);
+                        fprintf(fp, "shl EBX,2\n");
+
+                        fprintf(fp,"mov EDX, dword[EBP-%d]\n",(K+off));
+                        fprintf(fp, "add edx,ebx\n");
+                        fprintf(fp, "mov EAX, dword[dyn_arrays+EDX]\n");
+                        fprintf(fp, "pop EBX\n");
+                        fprintf(fp, "pop EDX\n");
+                    }
                 }
-                else if (id->node.l->sibling->node.l->s.T == ID)
-                {
-                    fprintf(fp,"push EDX\n");
-                    fprintf(fp,"push EBX\n");
-                    fprintf(fp, "mov EBX, dword[EBP-%d]\n",(id->node.l->sibling->entry->offset+K));
-                    fprintf(fp,"mov EDX, dword[EBP-%d]\n",(K+off));
-                    fprintf(fp, "mov EAX, dword[EDX-EBX*4-4]\n");
-                    fprintf(fp, "pop EBX\n");
-                    fprintf(fp, "pop EDX\n");
+
+                if(var->node.n->child->entry->type->element_type == INTEGER){
+                    fprintf(fp,"push edx\n");
+                    fprintf(fp,"push eax\n");
+                    fprintf(fp,"push men\n");
+                    fprintf(fp, "call printf\n");
+                    fprintf(fp, "add esp,8\n");
+                    fprintf(fp, "pop edx\n");
+                }else{
+                    num_print_bool++;
+                    fprintf(fp,"PUSH EDX\n");
+                    fprintf(fp,"CMP EAX,1\n");
+                    fprintf(fp,"JNZ PRINT_FALSE_%d\n",num_print_bool);
+                    fprintf(fp,"PUSH true_msg\n");
+                    fprintf(fp,"PUSH men_bool\n");
+                    fprintf(fp,"call printf\n");
+                    fprintf(fp, "JMP PRINT_FALSE_END_%d\n",num_print_bool);
+                    fprintf(fp,"PRINT_FALSE_%d : \n",num_print_bool);
+                    fprintf(fp,"PUSH false_msg\n");
+                    fprintf(fp,"PUSH men_bool\n");
+                    fprintf(fp,"call printf\n");
+                    fprintf(fp,"PRINT_FALSE_END_%d : \n",num_print_bool);
+                    fprintf(fp,"ADD ESP,8\n");
+                    fprintf(fp,"POP EDX\n");
                 }
-                fprintf(fp, "push eax\n");
-                fprintf(fp, "push ecx\n");
-                fprintf(fp, "mov edi, men\n");
-                fprintf(fp, "mov esi, eax\n");
-                fprintf(fp, "xor eax, eax\n");
-                fprintf(fp, "call printf\n");
-                fprintf(fp, "pop ecx\n");
-                fprintf(fp, "pop eax\n");
             }
             else
             {
@@ -741,6 +833,11 @@ void codeGeniostmt(FILE *fp, tNode *head)
                         array_size = (width) * 4;
                     }
                     num_for++;
+                    fprintf(fp, "PUSH EDX\n");
+                    fprintf(fp,"PUSH array_output\n");
+                    fprintf(fp,"call printf\n");
+                    fprintf(fp,"add esp,4\n");
+                    fprintf(fp, "POP EDX\n");
                     fprintf(fp, "XOR ECX, ECX\n");
                     //fprintf(fp, "PUSH EDX\n");
                     fprintf(fp,"PUSH EDX\n");
@@ -753,13 +850,29 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     fprintf(fp, "push edx\n");
                     fprintf(fp, "push ecx\n");
                     fprintf(fp, "push eax\n");
-                // fprintf(fp, "push ecx\n");
-                    fprintf(fp, "push men\n");
-                // fprintf(fp, "mov esi, eax\n");
-                    //fprintf(fp, "xor eax, eax\n");
-                    fprintf(fp, "call printf\n");
-                //  fprintf(fp, "pop ecx\n");
-                    fprintf(fp, "pop eax\n");
+               
+                    if(id->entry->type->element_type == BOOLEAN){
+                        fprintf(fp,"PUSH EDX\n");
+                        fprintf(fp,"CMP EAX,1\n");
+                        fprintf(fp,"JNZ PRINT_FALSE_%d\n",num_print_bool);
+                        fprintf(fp,"PUSH true_msg_arr\n");
+                        //fprintf(fp,"PUSH men_bool_arr\n");
+                        fprintf(fp,"call printf\n");
+                        fprintf(fp, "JMP PRINT_FALSE_END_%d\n",num_print_bool);
+                        fprintf(fp,"PRINT_FALSE_%d : \n",num_print_bool);
+                        fprintf(fp,"PUSH false_msg_arr\n");
+                        //fprintf(fp,"PUSH men_bool\n");
+                        fprintf(fp,"call printf\n");
+                        fprintf(fp,"PRINT_FALSE_END_%d : \n",num_print_bool);
+                        fprintf(fp,"ADD ESP,4\n");
+                        fprintf(fp,"POP EDX\n");
+                    }else{
+                        fprintf(fp, "push array_element\n");
+                        fprintf(fp, "call printf\n");
+                        fprintf(fp, "pop eax\n");
+                    }
+
+                    
                     fprintf(fp, "pop eax\n");
                     fprintf(fp, "pop ecx\n");
                     fprintf(fp, "pop edx\n");
@@ -778,11 +891,22 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     }
                     fprintf(fp, "CMP ECX, %d\n", array_size);
                     fprintf(fp, "JL FOR_LOOP_%d\n", num_for);
+                    fprintf(fp, "PUSH EDX\n");
+                    fprintf(fp, "PUSH array_end\n");
+                    fprintf(fp, "call printf\n");
+                    fprintf(fp, "add esp,4\n");
+                    fprintf(fp, "pop edx\n");
                     fprintf(fp, "POP EDX\n");
                 }
                 else
                 {
                     num_for++;
+                    fprintf(fp, "PUSH EDX\n");
+                    fprintf(fp,"PUSH array_output\n");
+                    fprintf(fp,"call printf\n");
+                    fprintf(fp,"add esp,4\n");
+                    fprintf(fp, "POP EDX\n");
+
                     fprintf(fp, "XOR ECX, ECX\n");
                     //fprintf(fp, "PUSH EDX\n");
                     fprintf(fp,"PUSH EDX\n");
@@ -796,13 +920,28 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     fprintf(fp, "push edx\n");
                     fprintf(fp, "push ecx\n");
                     fprintf(fp, "push eax\n");
-                // fprintf(fp, "push ecx\n");
-                    fprintf(fp, "push men\n");
-                // fprintf(fp, "mov esi, eax\n");
-                    //fprintf(fp, "xor eax, eax\n");
-                    fprintf(fp, "call printf\n");
-                //  fprintf(fp, "pop ecx\n");
-                    fprintf(fp, "pop eax\n");
+
+                    if(id->entry->type->element_type == BOOLEAN){
+                        fprintf(fp,"PUSH EDX\n");
+                        fprintf(fp,"CMP EAX,1\n");
+                        fprintf(fp,"JNZ PRINT_FALSE_%d\n",num_print_bool);
+                        fprintf(fp,"PUSH true_msg_arr\n");
+                        //fprintf(fp,"PUSH men_bool\n");
+                        fprintf(fp,"call printf\n");
+                        fprintf(fp, "JMP PRINT_FALSE_END_%d\n",num_print_bool);
+                        fprintf(fp,"PRINT_FALSE_%d : \n",num_print_bool);
+                        fprintf(fp,"PUSH false_msg_arr\n");
+                        //fprintf(fp,"PUSH men_bool\n");
+                        fprintf(fp,"call printf\n");
+                        fprintf(fp,"PRINT_FALSE_END_%d : \n",num_print_bool);
+                        fprintf(fp,"ADD ESP,4\n");
+                        fprintf(fp,"POP EDX\n");
+                    }else{
+                        fprintf(fp, "push array_element\n");
+                        fprintf(fp, "call printf\n");
+                        fprintf(fp, "pop eax\n");
+                    }
+
                     fprintf(fp, "pop eax\n");
                     fprintf(fp, "pop ecx\n");
                     fprintf(fp, "pop edx\n");
@@ -825,6 +964,11 @@ void codeGeniostmt(FILE *fp, tNode *head)
                     fprintf(fp, "SHL EDI, 2\n");
                     fprintf(fp, "CMP ECX, EDI\n");
                     fprintf(fp, "JL FOR_LOOP_%d\n", num_for);
+                    fprintf(fp, "PUSH EDX\n");
+                    fprintf(fp, "PUSH array_end\n");
+                    fprintf(fp, "call printf\n");
+                    fprintf(fp, "add esp,4\n");
+                    fprintf(fp, "pop edx\n");
                     fprintf(fp,"POP EDX\n");
                 }
                 
@@ -833,17 +977,31 @@ void codeGeniostmt(FILE *fp, tNode *head)
 
         else
         {
-            if (var->node.n->child->node.n->s.N == BOOLCONSTT)
-            {
-                if (var->node.n->child->node.n->child->node.l->s.T == TRUE)
+           // if (var->node.n->child->node.n->s.N == BOOLCONSTT)
+            //{
+                if (var->node.n->child->node.l->s.T == TRUE)
                 {
-                    fprintf(fp, "mov AX,1\n");
+                    fprintf(fp,"PUSH EDX\n");
+                    fprintf(fp, "push true_msg\n");
+                    fprintf(fp, "push men_bool\n");
+                    fprintf(fp, "call printf\n");
+                    fprintf(fp, "pop eax\n");
+                    fprintf(fp, "pop eax\n");
+                    fprintf(fp, "POP EDX\n");
+                    return;
                 }
-                else
+                else if(var->node.n->child->node.l->s.T == FALSE)
                 {
-                    fprintf(fp, "mov AX,0\n");
+                    fprintf(fp,"PUSH EDX\n");
+                    fprintf(fp, "push false_msg\n");
+                    fprintf(fp, "push men_bool\n");
+                    fprintf(fp, "call printf\n");
+                    fprintf(fp, "pop eax\n");
+                    fprintf(fp, "pop eax\n");
+                    fprintf(fp, "POP EDX\n");
+                    return;
                 }
-            }
+            //}
             else if (var->node.n->child->node.l->s.T == NUM || var->node.n->child->node.l->s.T == RNUM)
             {
                 fprintf(fp, "mov EAX,%s\n", var->node.n->child->node.l->ti->lexeme);
@@ -853,14 +1011,27 @@ void codeGeniostmt(FILE *fp, tNode *head)
                 fprintf(fp, "mov EAX,dword[EBP - %d]\n", (K + var->node.n->child->entry->offset));
             }
             fprintf(fp,"PUSH EDX\n");
+            if(var->node.n->child->entry->type->basic_type==BOOLEAN){
+                num_print_bool++;
+                fprintf(fp,"PUSH EDX\n");
+                fprintf(fp,"CMP EAX,1\n");
+                fprintf(fp,"JNZ PRINT_FALSE_%d\n",num_print_bool);
+                fprintf(fp,"PUSH true_msg\n");
+                fprintf(fp,"PUSH men_bool\n");
+                fprintf(fp,"call printf\n");
+                fprintf(fp, "JMP PRINT_FALSE_END_%d\n",num_print_bool);
+                fprintf(fp,"PRINT_FALSE_%d : \n",num_print_bool);
+                fprintf(fp,"PUSH false_msg\n");
+                fprintf(fp,"PUSH men_bool\n");
+                fprintf(fp,"call printf\n");
+                fprintf(fp,"PRINT_FALSE_END_%d : \n",num_print_bool);
+                fprintf(fp,"ADD ESP,8\n");
+                fprintf(fp,"POP EDX\n");
+                return;
+            }
             fprintf(fp, "push eax\n");
-           //  fprintf(fp, "push ecx\n");
-           // fprintf(fp, "MOV EAX, dword[EBP-%d]\n", );
             fprintf(fp, "push men\n");
-            //fprintf(fp, "mov esi, eax\n");
-            //fprintf(fp, "xor eax, eax\n");
             fprintf(fp, "call printf\n");
-           // fprintf(fp, "pop ecx\n");
             fprintf(fp, "pop eax\n");
             fprintf(fp, "pop eax\n");
             fprintf(fp, "POP EDX\n");
@@ -897,11 +1068,24 @@ void printTree(tNode *head)
 
 void codeGenInit(FILE* fp, tNode* head){
 
-    fprintf(fp,"extern printf\nextern scanf\n");
+    fprintf(fp,"extern printf\nextern scanf\nextern exit\n");
 
     fprintf(fp,"section .data\n");
       
     fprintf(fp,"intinputFormat: db \"%%d\",0\nrealinputFormat: db \"%%f\",0\nintvar: times 100 dd 0\nrealvar: times 100 dd 0\nmen:  db \"Output: %%d \", 10,0\nerrorMsg : db \"Array Index Out of Bounds\",10,0\ndynOffset : dd 0\n");
+
+    fprintf(fp, "errorMsg2: db \"Invalid array range for dynamic array\",10,0\n");
+    fprintf(fp,"men_bool: db \"Output: %%s \",0\n");
+    fprintf(fp,"int_msg: db \"Enter an Integer value : \",10,0 \n");
+    fprintf(fp,"true_msg: db \"True\",10,0 \n");
+    fprintf(fp,"false_msg: db \"False\",10,0 \n");
+    fprintf(fp,"true_msg_arr: db \"True \",0 \n");
+    fprintf(fp,"false_msg_arr: db \"False \",0 \n");
+    fprintf(fp,"arr_msg: db \"Enter %%d array elements :\",10,0\n");
+    fprintf(fp,"array_output: db \"Printing Array Elements: \",10,0\n");
+    fprintf(fp,"array_element: db \"%%d \",0\n");
+    fprintf(fp, "array_end: db 10,0\n");
+
 
     fprintf(fp, "start: times 100 dd 0\n end: times 100 dd 0\n");
 
@@ -915,12 +1099,19 @@ void codeGenInit(FILE* fp, tNode* head){
 
     codeGen(fp,head);
 
-    fprintf(fp, "mov eax,1\nmov ebx,0\nint 80h\n");
+    //fprintf(fp, "mov eax,1\nmov ebx,0\nint 80h\n");
+    fprintf(fp, "call exit\n");
 
     fprintf(fp, "END : \n");
     fprintf(fp, "PUSH errorMsg\n");
     fprintf(fp, "call printf\n");
-    fprintf(fp, "mov eax,1\nmov ebx,0\nint 80h\n");
+    //fprintf(fp, "mov eax,1\nmov ebx,0\nint 80h\n");
+    fprintf(fp,"call exit\n");
+    fprintf(fp, "END2 : \n");
+    fprintf(fp, "PUSH errorMsg2\n");
+    fprintf(fp, "call printf\n");
+    //fprintf(fp, "mov eax,1\nmov ebx,0\nint 80h\n");
+    fprintf(fp,"call exit\n");
 
 
     //fprintf(fp, "ret\n");
@@ -951,13 +1142,16 @@ void codeGen(FILE *fp, tNode *head)
     }
     else if (head->node.n->s.N == CONDITIONALSTMT)
     {
+        fprintf(fp, "PUSH EDX\n");
         generate_conditional(fp,head);
+        fprintf(fp, "POP EDX\n");
         return;
     }
     else if (head->node.n->s.N == ITERATIVESTMT)
     {
-
+        fprintf(fp, "PUSH EDX\n");
         generate_iterative(fp,head);
+        fprintf(fp, "POP EDX\n");
         return;
     }
     else if(head->node.n->s.N == MODULE_NT){
@@ -1040,7 +1234,7 @@ void codeGen(FILE *fp, tNode *head)
                     fprintf(fp, "MOV EAX, dword[end + %d]\n", temp->type->dyn_index * 4);
                     fprintf(fp, "SUB EAX, dword[start + %d]\n", temp->type->dyn_index * 4);
                     fprintf(fp, "CMP EAX, 0\n");
-                    fprintf(fp, "JL END\n");
+                    fprintf(fp, "JL END2\n");
                     fprintf(fp, "INC EAX\n");
                     fprintf(fp, "SHL EAX, 2\n");
                     fprintf(fp, "ADD dword[dynOffset], EAX\n");

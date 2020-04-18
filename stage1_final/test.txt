@@ -1,35 +1,17 @@
-<<module compute_expr2>>
-takes input[x:integer];
-returns [y:integer];
-start
-	
-	y:=15;
-	print(x);
-	
-end
-
-
-<<module compute_expr>>
-takes input[x:integer,y:integer, A: array[2..5] of integer];
-returns [u:integer];
-start
-	
-
-	u:=A[3];
-	A[3]:=x;
-	print(A);
-	print(y);
-	[u]:= use module compute_expr2 with parameters u; 
-	
-end
-
 <<<driver program>>>
 start
-	declare A: array[2..5] of integer;
-	declare z,a,b: integer;
-	get_value(A);
-	a:=8;
-	b:=9;
-	[z]:= use module compute_expr with parameters a,b, A;
-	print(z);
+	
+	declare low,high:integer;
+	low:=1;
+	high:=4;
+	declare A: array[low..high] of integer;
+	
+	get_value(A); 
+
+	high:=9;
+
+	print(A[high]);
+	print(A[6]);
+
+
 end
