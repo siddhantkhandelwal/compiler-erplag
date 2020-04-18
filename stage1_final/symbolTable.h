@@ -29,6 +29,7 @@ struct symbol_entry{
 	int is_control_variable;
 	int is_control_changed;
 	int offset;
+	int offset_print;
 	int width;
 	int num_used; // Number of times this variable is used;
 	int used_on_lines[50];
@@ -52,6 +53,7 @@ struct scope{
 	int scope_start_line;
 	int scope_end_line;
 	int scope_level;
+	char func_name[25];
 };
 
 scope* make_st(tNode* head);

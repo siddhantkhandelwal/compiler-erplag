@@ -402,16 +402,32 @@ void constructAST(tNode *astNode)
             {
                 if (child->node.l->s.T == START)
                 {
-                    astNode->scope_marker = 1;
-                    astNode->scope_start_line = child->node.l->ti->line;
+                    if (astNode->node.n->s.N == MODULEDEF)
+                    {
+                        astNode->parent->scope_marker = 1;
+                        astNode->parent->scope_start_line = child->node.l->ti->line;
+                    }
+                    else
+                    {
+                        astNode->scope_marker = 1;
+                        astNode->scope_start_line = child->node.l->ti->line;
+                    }
                 }
                 else if (child->node.l->s.T == END)
                 {
-                    if (astNode->scope_marker != 1)
+                    if (astNode->scope_marker != 1 && astNode->node.n->s.N != MODULEDEF)
                     {
                         printf("\nError in ast.c: Corresponding Start Symbol not found for the End Symbol");
                     }
-                    astNode->scope_end_line = child->node.l->ti->line;
+                    if (astNode->node.n->s.N == MODULEDEF)
+                    {
+                        astNode->parent->scope_marker = 1;
+                        astNode->parent->scope_end_line = child->node.l->ti->line;
+                    }
+                    else
+                    {
+                        astNode->scope_end_line = child->node.l->ti->line;
+                    }
                 }
                 if (child->node.l->s.T == EPSILON || !isImportant(child->node.l->ti->t, keep, KEEP_LENGTH))
                 {
