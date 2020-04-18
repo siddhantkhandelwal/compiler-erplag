@@ -114,7 +114,7 @@ tokenInfo *getNextToken(FILE **fp)
     char lexeme_read[30];
 
     int i;
-    for (i = 0; i < MAXLEN; i++)
+    for (i = 0; i <= MAXLEN; i++)
         lexeme_read[i] = '\0';
 
     unsigned int state = 0;

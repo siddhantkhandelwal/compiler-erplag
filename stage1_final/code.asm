@@ -28,15 +28,6 @@ global main
 array_parameter_demo:
 SUB ESP, 12
 MOV EDX, ESP
-
-push edx
-push edx
-push men
-call printf
-add esp,8
-pop edx
-
-
 SUB ESP, 12
 PUSH EDX
 PUSH array_output
@@ -130,23 +121,23 @@ call scanf
 ADD ESP,8
 POP EDX
 MOV EAX,dword[intvar+0]
-MOV dword[EBP-52],EAX
-mov EDX, ESP
-SUB EDX, 4
-push EDX
+MOV dword[EBP-44],EAX
+mov EDI, ESP
+SUB EDI, 4
+push EDI
 SUB ESP, 20
-mov EDX, ESP
-SUB EDX, 4
-push EDX
+mov EDI, ESP
+SUB EDI, 4
+push EDI
 SUB ESP, 20
-mov EDX, dword[dynOffset]
- push edx
+mov EDI, dword[dynOffset]
+ push edi
 PUSH EAX
 MOV EAX, dword[EBP-40]
 MOV dword[start + 4], EAX
 POP EAX
 PUSH EAX
-MOV EAX, dword[EBP-52]
+MOV EAX, dword[EBP-44]
 MOV dword[end + 4], EAX
 POP EAX
 PUSH EAX
@@ -604,7 +595,7 @@ pop edx
 POP EDX
 PUSH EDX
 MOV ECX, 1
-FOR_LOOP_13 : MOV DWORD[EBP-44], ECX
+FOR_LOOP_13 : MOV DWORD[EBP-52], ECX
 PUSH EDX
 PUSH int_msg
 call printf
@@ -648,7 +639,7 @@ call printf
 pop eax
 pop eax
 POP EDX
-MOV ECX, DWORD[EBP-44]
+MOV ECX, DWORD[EBP-52]
 INC ECX
 CMP ECX, 4
 JLE FOR_LOOP_13
@@ -700,12 +691,12 @@ ADD ESP,8
 POP EDX
 MOV EAX,dword[intvar+0]
 MOV dword[EBP-16],EAX
-mov EDX, ESP
-SUB EDX, 4
-push EDX
+mov EDI, ESP
+SUB EDI, 4
+push EDI
 SUB ESP, 20
-mov EDX, dword[dynOffset]
- push edx
+mov EDI, dword[dynOffset]
+ push edi
 PUSH EAX
 MOV EAX, dword[EBP-12]
 MOV dword[start + 8], EAX
@@ -795,14 +786,6 @@ MOV EDX, dword[end+8]
 MOV dword[end+0], EDX
 MOV EBP, ESP
 call array_parameter_demo
-
-PUSH EDX
-PUSH EDX
-PUSH men
-call printf
-add esp,8
-pop edx
-
 SUB EDX, 4
 MOV ECX, [dword EDX]
 MOV [dword EBP-8-12], ECX

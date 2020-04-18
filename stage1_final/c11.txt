@@ -12,7 +12,7 @@ start
 	print(B);
 	print(C);               
 
-	declare k, i, p,j,index, q: integer;
+	declare k, i, p, q, index, j: integer;
 	get_value(p);	
 	get_value(q);
 	declare A, D: array[10..14] of integer;                          
