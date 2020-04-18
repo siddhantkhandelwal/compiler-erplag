@@ -12,6 +12,7 @@ void codeGenModuleDef(FILE *fp, tNode *head)
 {
     //print label as id.
     tNode *child = head->node.n->child;
+    printf("%s\n", child->node.l->ti->lexeme);
     fprintf(fp, "%s:\n", child->node.l->ti->lexeme);
     child = child->node.l->sibling;
     tNode *child_child = child->node.n->child;
@@ -1243,7 +1244,6 @@ void codeGen(FILE *fp, tNode *head)
         tNode* id_list = head->node.n->child;
         tNode* dt = id_list->node.n->sibling;
         tNode* id_child = id_list->node.n->child;
-
         if(dt->node.n->child->node.l->s.T != ARRAY){
 
             while(id_child){
@@ -1252,28 +1252,26 @@ void codeGen(FILE *fp, tNode *head)
                 id_child = id_child->node.l->sibling;
             }
         }else{
-
-
+            //fprintf(fp, "PUSH EDX\n");
             while(id_child){
                 se* temp = id_child->entry;
                 if(temp->type->isStatic == 1){
-
-                    fprintf(fp,"MOV EDI,EDX\n");
-                    fprintf(fp,"mov EDX, ESP\n");
-                    fprintf(fp,"SUB EDX, 4\n");
-                    fprintf(fp,"push EDX\n");
+  
+                    fprintf(fp,"mov EDI, ESP\n");
+                    fprintf(fp,"SUB EDI, 4\n");
+                    fprintf(fp,"push EDI\n");
                     int s = temp->type->start;
                     int e = temp->type->end;
                     int w = e-s+1;
                     fprintf(fp,"SUB ESP, %d\n",4*w);
                     fprintf(fp, "MOV EDX,EDI\n");
                 }else{
-                    fprintf(fp,"MOV EDI,EDX\n");
-                    fprintf(fp,"mov EDX, dword[dynOffset]\n");
+
+                    fprintf(fp,"mov EDI, dword[dynOffset]\n");
                     //fprintf(fp,"mov dword[ebp-%d], edx\n", id_child->entry->offset+ K);
                    
                     //fprintf(fp, "SUB ESP, 4\n");
-                    fprintf(fp, " push edx\n");
+                    fprintf(fp, " push edi\n");
                     int s,e;
                     tNode* range_arrays = dt->node.n->child->node.l->sibling;
                     tNode* l = range_arrays->node.n->child;
@@ -1316,7 +1314,9 @@ void codeGen(FILE *fp, tNode *head)
                 }
                 id_child = id_child->node.l->sibling;
             }
+        //fprintf(fp, "POP EDX\n");
         }
+        
     }
     tNode *temp = head->node.n->child;
     while (temp)
