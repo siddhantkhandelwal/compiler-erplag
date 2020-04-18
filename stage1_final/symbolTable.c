@@ -84,6 +84,8 @@ se *lookupst(char *identifier, scope *sc, int is_func, int line_num)
 			head = head->next;
 		}
 
+
+
 		if (strcmp(sc->stamp, "module") == 0)
 		{
 			se *itemp = sc->input_list;
@@ -423,7 +425,14 @@ void populate_st(tNode *head, scope *sc)
 					}
 					else
 					{
-						child->entry = lookupst(child->node.l->ti->lexeme, sc, 0, child->node.l->ti->line);
+						if(child->parent->node.n->s.N != RANGEARRAYS) /*&& (child->parent->parent && child->parent->parent->parent->node.n->s.N!= INPUTPLIST)*/
+							child->entry = lookupst(child->node.l->ti->lexeme, sc, 0, child->node.l->ti->line);
+						else{
+							if(child->parent->parent->parent->node.n->s.N==INPUTPLIST);
+								//printf("yes\n");
+							else
+								child->entry = lookupst(child->node.l->ti->lexeme, sc, 0, child->node.l->ti->line);
+						}
 						//printf("%s %s\n",child->node.l->ti->lexeme,sc->stamp);
 					}
 				}

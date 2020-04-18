@@ -665,7 +665,7 @@ void checkModuleDef(tNode *head)
 {
 
     tNode *outp_list = head->node.n->child->node.l->sibling->node.n->sibling;
-    if (outp_list->node.n->s.N == OUTPUTPLIST)
+    if (outp_list && outp_list->node.n->s.N == OUTPUTPLIST)
     {
         tNode *temp = outp_list->node.n->child;
         while (temp)

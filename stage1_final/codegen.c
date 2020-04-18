@@ -24,7 +24,7 @@ void codeGenModuleDef(FILE *fp, tNode *head)
     fprintf(fp, "SUB ESP, %d\n", 4 * (count+1));
     fprintf(fp, "MOV EDX, ESP\n");
     tNode *outp_list = child->node.n->sibling;
-    if (outp_list->node.n->s.N == OUTPUTPLIST)
+    if (outp_list && outp_list->node.n->s.N == OUTPUTPLIST)
     {
         child_child = outp_list->node.n->child;
         count = 0;
@@ -37,7 +37,7 @@ void codeGenModuleDef(FILE *fp, tNode *head)
         codeGen(fp, outp_list->node.n->sibling);
     }
     else
-    {
+    {   
         codeGen(fp, outp_list);
     }
 
@@ -74,10 +74,10 @@ void codeGenModuleReuse(FILE *fp, tNode *head)
         if(id_list_child->entry->type->basic_type==ARRAY){
 
             if(id_list_child->entry->type->isStatic==0){
-                fprintf(fp, "MOV EDX, dword[start+%d]\n",id_list_child->entry->type->dyn_index);
-                fprintf(fp, "MOV dword[start+%d], EDX\n",ip_list_callee->type->dyn_index);
-                fprintf(fp, "MOV EDX, dword[end+%d]\n",id_list_child->entry->type->dyn_index);
-                fprintf(fp, "MOV dword[end+%d], EDX\n",ip_list_callee->type->dyn_index);
+                fprintf(fp, "MOV EDX, dword[start+%d]\n",id_list_child->entry->type->dyn_index*4);
+                fprintf(fp, "MOV dword[start+%d], EDX\n",ip_list_callee->type->dyn_index*4);
+                fprintf(fp, "MOV EDX, dword[end+%d]\n",id_list_child->entry->type->dyn_index*4);
+                fprintf(fp, "MOV dword[end+%d], EDX\n",ip_list_callee->type->dyn_index*4);
             }
         }
 
@@ -106,8 +106,35 @@ void codeGenModuleReuse(FILE *fp, tNode *head)
 void codeGenAssigment(FILE *fp, tNode *head)
 {
 
+
     if (head->entry->type->basic_type == ARRAY)
-    {
+    {   
+
+        tNode* sib = head->node.l->sibling;
+        if(sib->leafTag==1){
+            sib = sib->node.n->child;
+            if(sib->leafTag==0){
+                if(sib->entry->type->basic_type==ARRAY && sib->node.l->sibling==NULL){
+                    if(head->entry->type->isStatic==1 && sib->entry->type->isStatic==1){
+                        fprintf(fp,"MOV EDX,dword[EBP-%d]\n",(sib->entry->offset+K));
+                        fprintf(fp,"MOV dword[EBP-%d],EDX\n",(head->entry->offset+K));
+                        return;
+                    }
+                    else if(head->entry->type->isStatic==0 && sib->entry->type->isStatic==0){
+                        fprintf(fp,"MOV EDX,dword[start+%d]\n",head->entry->type->dyn_index*4);
+                        fprintf(fp,"CMP EDX,dword[start+%d]\n",sib->entry->type->dyn_index*4);
+                        fprintf(fp,"JNE END\n");
+                        fprintf(fp,"MOV EDX,dword[end+%d]\n",head->entry->type->dyn_index*4);
+                        fprintf(fp,"CMP EDX,dword[end+%d]\n",sib->entry->type->dyn_index*4);
+                        fprintf(fp,"JNE END\n");
+                        fprintf(fp,"MOV EDX,dword[EBP-%d]\n",(sib->entry->offset+K));
+                        fprintf(fp,"MOV dword[EBP-%d],EDX\n",(head->entry->offset+K));
+                        return;
+
+                    }
+                }
+            }
+        }
         if (head->type->isStatic == 0)
         {
             if(head->entry->type->isStatic==1){ // Dynamic Index Static Array
@@ -135,6 +162,46 @@ void codeGenAssigment(FILE *fp, tNode *head)
                 fprintf(fp,"SUB ECX,EDX\n");
                 fprintf(fp, "MOV [dword SS : ECX],EAX\n");
                // fprintf(fp, "POP EDX\n");
+            }else{
+
+                codeGenExpression(fp, head->node.l->sibling->node.l->sibling);
+
+                tNode* index = head->node.l->sibling;
+                if(index->node.l->s.T == NUM)
+                {
+
+                    fprintf(fp, "MOV EDX, %d\n", index->node.l->ti->value.v1);
+                    fprintf(fp, "CMP EDX, dword[start + %d]\n", head->entry->type->dyn_index * 4);
+                    fprintf(fp, "JL END\n");
+                    fprintf(fp, "CMP EDX, dword[end + %d]\n", head->entry->type->dyn_index * 4);
+                    fprintf(fp, "JG END\n");
+                    fprintf(fp, "MOV EDI, dword[EBP-%d]\n", head->entry->offset + K);
+                    fprintf(fp, "ADD EDI, dyn_arrays\n");
+                    fprintf(fp, "SUB EDX, dword[start + %d]\n", head->entry->type->dyn_index * 4);
+                    fprintf(fp, "SHL EDX, 2\n");
+                    fprintf(fp, "ADD EDI, EDX\n");
+                    fprintf(fp, "POP EAX\n");
+                    fprintf(fp, "MOV [dword DS: EDI],EAX\n");
+                    
+                }
+                else
+                {
+                    fprintf(fp, "MOV EDX, dword[EBP-%d]\n", index->entry->offset + K);
+                    fprintf(fp, "CMP EDX, dword[start + %d]\n", head->entry->type->dyn_index * 4);
+                    fprintf(fp, "JL END\n");
+                    fprintf(fp, "CMP EDX, dword[end + %d]\n", head->entry->type->dyn_index * 4);
+                    fprintf(fp, "JG END\n");
+                    fprintf(fp, "MOV EDI, dword[EBP-%d]\n", head->entry->offset + K);
+                    fprintf(fp, "ADD EDI, dyn_arrays\n");
+                    fprintf(fp, "SUB EDX, dword[start + %d]\n", head->entry->type->dyn_index * 4);
+                    fprintf(fp, "SHL EDX, 2\n");
+                    fprintf(fp, "ADD EDI, EDX\n");
+                    fprintf(fp, "POP EAX\n");
+                    fprintf(fp, "MOV [dword DS: EDI],EAX\n");
+                    
+                }
+
+
             }
         }
         else
@@ -1136,6 +1203,7 @@ void codeGen(FILE *fp, tNode *head)
 
     if (head->node.n->s.N == ASSIGNMENTSTMT)
     {   
+        
         fprintf(fp,"PUSH EDX\n");
         codeGenAssigment(fp, head->node.n->child);
         fprintf(fp,"POP EDX\n");

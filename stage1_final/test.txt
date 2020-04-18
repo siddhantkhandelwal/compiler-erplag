@@ -1,17 +1,15 @@
 <<<driver program>>>
 start
 	
-	declare low,high:integer;
-	low:=1;
-	high:=4;
-	declare A: array[low..high] of integer;
-	
-	get_value(A); 
+	declare l1,h1,l2,h2:integer;
+	get_value(l1);
+	get_value(h1);
+	get_value(l2);
+	get_value(h2);
 
-	high:=9;
-
-	print(A[high]);
-	print(A[6]);
-
-
+	declare A: array[l1..h1] of integer;
+	get_value(A);
+	declare B:array[l2..h2] of integer;
+	B:=A;
+	print(B);
 end
