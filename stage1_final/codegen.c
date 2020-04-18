@@ -12,7 +12,6 @@ void codeGenModuleDef(FILE *fp, tNode *head)
 {
     //print label as id.
     tNode *child = head->node.n->child;
-    printf("%s\n", child->node.l->ti->lexeme);
     fprintf(fp, "%s:\n", child->node.l->ti->lexeme);
     child = child->node.l->sibling;
     tNode *child_child = child->node.n->child;

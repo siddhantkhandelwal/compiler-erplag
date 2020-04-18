@@ -760,6 +760,7 @@ void parseInput(FILE **fp)
     rh->next = NULL;
     rh->tag = 1;
     tNode *prog = createtNode(rh, NULL);
+
     inserttNode(NULL, prog);
     push(prog);
 

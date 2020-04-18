@@ -49,6 +49,9 @@ struct scope{
 	int is_func_used;
 	int label_ip;
 	int label_op;
+	int scope_start_line;
+	int scope_end_line;
+	int scope_level;
 };
 
 scope* make_st(tNode* head);

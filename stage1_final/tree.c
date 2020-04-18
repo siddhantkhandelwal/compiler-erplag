@@ -11,7 +11,6 @@ tNode *head = NULL;
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti)
 {
-
     tNode *tn = malloc(sizeof(tNode));
     if (rh->tag == 0)
     {
@@ -21,6 +20,9 @@ tNode *createtNode(rhsNode *rh, tokenInfo *ti)
         ln->s = rh->S;
         (tn->node).l = ln;
         tn->leafTag = 0;
+        tn->scope_start_line = -1;
+        tn->scope_end_line = -1;
+        tn->scope_marker = 0;
     }
     else
     {
@@ -31,6 +33,9 @@ tNode *createtNode(rhsNode *rh, tokenInfo *ti)
         (tn->node).n = nln;
         tn->leafTag = 1;
         tn->node.n->is_operator = 0;
+        tn->scope_start_line = -1;
+        tn->scope_end_line = -1;
+        tn->scope_marker = 0;
     }
     return tn;
 }
