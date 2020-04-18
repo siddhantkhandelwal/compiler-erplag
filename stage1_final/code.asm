@@ -25,18 +25,9 @@ start: times 100 dd 0
 dyn_arrays: times 100 dd 0
 section .text
 global main
-array_parameter_demo:
+array_parameter_demo/V:
 SUB ESP, 12
 MOV EDX, ESP
-
-push edx
-push edx
-push men
-call printf
-add esp,8
-pop edx
-
-
 SUB ESP, 12
 PUSH EDX
 PUSH array_output
@@ -131,14 +122,19 @@ ADD ESP,8
 POP EDX
 MOV EAX,dword[intvar+0]
 MOV dword[EBP-52],EAX
+MOV EDI,EDX
 mov EDX, ESP
 SUB EDX, 4
 push EDX
 SUB ESP, 20
+MOV EDX,EDI
+MOV EDI,EDX
 mov EDX, ESP
 SUB EDX, 4
 push EDX
 SUB ESP, 20
+MOV EDX,EDI
+MOV EDI,EDX
 mov EDX, dword[dynOffset]
  push edx
 PUSH EAX
@@ -158,6 +154,7 @@ INC EAX
 SHL EAX, 2
 ADD dword[dynOffset], EAX
 POP EAX
+MOV EDX,EDI
 PUSH ECX
 PUSH EDX
 PUSH 5
@@ -700,10 +697,13 @@ ADD ESP,8
 POP EDX
 MOV EAX,dword[intvar+0]
 MOV dword[EBP-16],EAX
+MOV EDI,EDX
 mov EDX, ESP
 SUB EDX, 4
 push EDX
 SUB ESP, 20
+MOV EDX,EDI
+MOV EDI,EDX
 mov EDX, dword[dynOffset]
  push edx
 PUSH EAX
@@ -723,6 +723,7 @@ INC EAX
 SHL EAX, 2
 ADD dword[dynOffset], EAX
 POP EAX
+MOV EDX,EDI
 PUSH ECX
 PUSH EDX
 PUSH 5
@@ -794,15 +795,7 @@ MOV dword[start+0], EDX
 MOV EDX, dword[end+8]
 MOV dword[end+0], EDX
 MOV EBP, ESP
-call array_parameter_demo
-
-PUSH EDX
-PUSH EDX
-PUSH men
-call printf
-add esp,8
-pop edx
-
+call array_parameter_demo/V
 SUB EDX, 4
 MOV ECX, [dword EDX]
 MOV [dword EBP-8-12], ECX

@@ -1,4 +1,4 @@
-Lexeme: array_parameter_demoðU	 Line no: 8         		Token: ID        	Value: -----		Parent Node: module    		Leaf Node: Yes		Node Symbol: -----
+Lexeme: array_parameter_demo/V	 Line no: 8         		Token: ID        	Value: -----		Parent Node: module    		Leaf Node: Yes		Node Symbol: -----
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: program		Leaf Node: No		Node Symbol: module
 
@@ -538,7 +538,7 @@ Lexeme: s3        	 Line no: 75        		Token: ID        	Value: -----		Parent 
 
 Lexeme: -----		Line no: -----		Token: -----		Value: -----		Parent Node: simplestmt		Leaf Node: No		Node Symbol: modulereusestmt
 
-Lexeme: array_parameter_demoðU	 Line no: 75        		Token: ID        	Value: -----		Parent Node: modulereusestmt		Leaf Node: Yes		Node Symbol: -----
+Lexeme: array_parameter_demo/V	 Line no: 75        		Token: ID        	Value: -----		Parent Node: modulereusestmt		Leaf Node: Yes		Node Symbol: -----
 
 Lexeme: array_A   	 Line no: 75        		Token: ID        	Value: -----		Parent Node: idlist    		Leaf Node: Yes		Node Symbol: -----
 
