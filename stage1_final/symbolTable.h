@@ -56,8 +56,12 @@ struct scope
 	int scope_end_line;
 	int scope_level;
 	char func_name[25];
+	int activationRecordSize;
 };
+
+extern int symbolTableSemanticsErrors;
 
 scope *make_st(tNode *head);
 void printSymbolTable(scope *sc);
 void printStaticDynamicArrays(scope *sc);
+void activationRecordSize(scope *sc);

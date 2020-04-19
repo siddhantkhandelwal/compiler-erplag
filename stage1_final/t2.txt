@@ -46,15 +46,15 @@ end
 <<<driver program>>>
 start
 	declare v_1_2_3, A:integer;
-	declare u1, k:boolean;
+	declare u1:boolean;
         A:=12;
 	declare p: real;
 	p:= 23.56;
 	get_value(v_1_2_43);							**ERROR: variable v_1_2_43 is not declared**		
 	declare B, C: array [2..20] of integer;
-	[ v_1_2_3, u1]:=use module var_demo_array with parameters A,B,p;	
-	[ v_1_2_3, k]:=use module var_demo_array with parameters A,B,p;	**ERROR: variable k is not declared**
+	[ v_1_2_3, u1]:=use module var_demo_array with parameters A,B,p;		
+	[ v_1_2_3, k]:=use module var_demo_array with parameters A,B,p;		**ERROR: variable k is not declared**
 	B:= C;
-	declare B: real;						**ERROR: variable B is re-declared**
+	declare B: real;							**ERROR: variable B is re-declared**
 end
 

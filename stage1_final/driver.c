@@ -229,6 +229,7 @@ int main(int argc, char *argv[])
     // printf("a. First and follow sets automated.\n");
     // printf("b. Both lexical and syntax analysis modules implemented\n");
     // printf("c. Modules working fine with all the given test cases.\n");
+    printf("\nLEVEL 4: Symbol table/type Checking/ Semantic rules module(s) work(s)/ handled static and dynamic arrays in type checking and code generation\n");
 
     do
     {
@@ -294,10 +295,15 @@ int main(int argc, char *argv[])
             head = NULL;
             parseInput(&fpSource);
             temp = head;
-            printf("Order of traversal: Post-Order. Visit left-most child, then visit node, then visit remaining children.\n");
-            constructAST(head);
-            sc = make_st(head);
-            printAST(temp, stdout);
+            if (syntacticError == 0)
+            {
+                printf("Order of traversal: Post-Order. Visit left-most child, then visit node, then visit remaining children.\n");
+                constructAST(head);
+                sc = make_st(head);
+                printAST(temp, stdout);
+            }
+            else
+                printf("Syntactic Errors Found. Not going ahead.\n");
             fclose(fpGrammar);
             fclose(fpSource);
             ended = 0;
@@ -318,25 +324,36 @@ int main(int argc, char *argv[])
             head = NULL;
             parseInput(&fpSource);
             temp = head;
-            fpPT = fopen("pt.txt", "w");
-            printParseTree(temp, fpPT);
-            fclose(fpPT);
-            int nodesPT = nodeCount;
-            nodeCount = 0;
-            temp = head;
-            printf("Order of traversal: Post-Order. Visit left-most child, then visit node, then visit remaining children.\n");
-            constructAST(head);
-            sc = make_st(head);
-            fpPT = fopen("ast.txt", "w");
-            printAST(temp, fpPT);
-            fclose(fpPT);
-            fclose(fpGrammar);
-            fclose(fpSource);
-            int nodesAST = nodeCount;
-            printf("\nNodes of Parse Tree: %d\t Allocated Memory: %ld Bytes\n", nodesPT, nodesPT * sizeof(tNode));
-            printf("Nodes of Abstract Syntax Tree: %d\t Allocated Memory: %ld Bytes\n", nodesAST, nodesAST * sizeof(tNode));
-            double compression = (double)(nodesPT - nodesAST) / nodesPT;
-            printf("Compression Percentage: %f\n", compression * 100);
+            if (syntacticError == 0)
+            {
+                fpPT = fopen("pt.txt", "w");
+                printParseTree(temp, fpPT);
+                fclose(fpPT);
+                int nodesPT = nodeCount;
+                nodeCount = 0;
+                temp = head;
+                printf("Order of traversal: Post-Order. Visit left-most child, then visit node, then visit remaining children.\n");
+                constructAST(head);
+                sc = make_st(head);
+                fpPT = fopen("ast.txt", "w");
+                printAST(temp, fpPT);
+                fclose(fpPT);
+                fclose(fpGrammar);
+                fclose(fpSource);
+                remove("pt.txt");
+                remove("ast.txt");
+                int nodesAST = nodeCount;
+                printf("\nNodes of Parse Tree: %d\t Allocated Memory: %ld Bytes\n", nodesPT, nodesPT * sizeof(tNode));
+                printf("Nodes of Abstract Syntax Tree: %d\t Allocated Memory: %ld Bytes\n", nodesAST, nodesAST * sizeof(tNode));
+                double compression = (double)(nodesPT - nodesAST) / nodesPT;
+                printf("Compression Percentage: %f\n", compression * 100);
+            }
+            else
+            {
+                printf("Syntactic Errors Found. Not going ahead.\n");
+                fclose(fpGrammar);
+                fclose(fpSource);
+            }
             ended = 0;
             break;
 
@@ -354,16 +371,46 @@ int main(int argc, char *argv[])
             head = NULL;
             parseInput(&fpSource);
             temp = head;
-            constructAST(head);
-            sc = make_st(head);
+            if (syntacticError == 0)
+            {
+                constructAST(head);
+                sc = make_st(head);
+                printSymbolTable(sc);
+            }
+            else
+                printf("Syntactic Errors Found. Not going ahead.\n");
             fclose(fpGrammar);
             fclose(fpSource);
-            printSymbolTable(sc);
             ended = 0;
             break;
 
         case 6:
             // Printing total memory requirement function wise
+            ended = 0;
+            flushHash();
+            flush_grammar();
+            populateHashTable();
+            fpGrammar = fopen("grammar", "r");
+            populateGrammar(fpGrammar);
+            ComputeFirstAndFollowSets();
+            populateParseTable();
+            fpSource = fopen(argv[1], "r");
+            fpSource = getStream(fpSource);
+            head = NULL;
+            parseInput(&fpSource);
+            temp = head;
+            if (syntacticError == 0)
+            {
+                constructAST(head);
+                sc = make_st(head);
+                activationRecordSize(sc);
+            }
+            else
+                printf("Syntactic Errors Found. Not going ahead.\n");
+            fclose(fpGrammar);
+            fclose(fpSource);
+            ended = 0;
+            break;
 
         case 7:
             // Static & Dynamic Arrays
@@ -380,11 +427,16 @@ int main(int argc, char *argv[])
             head = NULL;
             parseInput(&fpSource);
             temp = head;
-            constructAST(head);
-            sc = make_st(head);
+            if (syntacticError == 0)
+            {
+                constructAST(head);
+                sc = make_st(head);
+                printStaticDynamicArrays(sc);
+            }
+            else
+                printf("Syntactic Errors Found. Not going ahead.\n");
             fclose(fpGrammar);
             fclose(fpSource);
-            printStaticDynamicArrays(sc);
             ended = 0;
             break;
 
@@ -403,16 +455,25 @@ int main(int argc, char *argv[])
             head = NULL;
             parseInput(&fpSource);
             temp = head;
-            constructAST(head);
-            sc = make_st(head);
-            checkSemantics(head);
-            end_time = clock();
-            total_CPU_time = (double)(end_time - start_time);
-            total_CPU_time_in_seconds = total_CPU_time / CLOCKS_PER_SEC;
-            printf("\nTotal CPU time: %lf\nTotal CPU time in seconds: %lf\n", total_CPU_time, total_CPU_time_in_seconds);
-            ended = 0;
+            if (syntacticError == 0)
+            {
+                constructAST(head);
+                sc = make_st(head);
+                checkSemantics(temp);
+                if (semanticErrors == 0 && symbolTableSemanticsErrors == 0)
+                {
+                    printf("Code compiles successfully.........\n.");
+                }
+                end_time = clock();
+                total_CPU_time = (double)(end_time - start_time);
+                total_CPU_time_in_seconds = total_CPU_time / CLOCKS_PER_SEC;
+                printf("\nTotal CPU time: %lf\nTotal CPU time in seconds: %lf\n", total_CPU_time, total_CPU_time_in_seconds);
+            }
+            else
+                printf("Syntactic Errors Found. Not going ahead with Semantic Check.\n");
             fclose(fpGrammar);
             fclose(fpSource);
+            ended = 0;
             break;
 
         case 9:
@@ -433,9 +494,17 @@ int main(int argc, char *argv[])
             fclose(fpGrammar);
             fclose(fpSource);
             checkSemantics(head);
-            fpASM = fopen(argv[2], "w");
-            codeGenInit(fpASM, head);
-            fclose(fpASM);
+            if (semanticErrors == 0 && symbolTableSemanticsErrors == 0)
+            {
+                printf("Code compiles successfully.........\n");
+                fpASM = fopen(argv[2], "w");
+                codeGenInit(fpASM, head);
+                fclose(fpASM);
+            }
+            else
+            {
+                printf("Semantic Errors. Not generating ASM code\n");
+            }
             ended = 0;
             break;
 

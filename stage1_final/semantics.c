@@ -1,5 +1,7 @@
 #include "semantics.h"
 
+int semanticErrors = 0;
+
 type_info *arrayChecker(tNode *head)
 {
     se *entry = head->entry;
@@ -9,7 +11,8 @@ type_info *arrayChecker(tNode *head)
         {
             if ((head->node.l->sibling->leafTag == 0 && head->node.l->sibling->node.l->sibling == NULL) || head->node.l->sibling->leafTag)
             {
-                printf("Array variable used without de-referencing. Line %d\n", head->node.l->ti->line);
+                printf("Line %d: Array variable used without de-referencing.\n", head->node.l->ti->line);
+                semanticErrors = 1;
                 head->type = NULL;
                 return NULL;
             }
@@ -18,7 +21,8 @@ type_info *arrayChecker(tNode *head)
         {
             if (head->node.l->sibling == NULL)
             {
-                printf("Array variable used without de-referencing. Line %d\n", head->node.l->ti->line);
+                printf("Line %d: Array variable used without de-referencing.\n", head->node.l->ti->line);
+                semanticErrors = 1;
                 head->type = NULL;
                 return NULL;
             }
@@ -45,7 +49,8 @@ type_info *arrayChecker(tNode *head)
                 else
                 {
                     head->type = NULL;
-                    printf("Error: Array Index out of bounds error. Line: %d\n", head->node.l->ti->line);
+                    printf("Line %d: Array Index out of bounds error.\n", head->node.l->ti->line);
+                    semanticErrors = 1;
                     return NULL;
                 }
             }
@@ -77,7 +82,8 @@ type_info *arrayChecker(tNode *head)
             else
             {
                 head->type = NULL;
-                printf("Error: Index of array should be of integer type. Line: %d\n", head->node.l->ti->line);
+                printf("Line %d: Index of array should be of integer type.\n", head->node.l->ti->line);
+                semanticErrors = 1;
                 return NULL;
             }
         }
@@ -86,7 +92,8 @@ type_info *arrayChecker(tNode *head)
     {
         if (entry)
         {
-            printf("Error: Array identifier used in an expression without de-referencing, it must be referenced by an integer index.\tLine: %d\n", head->node.l->ti->line);
+            printf("Line %d: Array identifier used in an expression without de-referencing, it must be referenced by an integer index.\n", head->node.l->ti->line);
+            semanticErrors = 1;
         }
         head->type = NULL;
         return NULL;
@@ -100,6 +107,7 @@ type_info *assignmentChecker(tNode *head)
     tNode *head_sibling = head->node.l->sibling;
     if (entry)
     {
+        // entry->is_control_changed = 1;
         if (entry->type->basic_type == ARRAY)
         {
             if (head_sibling->leafTag == 0)
@@ -111,18 +119,24 @@ type_info *assignmentChecker(tNode *head)
                     if (t2)
                     {
 
-                        if(t2->basic_type==ARRAY){
-                            if(t1->element_type!=t2->element_type){
-                                printf("Error: type error for assignment statement. Line: %d\n", head->node.l->ti->line);
+                        if (t2->basic_type == ARRAY)
+                        {
+                            if (t1->element_type != t2->element_type)
+                            {
+                                printf("Line %d: Type error for assignment statement.\n", head->node.l->ti->line);
+                                semanticErrors = 1;
                                 head->type = NULL;
                                 return NULL;
-                            }else{
+                            }
+                            else
+                            {
                                 return entry->type;
                             }
                         }
                         else if (t1->element_type != t2->basic_type)
                         {
-                            printf("Error: type error for assignment statement. Line: %d\n", head->node.l->ti->line);
+                            printf("Line %d: Type error for assignment statement.\n", head->node.l->ti->line);
+                            semanticErrors = 1;
                             head->type = NULL;
                             return NULL;
                         }
@@ -161,7 +175,8 @@ type_info *assignmentChecker(tNode *head)
                         }
                         else
                         {
-                            printf("Type mismatch for array assignment. Line: %d\n", head->node.l->ti->line);
+                            printf("Line %d: Type mismatch for array assignment.\n", head->node.l->ti->line);
+                            semanticErrors = 1;
                             head->type = NULL;
                             return NULL;
                         }
@@ -174,7 +189,8 @@ type_info *assignmentChecker(tNode *head)
                 }
                 else
                 {
-                    printf("Array variable used without dereferencing. Line: %d\n", head->node.l->ti->line);
+                    printf("Line %d: Array variable used without dereferencing.\n", head->node.l->ti->line);
+                    semanticErrors = 1;
                 }
             }
         }
@@ -193,8 +209,11 @@ type_info *assignmentChecker(tNode *head)
                     head->type->isStatic = 1;
                     //head->entry->is_control_changed = 1;
                     return head->type;
-                }else if(t2->basic_type == ARRAY){
-                    if(t1->basic_type == t2->element_type){
+                }
+                else if (t2->basic_type == ARRAY)
+                {
+                    if (t1->basic_type == t2->element_type)
+                    {
 
                         head->type = malloc(sizeof(type_info));
                         head->type->basic_type = t1->basic_type;
@@ -203,14 +222,15 @@ type_info *assignmentChecker(tNode *head)
                     }
 
                     head->type = NULL;
-                    printf("Type error for  in assignment statement. Line: %d\n", head->node.l->ti->line);
+                    printf("Line %d: Type error for  in assignment statement.\n", head->node.l->ti->line);
+                    semanticErrors = 1;
                     return NULL;
-
                 }
                 else
                 {
                     head->type = NULL;
-                    printf("Type error for  in assignment statement. Line: %d\n", head->node.l->ti->line);
+                    printf("Line %d: Type error for  in assignment statement.\n", head->node.l->ti->line);
+                    semanticErrors = 1;
                     return NULL;
                 }
             }
@@ -329,7 +349,8 @@ type_info *expressionChecker(tNode *head)
                     }
                     else
                     {
-                        printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                        printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                        semanticErrors = 1;
                         return NULL;
                     }
                 }
@@ -344,7 +365,8 @@ type_info *expressionChecker(tNode *head)
                     }
                     else
                     {
-                        printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                        printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                        semanticErrors = 1;
                         return NULL;
                     }
                 }
@@ -360,13 +382,15 @@ type_info *expressionChecker(tNode *head)
                 }
                 else
                 {
-                    printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                    printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                    semanticErrors = 1;
                     return NULL;
                 }
             }
             //else
             //{
-            printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+            printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+            semanticErrors = 1;
             return NULL;
             //}
         }
@@ -421,7 +445,8 @@ type_info *expressionChecker(tNode *head)
                     }
                     else
                     {
-                        printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                        printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                        semanticErrors = 1;
                         return NULL;
                     }
                 }
@@ -436,7 +461,8 @@ type_info *expressionChecker(tNode *head)
                     }
                     else
                     {
-                        printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                        printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                        semanticErrors = 1;
                         return NULL;
                     }
                 }
@@ -452,13 +478,15 @@ type_info *expressionChecker(tNode *head)
                 }
                 else
                 {
-                    printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                    printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                    semanticErrors = 1;
                     return NULL;
                 }
             }
             else
             {
-                printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                semanticErrors = 1;
                 return NULL;
             }
         }
@@ -518,7 +546,8 @@ type_info *expressionChecker(tNode *head)
                     }
                     else
                     {
-                        printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                        printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                        semanticErrors = 1;
                         return NULL;
                     }
                 }
@@ -532,7 +561,8 @@ type_info *expressionChecker(tNode *head)
                     }
                     else
                     {
-                        printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                        printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                        semanticErrors = 1;
                         return NULL;
                     }
                 }
@@ -547,14 +577,16 @@ type_info *expressionChecker(tNode *head)
                 }
                 else
                 {
-                    printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                    printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                    semanticErrors = 1;
                     return NULL;
                 }
             }
             else
             {
 
-                printf("Type Error for %s in line %d\n", terminalDict[head->node.n->s.T], head->node.n->line);
+                printf("Line %d: Type Error for %s\n", head->node.n->line, terminalDict[head->node.n->s.T]);
+                semanticErrors = 1;
                 return NULL;
             }
         }
@@ -605,6 +637,7 @@ void check_input_parameters(scope *scope_of_func, tNode *input_list)
         if (input_list != NULL)
         {
             printf("Error : Function does'nt take any input.\n");
+            semanticErrors = 1;
         }
 
         return;
@@ -622,7 +655,8 @@ void check_input_parameters(scope *scope_of_func, tNode *input_list)
 
         if (func_list->type->basic_type != input_list->entry->type->basic_type)
         {
-            printf("Error : Types of input function parameters don't match.\n");
+            printf("Line %d: Types of input function parameters don't match.\n", input_list->node.l->ti->line);
+            semanticErrors = 1;
             return;
         }
 
@@ -631,7 +665,8 @@ void check_input_parameters(scope *scope_of_func, tNode *input_list)
 
             if (func_list->type->element_type != input_list->entry->type->element_type)
             {
-                printf("Error : Array passed in the function is of different type than expected\n");
+                printf("Line %d: Array passed in the function is of different type than expected\n", input_list->node.l->ti->line);
+                semanticErrors = 1;
                 return;
             }
 
@@ -645,19 +680,24 @@ void check_input_parameters(scope *scope_of_func, tNode *input_list)
 
                 if ((out_end - out_start) != (passed_end - passed_start))
                 {
-                    printf("Error : Array ranges don't match\n");
+                    printf("Line %d: Array ranges don't match\n", input_list->node.l->ti->line);
+                    semanticErrors = 1;
                     return;
                 }
             }
         }
-
+        if (input_list->node.l->sibling == NULL && func_list->next)
+        {
+            printf("Line %d: The number of input function parameters don't match.\n", input_list->node.l->ti->line);
+            semanticErrors = 1;
+        }
         func_list = func_list->next;
         input_list = input_list->node.l->sibling;
     }
-
-    if (func_list || input_list)
+    if (input_list)
     {
-        printf("Error : The number of input function parameters don't match.\n");
+        printf("Line %d: The number of input function parameters don't match.\n", input_list->node.l->ti->line);
+        semanticErrors = 1;
     }
 }
 
@@ -673,7 +713,8 @@ void checkModuleDef(tNode *head)
             //printf("%s\t%d\n", temp->node.l->ti->lexeme, temp->entry->is_control_changed);
             if (temp->entry->is_control_changed == 0)
             {
-                printf("The identifier %s not assigned value", temp->node.l->ti->lexeme);
+                printf("Line %d-%d: The identifier %s not assigned value\n", temp->sc->scope_start_line, temp->sc->scope_end_line, temp->node.l->ti->lexeme);
+                semanticErrors = 1;
             }
             temp = temp->node.l->sibling;
             if (temp)
@@ -695,7 +736,8 @@ void check_output_parameters(scope *scope_of_func, tNode *idlist_node)
 
     if (output_list == NULL)
     {
-        printf("Error : Function doesn't return anything\n");
+        printf("Line %d: Function doesn't return anything\n", idlist_node->node.n->child->node.l->ti->line);
+        semanticErrors = 1;
         return;
     }
     if (scope_of_func->label_op == 0)
@@ -724,8 +766,15 @@ void check_output_parameters(scope *scope_of_func, tNode *idlist_node)
 
         if (output_list->type->basic_type != idlist_node->entry->type->basic_type)
         {
-            printf("Error : Types of output function parameters don't match. Line: %d\n", idlist_node->node.l->ti->line);
+            printf("Line %d: Types of output function parameters don't match. \n", idlist_node->node.l->ti->line);
+            semanticErrors = 1;
             return;
+        }
+
+        if (idlist_node->node.l->sibling == NULL && output_list->next)
+        {
+            printf("Line %d: The number of output function parameters don't match.\n", idlist_node->node.l->ti->line);
+            semanticErrors = 1;
         }
 
         idlist_node->entry->is_control_changed = 1;
@@ -733,9 +782,10 @@ void check_output_parameters(scope *scope_of_func, tNode *idlist_node)
         idlist_node = idlist_node->node.l->sibling;
     }
 
-    if (output_list || idlist_node)
+    if (idlist_node)
     {
-        printf("Error : The number of output function parameters don't match.\n");
+        printf("Line %d: The number of output function parameters don't match.\n", idlist_node->node.l->ti->line);
+        semanticErrors = 1;
     }
 }
 
@@ -751,7 +801,16 @@ void check_module(tNode *reusestmt_node)
 
     if (scope_of_func == NULL)
     {
-        printf("Error : Function definition not found\n");
+        tNode *child = reusestmt_node->node.n->child;
+        if (child->leafTag == 1)
+        {
+            printf("Line %d: Function definition not found\n", child->node.n->sibling->node.l->ti->line);
+        }
+        else
+        {
+            printf("Line %d: Function definition not found\n", child->node.l->ti->line);
+        }
+        semanticErrors = 1;
         return;
     }
 
@@ -780,7 +839,8 @@ void iterativeSemantics(tNode *head)
         tNode *id = forHeader->node.n->sibling;
         if (forHeader->node.n->sibling->entry->type->basic_type != INTEGER)
         {
-            printf("ERROR : (semantics) The identifier '%s' used as the control variable of the FOR loop at line %d, has to be of INTEGER type\n", id->node.l->ti->lexeme, forHeader->node.n->line);
+            printf("Line %d: The identifier '%s' used as the control variable of the FOR loop has to be of INTEGER type\n", id->node.l->ti->line, id->node.l->ti->lexeme);
+            semanticErrors = 1;
         }
     }
     else if (head->node.n->child->node.n->s.T == WHILE)
@@ -791,7 +851,8 @@ void iterativeSemantics(tNode *head)
         type_info *ti = expressionChecker(arbexp);
         if (ti && ti->basic_type != BOOLEAN)
         {
-            printf("\nERROR : (semantics)The control expression of the WHILE loop at line %d, has to be of BOOLEAN type\n", arbexp->node.n->line);
+            printf("Line %d: The control expression of the WHILE loop has to be of BOOLEAN type\n", whileHeader->node.l->ti->line);
+            semanticErrors = 1;
         }
     }
 }
@@ -803,17 +864,20 @@ void conditionalSemantics(tNode *head)
     tNode *df = cs->node.n->sibling;
     if (id->entry && id->entry->type->basic_type != INTEGER && id->entry->type->basic_type != BOOLEAN)
     {
-        printf("ERROR : (semantics) The identifier '%s' in switch statement at line %d should be of type INTEGER or BOOLEAN.\n", id->entry->lexeme, id->node.l->ti->line);
+        printf("Line %d: The identifier '%s' in switch statement should be of type INTEGER or BOOLEAN.\n", id->node.l->ti->line, id->entry->lexeme);
+        semanticErrors = 1;
     }
     else
     {
         if (id->entry && id->entry->type->basic_type == INTEGER && df == NULL)
         {
-            printf("ERROR : (semantics) The INTEGER identifier '%s' in switch statement at line %d must be followed by the DEFAULT statement..\n", id->entry->lexeme, id->node.l->ti->line);
+            printf("Line %d: The INTEGER identifier '%s' in switch statement must be followed by the DEFAULT statement.\n", head->scope_end_line, id->entry->lexeme);
+            semanticErrors = 1;
         }
         else if (id->entry && id->entry->type->basic_type == BOOLEAN && df != NULL)
         {
-            printf("Switch statements with boolean identifier can have only true and false as labels. Line: %d\n", df->node.n->child->node.l->ti->line);
+            printf("Line %d: Switch statements with boolean identifier can have only true and false as labels\n", df->node.n->child->node.l->ti->line);
+            semanticErrors = 1;
         }
     }
     tNode *temp = cs->node.n->child;
@@ -823,7 +887,8 @@ void conditionalSemantics(tNode *head)
         {
             if (temp->node.n->child->node.l->s.T != TRUE && temp->node.n->child->node.l->s.T != FALSE)
             {
-                printf("Switch statements with boolean identifier can have only true and false as labels. Line: %d\n", temp->node.n->child->node.l->ti->line);
+                printf("Line %d: Switch statements with boolean identifier can have only true and false as labels\n", temp->node.n->child->node.l->ti->line);
+                semanticErrors = 1;
             }
 
             if (temp->node.n->sibling)
@@ -842,7 +907,8 @@ void conditionalSemantics(tNode *head)
         {
             if (id->entry && id->entry->type->basic_type == INTEGER && temp->node.n->child->node.n->s.T != NUM)
             {
-                printf("ERROR : (semantics) Switch statement with INTEGER typed identifier can have only INTEGER values in case statements. Found otherwise at line %d\n", temp->node.n->child->node.l->ti->line);
+                printf("Line %d: Switch statement with INTEGER typed identifier can have only INTEGER values in case statements\n", temp->node.n->child->node.l->ti->line);
+                semanticErrors = 1;
             }
             if (temp->node.n->sibling)
             {
@@ -854,6 +920,38 @@ void conditionalSemantics(tNode *head)
             }
         }
     }
+}
+
+int controlValidator(tNode *arbexp)
+{
+    if (arbexp == NULL)
+    {
+        return 0;
+    }
+    if (arbexp->leafTag == 0 && arbexp->node.l->s.T == ID)
+    {
+        if (arbexp->entry)
+        {
+            if (arbexp->entry->is_control_changed == 1)
+            {
+                arbexp->entry->is_control_changed = 0;
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (arbexp->leafTag == 0 && (arbexp->node.l->s.T == NUM || arbexp->node.l->s.T == RNUM || arbexp->node.l->s.T == TRUE || arbexp->node.l->s.T == FALSE))
+    {
+        return 0;
+    }
+    return controlValidator(arbexp->node.n->child) || controlValidator(arbexp->node.n->child->leafTag ? arbexp->node.n->child->node.n->sibling : arbexp->node.n->child->node.l->sibling);
 }
 
 void checkSemantics(tNode *astNode)
@@ -931,14 +1029,11 @@ void checkSemantics(tNode *astNode)
                     tNode *whileHeader = child->node.n->child;
                     tNode *arbexp = whileHeader->node.n->sibling;
                     tNode *id = arbexp->node.n->child;
-                    if (id->entry)
+                    int controlResult = controlValidator(arbexp);
+                    if (controlResult == 0)
                     {
-                        if (!(id->entry->is_control_changed))
-                        {
-                            printf("ERROR : (semantics)The control variable of the WHILE loop at line %d, has to be modified in the loop body\n", arbexp->node.n->line);
-                        }
-                        id->entry->is_control_variable = 0;
-                        id->entry->is_control_changed = 0;
+                        printf("Line %d-%d : The control expression of the WHILE loop has to be modified in the loop body\n", whileHeader->parent->scope_start_line, whileHeader->parent->scope_end_line);
+                        semanticErrors = 1;
                     }
                 }
                 else if (child->node.n->child->node.n->s.T == FOR)
@@ -949,7 +1044,8 @@ void checkSemantics(tNode *astNode)
                     {
                         if (id->entry->is_control_changed)
                         {
-                            printf("ERROR : (semantics)The control variable of the FOR loop at line %d, has been in the loop body", id->node.l->ti->line);
+                            printf("Line %d-%d: The control variable of the FOR loop has been changed in the loop body\n", forHeader->parent->scope_start_line, forHeader->parent->scope_end_line);
+                            semanticErrors = 1;
                         }
                     }
                 }

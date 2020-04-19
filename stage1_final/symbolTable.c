@@ -5,6 +5,9 @@ int OFFSET_PRINT = 0;
 int offsetCounter = 0;
 int dyn_arrays = 0;
 char func_name[25];
+
+int symbolTableSemanticsErrors = 0;
+
 scope *create_new_scope(scope *parent, char *stamp)
 {
 
@@ -83,7 +86,8 @@ se *lookupst(char *identifier, scope *sc, int is_func, int line_num)
 					{
 						if (head->error_flag != 0)
 						{
-							printf("Declaration of function %s is redundant. Line: %d\n", head->lexeme, line_num);
+							printf("Line %d: Declaration of function %s is redundant\n", head->used_on_lines[1], head->lexeme);
+							symbolTableSemanticsErrors = 1;
 							//return NULL;
 						}
 					}
@@ -125,7 +129,8 @@ se *lookupst(char *identifier, scope *sc, int is_func, int line_num)
 	}
 
 	/* ERROR ? */
-	printf("Error %s Not found. Line: %d\n", identifier, line_num);
+	printf("Line %d: %s Not found\n", line_num, identifier);
+	symbolTableSemanticsErrors = 1;
 	return NULL;
 }
 
@@ -170,7 +175,8 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 			{
 				if (temp1->func_use == 2 || temp1->func_use == func_use)
 				{
-					printf("Function re-declaration on re-definition for %s. Line: %d\n", to_add->node.l->ti->lexeme, to_add->node.l->ti->line);
+					printf("Line %d: Function re-declaration on re-definition for %s\n", to_add->node.l->ti->line, to_add->node.l->ti->lexeme);
+					symbolTableSemanticsErrors = 1;
 					return NULL;
 				}
 				// Multiple function declarations or definitions?
@@ -181,7 +187,8 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 				return temp1;
 			}
 
-			printf("Variable %s Declared Earlier. Line: %d\n", temp1->lexeme, to_add->node.l->ti->line);
+			printf("Line %d: Variable %s Declared Earlier\n", to_add->node.l->ti->line, temp1->lexeme);
+			symbolTableSemanticsErrors = 1;
 			return NULL;
 		}
 		//printf("Inside if\n");
@@ -208,6 +215,7 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 	temp1->scope_info = sc;
 	temp1->is_control_variable = 0;
 	temp1->is_control_changed = 0;
+	temp1->error_flag = 1;
 	if (is_func)
 		temp1->scope_info = func_scope;
 
@@ -252,7 +260,8 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 					int width = (end - start + 1);
 					if (width < 0)
 					{
-						printf("Error : Array end index should be greater than start index.\n");
+						printf("Line %d: Array end index should be greater than start index.\n", to_add->node.l->ti->line);
+						symbolTableSemanticsErrors = 1;
 					}
 					if (temp1->type->element_type == INTEGER)
 					{
@@ -442,12 +451,16 @@ void populate_st(tNode *head, scope *sc)
 						// Putting scope of the function in MODULEREUSESTMT node. Used later.
 						head->entry = func_entry;
 						if (func_entry == NULL)
-							printf("Error : Function should be declared before use. Function semantics will not be checked. Line: %d\n", child->node.l->ti->line);
+						{
+							printf("Line %d: Function should be declared before use. Function semantics will not be checked.\n", child->node.l->ti->line);
+							symbolTableSemanticsErrors = 1;
+						}
 						else
 						{
 							if (func_entry->scope_info && func_entry->scope_info->is_func_used)
 							{
-								printf("Error : Recursion Detected. Line: %d\n", child->node.l->ti->line);
+								printf("Line %d: Recursion Detected\n", child->node.l->ti->line);
+								symbolTableSemanticsErrors = 1;
 							}
 						}
 					}
@@ -531,6 +544,28 @@ void populate_st(tNode *head, scope *sc)
 			{
 				next_scope->is_func_used = 0;
 				next_scope->scope_level = 1;
+				next_scope->activationRecordSize = OFFSET_PRINT;
+				if (next_scope->output_list != NULL)
+				{
+					next_scope->activationRecordSize -= next_scope->output_list->offset_print;
+					if (next_scope->output_list->type->basic_type == INTEGER)
+					{
+						next_scope->activationRecordSize -= 2;
+					}
+					else if (next_scope->output_list->type->basic_type == REAL)
+					{
+						next_scope->activationRecordSize -= 4;
+					}
+					else if (next_scope->output_list->type->basic_type == BOOLEAN)
+					{
+						next_scope->activationRecordSize -= 1;
+					}
+				}
+			}
+
+			else if (child->node.n->s.N == DRIVERMODULE)
+			{
+				next_scope->activationRecordSize = OFFSET_PRINT;
 			}
 
 			next_scope = sc;
@@ -607,7 +642,8 @@ scope *make_st(tNode *head)
 
 void printScope(scope *sc)
 {
-	if (strcmp(sc->stamp, "drivermodule") == 0){
+	if (strcmp(sc->stamp, "drivermodule") == 0)
+	{
 		offsetCounter = 0;
 	}
 	if (strcmp(sc->stamp, "module") == 0)
@@ -741,7 +777,7 @@ void printScope(scope *sc)
 				}
 				else
 					// need to add the ids of start and end index
-					printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%s, %s]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start_dyn->node.l->ti->lexeme, head->type->end_dyn->node.l->ti->lexeme, terminalDict[head->type->element_type], head->offset_print-offsetCounter, 0);
+					printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%s, %s]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start_dyn->node.l->ti->lexeme, head->type->end_dyn->node.l->ti->lexeme, terminalDict[head->type->element_type], head->offset_print - offsetCounter, 0);
 			}
 			else
 			{
@@ -774,7 +810,38 @@ void printSymbolTable(scope *sc)
 
 void printStaticDynamicArraysHelper(scope *sc)
 {
-	se *head = sc->head;
+	se *head = sc->input_list;
+	while (head)
+	{
+		if (head->type->basic_type == ARRAY)
+		{
+			int width = (head->type->end - head->type->start) + 1;
+			int array_size;
+			if (head->type->element_type == INTEGER)
+			{
+				array_size = (width)*2;
+			}
+			else if (head->type->element_type == BOOLEAN)
+			{
+				array_size = (width)*1;
+			}
+			else
+			{
+				array_size = (width)*4;
+			}
+
+			if (head->type->isStatic == 1)
+			{
+				printf("%s\t%d-%d\t%s\tstatic array\t[%d, %d]\t%s\n", head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->lexeme, head->type->start, head->type->end, terminalDict[head->type->element_type]);
+			}
+			else
+				// need to add the ids of start and end index
+				printf("%s\t%d-%d\t%s\tdynamic array\t[%s, %s]\t%s\n", head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->lexeme, head->type->start_dyn->node.l->ti->lexeme, head->type->end_dyn->node.l->ti->lexeme, terminalDict[head->type->element_type]);
+		}
+		head = head->next;
+	}
+
+	head = sc->head;
 	while (head)
 	{
 		if (!head->is_func)
@@ -802,7 +869,7 @@ void printStaticDynamicArraysHelper(scope *sc)
 				}
 				else
 					// need to add the ids of start and end index
-					printf("%s\t%d-%d\t%s\tdynamic array\t[%d, %d]\t%s\n", head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->lexeme, head->type->start, head->type->end, terminalDict[head->type->element_type]);
+					printf("%s\t%d-%d\t%s\tdynamic array\t[%s, %s]\t%s\n", head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->lexeme, head->type->start_dyn->node.l->ti->lexeme, head->type->end_dyn->node.l->ti->lexeme, terminalDict[head->type->element_type]);
 			}
 		}
 		head = head->next;
@@ -822,4 +889,25 @@ void printStaticDynamicArrays(scope *sc)
 		printStaticDynamicArrays(child);
 		child = child->next;
 	}
+}
+
+void activationRecordSize(scope *sc)
+{
+	se *temp = sc->head;
+	while (temp)
+	{
+		printf("%s\t%d\n", temp->scope_info->func_name, temp->scope_info->activationRecordSize);
+		temp = temp->next;
+	}
+	scope *tempScope = sc->left_child;
+	while (tempScope)
+	{
+		if (strcmp(tempScope->stamp, "drivermodule") == 0)
+		{
+			printf("%s\t%d\n", tempScope->func_name, tempScope->activationRecordSize);
+			break;
+		}
+		tempScope = tempScope->next;
+	}
+	return;
 }

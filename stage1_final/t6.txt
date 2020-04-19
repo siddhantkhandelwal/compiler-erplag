@@ -1,10 +1,10 @@
 ** Test case 6: Testing function types  
 This Includes 
 1. Number and types of input and output parameters
-2. static bound checking and static type checking in expressions - arithmetic and boolean (extension of test case 5) 
+2. static bound checking and static type checking in expressions - arithmetic and boolean (extension of test case 5) **
 
-Multiple level nesting using integer, real, boolean data types including static array data type
-Variant of test case 5**
+** Multiple level nesting using integer, real, boolean data types including static array data type**
+**Variant of test case 5**
 
 
 <<module function1>>
@@ -87,7 +87,7 @@ start
 		declare int1: integer;
 		u := y+c*34.2;
 		v:= u-c*p-20.5E+2;
-		[x, int1, m, n]:=use module function1 with parameters Var3, c, k, var4, k; **ERROR: Input parameter type of Var4 does not match with formal parameter type**		
+		[x, int1, m, n]:=use module function1 with parameters Var3, c, k, Var4, k; **ERROR: Input parameter type of Var4 does not match with formal parameter type**		
 		switch(k)
 		start
 			case 10: declare A:real;

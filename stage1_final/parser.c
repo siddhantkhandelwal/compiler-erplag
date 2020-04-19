@@ -129,6 +129,8 @@ char *nonTerminalDict[] = {
 
 };
 
+int syntacticError = 1;
+
 rhsNode *create_rhsNode(map_node *mnode)
 {
     rhsNode *temp = malloc(sizeof(rhsNode));
@@ -810,8 +812,8 @@ void parseInput(FILE **fp)
 
         if (ended && last_popped->tn == dollar && has_error == 0)
         {
-            printf("Parsed Successfully\n");
-
+            // printf("Parsed Successfully\n");
+            syntacticError = 0;
             return;
         }
 

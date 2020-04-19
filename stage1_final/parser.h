@@ -10,6 +10,7 @@
 
 extern char *terminalDict[];
 extern char *nonTerminalDict[];
+extern int syntacticError;
 
 void parseInput(FILE **fp);
 void populateParseTable();
