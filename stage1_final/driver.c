@@ -67,6 +67,82 @@ void printParseTree(tNode *temp, FILE *fp)
     }
 }
 
+void printAST(tNode *temp, FILE *fp)
+{
+    if (!temp)
+    {
+        return;
+    }
+    nodeCount++;
+    if (temp->leafTag == 0)
+    {
+
+        if (temp->node.l->s.T == EPSILON)
+        {
+            fprintf(fp, "Lexeme: -----\t\tLine no: -----\t\tToken: EPSILON\t\tValue: -----\t\tParent Node: %-10s\t\tLeaf Node: Yes\t\tNode Symbol: -----\n\n", nonTerminalDict[temp->parent->node.n->s.N]);
+            return;
+        }
+
+        if (temp->node.l->ti == NULL)
+        {
+            fprintf(fp, "Lexeme: -----\t Line no: -----\t\tToken: %-10s\tValue: -----\t\tParent Node: -----\t\tLeaf Node: ERROR\t Node Symbol: -----\n\n", terminalDict[temp->node.n->s.T]);
+            return;
+        }
+
+        if (temp->node.l->s.T != EPSILON)
+        {
+            if (temp->node.l->ti->t == NUM)
+            {
+                if (temp->parent->node.n->is_operator == 0)
+                    fprintf(fp, "Lexeme: %-10s\t\tLine no: %-10d\t\tToken: %-10s\t\tValue: %-10d\t\tParent Node: %-10s\t\tLeaf Node: Yes\t\tNode Symbol: -----\n\n", temp->node.l->ti->lexeme, temp->node.l->ti->line, terminalDict[temp->node.n->s.T], temp->node.l->ti->value.v1, nonTerminalDict[temp->parent->node.n->s.N]);
+                else
+                {
+                    fprintf(fp, "Lexeme: %-10s\t\tLine no: %-10d\t\tToken: %-10s\t\tValue: %-10d\t\tParent Node: %-10s\t\tLeaf Node: Yes\t\tNode Symbol: -----\n\n", temp->node.l->ti->lexeme, temp->node.l->ti->line, terminalDict[temp->node.n->s.T], temp->node.l->ti->value.v1, terminalDict[temp->parent->node.n->s.T]);
+                }
+            }
+            else if (temp->node.l->ti->t == RNUM)
+                if (temp->parent->node.n->is_operator == 0)
+                    fprintf(fp, "Lexeme: %-10s\t Line no: %-10d\t\tToken: %-10s\tValue: %-10lf\t\tParent Node: %-10s\t\tLeaf Node: Yes\t Node Symbol: -----\n\n", temp->node.l->ti->lexeme, temp->node.l->ti->line, terminalDict[temp->node.n->s.T], temp->node.l->ti->value.v2, nonTerminalDict[temp->parent->node.n->s.N]);
+                else
+                    fprintf(fp, "Lexeme: %-10s\t Line no: %-10d\t\tToken: %-10s\tValue: %-10lf\t\tParent Node: %-10s\t\tLeaf Node: Yes\t Node Symbol: -----\n\n", temp->node.l->ti->lexeme, temp->node.l->ti->line, terminalDict[temp->node.n->s.T], temp->node.l->ti->value.v2, terminalDict[temp->parent->node.n->s.T]);
+            else if (temp->parent->node.n->is_operator == 0)
+                fprintf(fp, "Lexeme: %-10s\t Line no: %-10d\t\tToken: %-10s\tValue: -----\t\tParent Node: %-10s\t\tLeaf Node: Yes\t\tNode Symbol: -----\n\n", temp->node.l->ti->lexeme, temp->node.l->ti->line, terminalDict[temp->node.n->s.T], nonTerminalDict[temp->parent->node.n->s.N]);
+            else
+                fprintf(fp, "Lexeme: %-10s\t Line no: %-10d\t\tToken: %-10s\tValue: -----\t\tParent Node: %-10s\t\tLeaf Node: Yes\t\tNode Symbol: -----\n\n", temp->node.l->ti->lexeme, temp->node.l->ti->line, terminalDict[temp->node.n->s.T], terminalDict[temp->parent->node.n->s.T]);
+        }
+        return;
+    }
+    printAST(temp->node.n->child, fp);
+    if (temp->parent == NULL)
+    {
+        fprintf(fp, "Lexeme: -----\t\tLine no: -----\t\tToken: -----\t\tValue: -----\t\tParent Node: ROOT\t\tLeaf Node: No\t\tNode Symbol: %s\n\n", nonTerminalDict[temp->node.n->s.N]);
+    }
+    else
+    {
+        if (temp->node.n->is_operator == 0)
+        {
+
+            fprintf(fp, "Lexeme: -----\t\tLine no: -----\t\tToken: -----\t\tValue: -----\t\tParent Node: %s\t\tLeaf Node: No\t\tNode Symbol: %s\n\n", nonTerminalDict[temp->parent->node.n->s.N], nonTerminalDict[temp->node.n->s.N]);
+        }
+        else
+        {
+            if (temp->parent->node.n->is_operator == 0)
+                fprintf(fp, "Lexeme: -----\t\tLine no: -----\t\tToken: -----\t\tValue: -----\t\tParent Node: %s\t\tLeaf Node: No\t\tNode Symbol: %s\n\n", nonTerminalDict[temp->parent->node.n->s.N], terminalDict[temp->node.n->s.T]);
+            else
+                fprintf(fp, "Lexeme: -----\t\tLine no: -----\t\tToken: -----\t\tValue: -----\t\tParent Node: %s\t\tLeaf Node: No\t\tNode Symbol: %s\n\n", terminalDict[temp->parent->node.n->s.T], terminalDict[temp->node.n->s.T]);
+        }
+    }
+
+    if (temp->node.n->child == NULL)
+        return;
+    tNode *temp2 = temp->node.n->child->node.n->sibling;
+    while (temp2)
+    {
+        printAST(temp2, fp);
+        temp2 = temp2->node.n->sibling;
+    }
+}
+
 void printLexerOutput(char *testCaseFile)
 {
     FILE *fp1 = fopen(testCaseFile, "r");
@@ -218,10 +294,10 @@ int main(int argc, char *argv[])
             head = NULL;
             parseInput(&fpSource);
             temp = head;
-            printf("Order of traversal: Post-Order\n");
+            printf("Order of traversal: Post-Order. Visit left-most child, then visit node, then visit remaining children.\n");
             constructAST(head);
             sc = make_st(head);
-            printParseTree(temp, stdout);
+            printAST(temp, stdout);
             fclose(fpGrammar);
             fclose(fpSource);
             ended = 0;
@@ -248,11 +324,11 @@ int main(int argc, char *argv[])
             int nodesPT = nodeCount;
             nodeCount = 0;
             temp = head;
-            printf("Order of traversal: Post-Order\n");
+            printf("Order of traversal: Post-Order. Visit left-most child, then visit node, then visit remaining children.\n");
             constructAST(head);
             sc = make_st(head);
             fpPT = fopen("ast.txt", "w");
-            printParseTree(temp, fpPT);
+            printAST(temp, fpPT);
             fclose(fpPT);
             fclose(fpGrammar);
             fclose(fpSource);
@@ -278,16 +354,8 @@ int main(int argc, char *argv[])
             head = NULL;
             parseInput(&fpSource);
             temp = head;
-            fpPT = fopen("pt.txt", "w");
-            printParseTree(temp, fpPT);
-            fclose(fpPT);
-            nodeCount = 0;
-            temp = head;
             constructAST(head);
             sc = make_st(head);
-            fpPT = fopen("ast.txt", "w");
-            printParseTree(temp, fpPT);
-            fclose(fpPT);
             fclose(fpGrammar);
             fclose(fpSource);
             printSymbolTable(sc);
@@ -299,6 +367,26 @@ int main(int argc, char *argv[])
 
         case 7:
             // Static & Dynamic Arrays
+            ended = 0;
+            flushHash();
+            flush_grammar();
+            populateHashTable();
+            fpGrammar = fopen("grammar", "r");
+            populateGrammar(fpGrammar);
+            ComputeFirstAndFollowSets();
+            populateParseTable();
+            fpSource = fopen(argv[1], "r");
+            fpSource = getStream(fpSource);
+            head = NULL;
+            parseInput(&fpSource);
+            temp = head;
+            constructAST(head);
+            sc = make_st(head);
+            fclose(fpGrammar);
+            fclose(fpSource);
+            printStaticDynamicArrays(sc);
+            ended = 0;
+            break;
 
         case 8:
             ended = 0;
@@ -350,6 +438,7 @@ int main(int argc, char *argv[])
             fclose(fpASM);
             ended = 0;
             break;
+
         default:
             printf("Incorrect choice. Enter a number from 0 to 9.\n");
         }

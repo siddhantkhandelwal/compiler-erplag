@@ -43,13 +43,14 @@ scope *create_new_scope(scope *parent, char *stamp)
 		}
 	}
 
-	if (strcmp("module", stamp) == 0 || strcmp("drivermodule", stamp) == 0){
+	if (strcmp("module", stamp) == 0 || strcmp("drivermodule", stamp) == 0)
+	{
 		OFFSET = 0;
 		OFFSET_PRINT = 0;
 	}
 
 	strcpy(temp->func_name, func_name);
-	
+
 	temp->parent = parent;
 
 	return temp;
@@ -91,8 +92,6 @@ se *lookupst(char *identifier, scope *sc, int is_func, int line_num)
 
 			head = head->next;
 		}
-
-
 
 		if (strcmp(sc->stamp, "module") == 0)
 		{
@@ -448,11 +447,13 @@ void populate_st(tNode *head, scope *sc)
 					}
 					else
 					{
-						if(child->parent->node.n->s.N != RANGEARRAYS) /*&& (child->parent->parent && child->parent->parent->parent->node.n->s.N!= INPUTPLIST)*/
+						if (child->parent->node.n->s.N != RANGEARRAYS) /*&& (child->parent->parent && child->parent->parent->parent->node.n->s.N!= INPUTPLIST)*/
 							child->entry = lookupst(child->node.l->ti->lexeme, sc, 0, child->node.l->ti->line);
-						else{
-							if(child->parent->parent->parent->node.n->s.N==INPUTPLIST);
-								//printf("yes\n");
+						else
+						{
+							if (child->parent->parent->parent->node.n->s.N == INPUTPLIST)
+								;
+							//printf("yes\n");
 							else
 								child->entry = lookupst(child->node.l->ti->lexeme, sc, 0, child->node.l->ti->line);
 						}
@@ -482,7 +483,7 @@ void populate_st(tNode *head, scope *sc)
 
 		else
 		{
-			
+
 			// else
 			// {
 			// 	printf("Scope Marker is not set in the module\n");
@@ -738,6 +739,58 @@ void printSymbolTable(scope *sc)
 	while (child)
 	{
 		printSymbolTable(child);
+		child = child->next;
+	}
+}
+
+void printStaticDynamicArraysHelper(scope *sc)
+{
+	se *head = sc->head;
+	while (head)
+	{
+		if (!head->is_func)
+		{
+			if (head->type->basic_type == ARRAY)
+			{
+				int width = (head->type->end - head->type->start) + 1;
+				int array_size;
+				if (head->type->element_type == INTEGER)
+				{
+					array_size = (width)*2;
+				}
+				else if (head->type->element_type == BOOLEAN)
+				{
+					array_size = (width)*1;
+				}
+				else
+				{
+					array_size = (width)*4;
+				}
+
+				if (head->type->isStatic == 1)
+				{
+					printf("%s\t%d-%d\t%s\tstatic array\t[%d, %d]\t%s\n", head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->lexeme, head->type->start, head->type->end, terminalDict[head->type->element_type]);
+				}
+				else
+					// need to add the ids of start and end index
+					printf("%s\t%d-%d\t%s\tdynamic array\t[%d, %d]\t%s\n", head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->lexeme, head->type->start, head->type->end, terminalDict[head->type->element_type]);
+			}
+		}
+		head = head->next;
+	}
+}
+
+void printStaticDynamicArrays(scope *sc)
+{
+	if (sc == NULL)
+	{
+		return;
+	}
+	printStaticDynamicArraysHelper(sc);
+	scope *child = sc->left_child;
+	while (child)
+	{
+		printStaticDynamicArrays(child);
 		child = child->next;
 	}
 }

@@ -1,11 +1,11 @@
 #include "parser.h"
 
-
 //typedef struct symbol_entry se;
 //typedef struct scope scope;
 //typedef struct type type_info;
 
-struct type_info{
+struct type_info
+{
 
 	Terminal basic_type;
 	Terminal element_type;
@@ -17,13 +17,14 @@ struct type_info{
 	int dyn_index;
 };
 
-struct symbol_entry{
+struct symbol_entry
+{
 
 	char lexeme[25];
-	int func_use;  
-	type_info* type;
-	se* next;
-	scope* scope_info;
+	int func_use;
+	type_info *type;
+	se *next;
+	scope *scope_info;
 	int is_func;
 	int is_array;
 	int is_control_variable;
@@ -36,17 +37,18 @@ struct symbol_entry{
 	int error_flag;
 };
 
-struct scope{
+struct scope
+{
 
 	char stamp[25];
-	scope* parent;
-	scope* left_child;
-	scope* right_child;
-	scope* next;
-	scope* prev;
-	se* input_list;
-	se* output_list;
-	se* head;
+	scope *parent;
+	scope *left_child;
+	scope *right_child;
+	scope *next;
+	scope *prev;
+	se *input_list;
+	se *output_list;
+	se *head;
 	int is_func_used;
 	int label_ip;
 	int label_op;
@@ -56,5 +58,6 @@ struct scope{
 	char func_name[25];
 };
 
-scope* make_st(tNode* head);
-void printSymbolTable(scope* sc);
+scope *make_st(tNode *head);
+void printSymbolTable(scope *sc);
+void printStaticDynamicArrays(scope *sc);
