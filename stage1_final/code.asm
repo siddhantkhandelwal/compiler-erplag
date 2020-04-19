@@ -126,10 +126,12 @@ mov EDI, ESP
 SUB EDI, 4
 push EDI
 SUB ESP, 20
+MOV EDX,EDI
 mov EDI, ESP
 SUB EDI, 4
 push EDI
 SUB ESP, 20
+MOV EDX,EDI
 mov EDI, dword[dynOffset]
  push edi
 PUSH EAX
@@ -149,6 +151,7 @@ INC EAX
 SHL EAX, 2
 ADD dword[dynOffset], EAX
 POP EAX
+MOV EDX,EDI
 PUSH ECX
 PUSH EDX
 PUSH 5
@@ -695,6 +698,7 @@ mov EDI, ESP
 SUB EDI, 4
 push EDI
 SUB ESP, 20
+MOV EDX,EDI
 mov EDI, dword[dynOffset]
  push edi
 PUSH EAX
@@ -714,6 +718,7 @@ INC EAX
 SHL EAX, 2
 ADD dword[dynOffset], EAX
 POP EAX
+MOV EDX,EDI
 PUSH ECX
 PUSH EDX
 PUSH 5

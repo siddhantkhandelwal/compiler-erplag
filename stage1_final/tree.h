@@ -49,6 +49,9 @@ struct tNode
     scope *sc;
     se *entry;
     type_info *type;
+    int scope_start_line;
+    int scope_end_line;
+    int scope_marker;
 };
 
 tNode *createtNode(rhsNode *rh, tokenInfo *ti);

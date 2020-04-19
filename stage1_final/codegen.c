@@ -12,7 +12,6 @@ void codeGenModuleDef(FILE *fp, tNode *head)
 {
     //print label as id.
     tNode *child = head->node.n->child;
-    printf("%s\n", child->node.l->ti->lexeme);
     fprintf(fp, "%s:\n", child->node.l->ti->lexeme);
     child = child->node.l->sibling;
     tNode *child_child = child->node.n->child;
@@ -1078,7 +1077,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
             {
                 fprintf(fp, "mov EAX,dword[EBP - %d]\n", (K + var->node.n->child->entry->offset));
             }
-            fprintf(fp,"PUSH EDX\n");
+            
             if(var->node.n->child->entry->type->basic_type==BOOLEAN){
                 num_print_bool++;
                 fprintf(fp,"PUSH EDX\n");
@@ -1097,6 +1096,7 @@ void codeGeniostmt(FILE *fp, tNode *head)
                 fprintf(fp,"POP EDX\n");
                 return;
             }
+            fprintf(fp,"PUSH EDX\n");
             fprintf(fp, "push eax\n");
             fprintf(fp, "push men\n");
             fprintf(fp, "call printf\n");
@@ -1255,7 +1255,7 @@ void codeGen(FILE *fp, tNode *head)
             while(id_child){
                 se* temp = id_child->entry;
                 if(temp->type->isStatic == 1){
-                    
+  
                     fprintf(fp,"mov EDI, ESP\n");
                     fprintf(fp,"SUB EDI, 4\n");
                     fprintf(fp,"push EDI\n");
@@ -1263,7 +1263,9 @@ void codeGen(FILE *fp, tNode *head)
                     int e = temp->type->end;
                     int w = e-s+1;
                     fprintf(fp,"SUB ESP, %d\n",4*w);
+                    fprintf(fp, "MOV EDX,EDI\n");
                 }else{
+
                     fprintf(fp,"mov EDI, dword[dynOffset]\n");
                     //fprintf(fp,"mov dword[ebp-%d], edx\n", id_child->entry->offset+ K);
                    
@@ -1306,6 +1308,7 @@ void codeGen(FILE *fp, tNode *head)
                     fprintf(fp, "SHL EAX, 2\n");
                     fprintf(fp, "ADD dword[dynOffset], EAX\n");
                     fprintf(fp, "POP EAX\n");
+                    fprintf(fp, "MOV EDX,EDI\n");
                     
                 }
                 id_child = id_child->node.l->sibling;
