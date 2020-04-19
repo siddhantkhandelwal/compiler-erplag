@@ -1263,7 +1263,7 @@ void codeGen(FILE *fp, tNode *head)
                     int e = temp->type->end;
                     int w = e-s+1;
                     fprintf(fp,"SUB ESP, %d\n",4*w);
-                    fprintf(fp, "MOV EDX,EDI\n");
+                    // fprintf(fp, "MOV EDX,EDI\n");
                 }else{
 
                     fprintf(fp,"mov EDI, dword[dynOffset]\n");
@@ -1308,7 +1308,7 @@ void codeGen(FILE *fp, tNode *head)
                     fprintf(fp, "SHL EAX, 2\n");
                     fprintf(fp, "ADD dword[dynOffset], EAX\n");
                     fprintf(fp, "POP EAX\n");
-                    fprintf(fp, "MOV EDX,EDI\n");
+                    // fprintf(fp, "MOV EDX,EDI\n");
                     
                 }
                 id_child = id_child->node.l->sibling;
