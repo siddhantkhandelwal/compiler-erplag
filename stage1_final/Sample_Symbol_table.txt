@@ -91,7 +91,7 @@ start
 	get_value(v_1_2_3);							 		
 	declare B, C: array [2..20] of integer;
 	declare L, H:integer;
-	declare M:array[L..H] of integer;
+	declare M:array[L..5] of integer;
 	get_value(L);
 	get_value(H);
 	get_value(M);

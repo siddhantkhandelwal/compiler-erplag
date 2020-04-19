@@ -2,6 +2,7 @@
 
 int OFFSET = 0;
 int OFFSET_PRINT = 0;
+int offsetCounter = 0;
 int dyn_arrays = 0;
 char func_name[25];
 scope *create_new_scope(scope *parent, char *stamp)
@@ -273,9 +274,11 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 				{
 
 					temp1->offset = OFFSET;
+					temp1->offset_print = OFFSET_PRINT;
 					temp1->type->dyn_index = dyn_arrays;
 					dyn_arrays++;
 					OFFSET = OFFSET + 4;
+					OFFSET_PRINT = OFFSET_PRINT + 1;
 				}
 			}
 			else
@@ -287,7 +290,9 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 					dyn_arrays++;
 				}
 				temp1->offset = OFFSET;
+				temp1->offset_print = OFFSET_PRINT;
 				OFFSET = OFFSET + 4;
+				OFFSET_PRINT = OFFSET_PRINT + 5;
 			}
 		}
 	}
@@ -303,7 +308,6 @@ se *add_to_scope(tNode *to_add, scope *sc, int is_func, int func_use, type_info 
 	}
 	else
 	{
-
 		sc->head = temp1;
 	}
 
@@ -382,6 +386,8 @@ void populate_st(tNode *head, scope *sc)
 						else
 						{
 							t->isStatic = 0;
+							t->start_dyn = dt;
+							t->end_dyn = dt->node.l->sibling;
 						}
 
 						t->element_type = tp->node.l->s.T;
@@ -414,8 +420,8 @@ void populate_st(tNode *head, scope *sc)
 						else
 						{
 							t->isStatic = 0;
-							//t->start_dyn = dt;
-							// /t->end_dyn = dt->node.l->sibling;
+							t->start_dyn = dt;
+							t->end_dyn = dt->node.l->sibling;
 						}
 
 						t->element_type = tp->node.l->s.T;
@@ -601,8 +607,12 @@ scope *make_st(tNode *head)
 
 void printScope(scope *sc)
 {
+	if (strcmp(sc->stamp, "drivermodule") == 0){
+		offsetCounter = 0;
+	}
 	if (strcmp(sc->stamp, "module") == 0)
 	{
+		offsetCounter = 0;
 		// input list; head points to start of input list
 		se *head = sc->input_list;
 		while (head)
@@ -626,20 +636,30 @@ void printScope(scope *sc)
 
 				if (head->type->isStatic == 1)
 				{
-					printf("%s\t%s\t%d-%d\t%d\tyes\tstatic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, array_size + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset, head->scope_info->scope_level);
+					printf("%s\t%s\t%d-%d\t%d\tyes\tstatic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, array_size + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset_print, 0);
 				}
 				else
 					// need to add the ids of start and end index
-					printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset, head->scope_info->scope_level);
+					printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%s, %s]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start_dyn->node.l->ti->lexeme, head->type->end_dyn->node.l->ti->lexeme, terminalDict[head->type->element_type], head->offset_print, 0);
+				offsetCounter += 5;
 			}
 			else
 			{
 				if (head->type->basic_type == REAL)
-					printf("%s\t%s\t%d-%d\t4\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
+				{
+					printf("%s\t%s\t%d-%d\t4\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print, 0);
+					offsetCounter += 4;
+				}
 				else if (head->type->basic_type == INTEGER)
-					printf("%s\t%s\t%d-%d\t2\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
+				{
+					printf("%s\t%s\t%d-%d\t2\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print, 0);
+					offsetCounter += 2;
+				}
 				else
-					printf("%s\t%s\t%d-%d\t1\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
+				{
+					printf("%s\t%s\t%d-%d\t1\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print, 0);
+					offsetCounter += 1;
+				}
 			}
 			head = head->next;
 		}
@@ -647,40 +667,49 @@ void printScope(scope *sc)
 		head = sc->output_list;
 		while (head)
 		{
-			if (head->type->basic_type == ARRAY)
-			{
-				int width = (head->type->end - head->type->start) + 1;
-				int array_size;
-				if (head->type->element_type == INTEGER)
-				{
-					array_size = (width)*2;
-				}
-				else if (head->type->element_type == BOOLEAN)
-				{
-					array_size = (width)*1;
-				}
-				else
-				{
-					array_size = (width)*4;
-				}
+			// if (head->type->basic_type == ARRAY)
+			// {
+			// 	int width = (head->type->end - head->type->start) + 1;
+			// 	int array_size;
+			// 	if (head->type->element_type == INTEGER)
+			// 	{
+			// 		array_size = (width)*2;
+			// 	}
+			// 	else if (head->type->element_type == BOOLEAN)
+			// 	{
+			// 		array_size = (width)*1;
+			// 	}
+			// 	else
+			// 	{
+			// 		array_size = (width)*4;
+			// 	}
 
-				if (head->type->isStatic == 1)
-				{
-					printf("%s\t%s\t%d-%d\t%d\tyes\tstatic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, array_size + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset, head->scope_info->scope_level);
-				}
-				else
-					// need to add the ids of start and end index
-					printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset, head->scope_info->scope_level);
+			// 	if (head->type->isStatic == 1)
+			// 	{
+			// 		printf("%s\t%s\t%d-%d\t%d\tyes\tstatic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, array_size + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset_print, head->scope_info->scope_level);
+			// 	}
+			// 	else
+			// 		// need to add the ids of start and end index
+			// 		printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset_print, head->scope_info->scope_level);
+			// }
+			// else
+			// {
+			if (head->type->basic_type == REAL)
+			{
+				printf("%s\t%s\t%d-%d\t4\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print, 0);
+				offsetCounter += 4;
+			}
+			else if (head->type->basic_type == INTEGER)
+			{
+				printf("%s\t%s\t%d-%d\t2\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print, 0);
+				offsetCounter += 2;
 			}
 			else
 			{
-				if (head->type->basic_type == REAL)
-					printf("%s\t%s\t%d-%d\t4\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
-				else if (head->type->basic_type == INTEGER)
-					printf("%s\t%s\t%d-%d\t2\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
-				else
-					printf("%s\t%s\t%d-%d\t1\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
+				printf("%s\t%s\t%d-%d\t1\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print, 0);
+				offsetCounter += 1;
 			}
+			// }
 			head = head->next;
 		}
 	}
@@ -708,20 +737,20 @@ void printScope(scope *sc)
 
 				if (head->type->isStatic == 1)
 				{
-					printf("%s\t%s\t%d-%d\t%d\tyes\tstatic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, array_size + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset, head->scope_info->scope_level);
+					printf("%s\t%s\t%d-%d\t%d\tyes\tstatic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, array_size + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset_print - offsetCounter, head->scope_info->scope_level);
 				}
 				else
 					// need to add the ids of start and end index
-					printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%d, %d]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start, head->type->end, terminalDict[head->type->element_type], head->offset, head->scope_info->scope_level);
+					printf("%s\t%s\t%d-%d\t%d\tyes\tdynamic array\t[%s, %s]\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, head->width + 1, head->type->start_dyn->node.l->ti->lexeme, head->type->end_dyn->node.l->ti->lexeme, terminalDict[head->type->element_type], head->offset_print-offsetCounter, 0);
 			}
 			else
 			{
 				if (head->type->basic_type == REAL)
-					printf("%s\t%s\t%d-%d\t4\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
+					printf("%s\t%s\t%d-%d\t4\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print - offsetCounter, head->scope_info->scope_level);
 				else if (head->type->basic_type == INTEGER)
-					printf("%s\t%s\t%d-%d\t2\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
+					printf("%s\t%s\t%d-%d\t2\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print - offsetCounter, head->scope_info->scope_level);
 				else
-					printf("%s\t%s\t%d-%d\t1\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset, head->scope_info->scope_level);
+					printf("%s\t%s\t%d-%d\t1\tno\t---\t---\t%s\t%d\t%d\n", head->lexeme, head->scope_info->func_name, head->scope_info->scope_start_line, head->scope_info->scope_end_line, terminalDict[head->type->basic_type], head->offset_print - offsetCounter, head->scope_info->scope_level);
 			}
 		}
 		head = head->next;
